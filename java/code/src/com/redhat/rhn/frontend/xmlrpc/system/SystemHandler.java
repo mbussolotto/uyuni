@@ -47,7 +47,9 @@ import com.redhat.rhn.domain.channel.ClonedChannel;
 import com.redhat.rhn.domain.channel.NoBaseChannelFoundException;
 import com.redhat.rhn.domain.dto.SystemGroupsDTO;
 import com.redhat.rhn.domain.entitlement.Entitlement;
+import com.redhat.rhn.domain.errata.AdvisoryStatus;
 import com.redhat.rhn.domain.errata.Errata;
+import com.redhat.rhn.domain.errata.ErrataFactory;
 import com.redhat.rhn.domain.kickstart.KickstartData;
 import com.redhat.rhn.domain.kickstart.KickstartFactory;
 import com.redhat.rhn.domain.org.CustomDataKey;
@@ -127,6 +129,7 @@ import com.redhat.rhn.frontend.xmlrpc.PermissionCheckFailureException;
 import com.redhat.rhn.frontend.xmlrpc.ProfileNameTooLongException;
 import com.redhat.rhn.frontend.xmlrpc.ProfileNameTooShortException;
 import com.redhat.rhn.frontend.xmlrpc.ProfileNoBaseChannelException;
+import com.redhat.rhn.frontend.xmlrpc.RetractedPackageException;
 import com.redhat.rhn.frontend.xmlrpc.RhnXmlRpcServer;
 import com.redhat.rhn.frontend.xmlrpc.SnapshotTagAlreadyExistsException;
 import com.redhat.rhn.frontend.xmlrpc.SystemIdInstantiationException;
@@ -3777,9 +3780,8 @@ public class SystemHandler extends BaseHandler {
     public Long[] schedulePackageInstall(User loggedInUser, List<Integer> sids,
             List<Integer> packageIds, Date earliestOccurrence) {
 
-        return schedulePackagesAction(loggedInUser, sids,
-                packageIdsToMaps(loggedInUser, packageIds), earliestOccurrence,
-                ActionFactory.TYPE_PACKAGES_UPDATE, false);
+        return schedulePackageInstall(loggedInUser, sids,
+                packageIds, earliestOccurrence, false);
     }
 
     /**
@@ -3805,9 +3807,24 @@ public class SystemHandler extends BaseHandler {
     public Long[] schedulePackageInstall(User loggedInUser, List<Integer> sids,
                                          List<Integer> packageIds, Date earliestOccurrence, Boolean allowModules) {
 
-        return schedulePackagesAction(loggedInUser, sids,
-                packageIdsToMaps(loggedInUser, packageIds), earliestOccurrence,
-                ActionFactory.TYPE_PACKAGES_UPDATE, allowModules);
+        List<ErrataOverview> errataOverviews = ErrataFactory.searchByPackageIds(packageIds);
+        List<ErrataOverview> retracted = errataOverviews.stream()
+                .filter(eo -> eo.getAdvisoryStatus() == AdvisoryStatus.RETRACTED)
+                .collect(toList());
+        List<Long> longPids = packageIds.stream().map(Integer::longValue).collect(toList());
+        List<Long> retractedPids = retracted.stream()
+                .flatMap(s -> s.getPackageIds().stream())
+                .filter(longPids::contains)
+                .distinct()
+                .collect(toList());
+        if (retracted.isEmpty()) {
+            return schedulePackagesAction(loggedInUser, sids,
+                    packageIdsToMaps(loggedInUser, packageIds), earliestOccurrence,
+                    ActionFactory.TYPE_PACKAGES_UPDATE, allowModules);
+        }
+        else {
+            throw new RetractedPackageException(retractedPids);
+        }
     }
 
     /**
@@ -3829,13 +3846,8 @@ public class SystemHandler extends BaseHandler {
      */
     public Long schedulePackageInstall(User loggedInUser, final Integer sid,
             List<Integer> packageIds, Date earliestOccurrence) {
-
-        List<Integer> sids = new ArrayList<Integer>();
-        sids.add(sid);
-
-        return schedulePackagesAction(loggedInUser, sids,
-                packageIdsToMaps(loggedInUser, packageIds), earliestOccurrence,
-                ActionFactory.TYPE_PACKAGES_UPDATE, false)[0];
+            return schedulePackageInstall(loggedInUser, Collections.singletonList(sid),
+                    packageIds, earliestOccurrence, false)[0];
     }
 
     /**
@@ -3860,13 +3872,8 @@ public class SystemHandler extends BaseHandler {
      */
     public Long schedulePackageInstall(User loggedInUser, final Integer sid,
                                        List<Integer> packageIds, Date earliestOccurrence, Boolean allowModules) {
-
-        List<Integer> sids = new ArrayList<Integer>();
-        sids.add(sid);
-
-        return schedulePackagesAction(loggedInUser, sids,
-                packageIdsToMaps(loggedInUser, packageIds), earliestOccurrence,
-                ActionFactory.TYPE_PACKAGES_UPDATE, allowModules)[0];
+        return schedulePackageInstall(loggedInUser, Collections.singletonList(sid),
+                packageIds, earliestOccurrence, allowModules)[0];
     }
 
     /**
