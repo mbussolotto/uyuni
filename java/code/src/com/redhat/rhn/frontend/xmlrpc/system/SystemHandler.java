@@ -3129,12 +3129,12 @@ public class SystemHandler extends BaseHandler {
      *          $ErrataOverviewSerializer
      *      #array_end()
      */
-    public Object[] getRelevantErrata(User loggedInUser, Integer sid) {
+    public List<ErrataOverview> getRelevantErrata(User loggedInUser, Integer sid) {
 
         Server server = lookupServer(loggedInUser, sid);
         DataResult<ErrataOverview> dr = SystemManager.relevantErrata(
                 loggedInUser, server.getId());
-        return dr.toArray();
+        return dr;
     }
 
     /**
@@ -3162,7 +3162,7 @@ public class SystemHandler extends BaseHandler {
      *          $ErrataOverviewSerializer
      *      #array_end()
      */
-    public Object[] getRelevantErrataByType(User loggedInUser, Integer serverId,
+    public List<ErrataOverview> getRelevantErrataByType(User loggedInUser, Integer serverId,
             String advisoryType) throws FaultException {
 
         Server server = lookupServer(loggedInUser, serverId);
@@ -3170,7 +3170,7 @@ public class SystemHandler extends BaseHandler {
         DataResult<ErrataOverview> dr = SystemManager.relevantErrataByType(loggedInUser,
                 server.getId(), advisoryType);
 
-        return dr.toArray();
+        return dr;
     }
 
     /**
