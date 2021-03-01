@@ -14,10 +14,14 @@
  */
 package com.redhat.rhn.manager.errata.cache.test;
 
+import static com.redhat.rhn.manager.channel.CloneChannelCommand.CloneBehavior.CURRENT_STATE;
+
 import com.redhat.rhn.common.db.datasource.DataResult;
 import com.redhat.rhn.domain.channel.Channel;
+import com.redhat.rhn.domain.channel.ChannelFactory;
 import com.redhat.rhn.domain.errata.AdvisoryStatus;
 import com.redhat.rhn.domain.errata.Errata;
+import com.redhat.rhn.domain.errata.ErrataFactory;
 import com.redhat.rhn.domain.errata.test.ErrataFactoryTest;
 import com.redhat.rhn.domain.rhnpackage.Package;
 import com.redhat.rhn.domain.rhnpackage.PackageEvr;
@@ -28,12 +32,16 @@ import com.redhat.rhn.domain.server.Server;
 import com.redhat.rhn.domain.server.ServerFactory;
 import com.redhat.rhn.domain.server.test.ServerFactoryTest;
 import com.redhat.rhn.frontend.dto.ErrataCacheDto;
+import com.redhat.rhn.manager.channel.CloneChannelCommand;
 import com.redhat.rhn.manager.errata.cache.ErrataCacheManager;
 import com.redhat.rhn.manager.system.SystemManager;
 import com.redhat.rhn.testing.BaseTestCaseWithUser;
 import com.redhat.rhn.testing.ChannelTestUtils;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * ErrataFactoryTest
@@ -60,6 +68,7 @@ public class RetractedPatchesCacheManagerTest extends BaseTestCaseWithUser {
         newestPkg = generatedPackages.get(2);
 
         subscribedChannel = ChannelTestUtils.createBaseChannel(user);
+        subscribedChannel.setChecksumType(ChannelFactory.findChecksumTypeByLabel("sha256"));
         SystemManager.subscribeServerToChannel(user, server, subscribedChannel);
     }
 
@@ -132,6 +141,53 @@ public class RetractedPatchesCacheManagerTest extends BaseTestCaseWithUser {
         assertEquals(newerPkg.getId(), ((ErrataCacheDto) needingUpdates.get(0)).getPackageId());
     }
 
+    /**
+     * Tests updating the cache with a package that belongs to a retracted patch in one channel,
+     * but belongs to a stable patch in another.
+     */
+    public void testRetractedPackagesCacheClonedChannel() throws Exception {
+        // create a null-org patch with a newest package and add it to the channel
+        Errata vendorPatch = ErrataFactoryTest.createTestErrata(null);
+        vendorPatch.addPackage(newestPkg);
+        vendorPatch.addChannel(subscribedChannel);
+        ErrataFactory.save(vendorPatch);
+
+        // channel has all 3 packages
+        subscribedChannel.getPackages().addAll(List.of(oldPkg, newerPkg, newestPkg));
+
+        // clone the channel
+        CloneChannelCommand ccc = new CloneChannelCommand(CURRENT_STATE, subscribedChannel);
+        ccc.setUser(user);
+        Channel clonedChannel = ccc.create();
+
+        // set the patch in original to retracted
+        vendorPatch.setAdvisoryStatus(AdvisoryStatus.RETRACTED);
+
+        // the system is already subscribed to the channel with the retracted patch
+        // system has the oldest version installed
+        installPackageOnServer(oldPkg, server);
+
+        // insert "newer" into cache should be ok
+        ErrataCacheManager.insertCacheForChannelPackages(subscribedChannel.getId(), null, List.of(newerPkg.getId()));
+        ErrataCacheDto needingUpdates = (ErrataCacheDto) assertSingleAndGet(ErrataCacheManager.packagesNeedingUpdates(server.getId()));
+        assertEquals(newerPkg.getId(), needingUpdates.getPackageId());
+
+        // insert "newest" into cache should be a no-op
+        ErrataCacheManager.insertCacheForChannelPackages(subscribedChannel.getId(), null, List.of(newestPkg.getId()));
+        needingUpdates = (ErrataCacheDto) assertSingleAndGet(ErrataCacheManager.packagesNeedingUpdates(server.getId()));
+        assertEquals(newerPkg.getId(), needingUpdates.getPackageId()); // the "newer" is still in cache
+
+        // but if we subscribe to a channel, where the "newest" is not retracted, it should make it to the cache
+        SystemManager.unsubscribeServerFromChannel(server, subscribedChannel);
+        SystemManager.subscribeServerToChannel(user, server, clonedChannel);
+        ErrataCacheManager.insertCacheForChannelPackages(clonedChannel.getId(), null, List.of(newestPkg.getId()));
+        DataResult<ErrataCacheDto> result = ErrataCacheManager.packagesNeedingUpdates(server.getId());
+        assertEquals(2, result.size()); // both should be in the cache
+        assertEquals(
+                Set.of(newerPkg.getId(), newestPkg.getId()),
+                result.stream().map(p -> p.getPackageId()).collect(Collectors.toSet()));
+    }
+
     private static void installPackageOnServer(Package pkg, Server server) {
         InstalledPackage installedNewerPkg = createInstalledPackage(pkg);
         installedNewerPkg.setServer(server);
@@ -160,5 +216,10 @@ public class RetractedPatchesCacheManagerTest extends BaseTestCaseWithUser {
         pkg3.setPackageEvr(PackageEvrFactory.lookupOrCreatePackageEvr(evr.getEpoch(), "3.0.0", evr.getRelease(), pkg1.getPackageType()));
 
         return List.of(pkg1, pkg2, pkg3);
+    }
+
+    private <T> T assertSingleAndGet(Collection<T> items) {
+        assertEquals(1, items.size());
+        return items.iterator().next();
     }
 }
