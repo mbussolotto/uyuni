@@ -19,7 +19,6 @@ import com.redhat.rhn.domain.server.Server;
 import com.redhat.rhn.frontend.dto.PackageListItem;
 import com.redhat.rhn.manager.rhnpackage.PackageManager;
 
-import java.util.stream.Collectors;
 
 /**
  * PackageListSetupAction
