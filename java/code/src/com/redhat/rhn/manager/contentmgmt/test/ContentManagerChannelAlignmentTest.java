@@ -20,6 +20,7 @@ import static com.redhat.rhn.domain.contentmgmt.ContentFilter.EntityType.PACKAGE
 import static com.redhat.rhn.domain.contentmgmt.ContentFilter.Rule.ALLOW;
 import static com.redhat.rhn.domain.contentmgmt.ContentFilter.Rule.DENY;
 import static com.redhat.rhn.domain.role.RoleFactory.ORG_ADMIN;
+import static com.redhat.rhn.manager.channel.CloneChannelCommand.CloneBehavior.CURRENT_STATE;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Optional.empty;
@@ -48,6 +49,7 @@ import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.frontend.dto.ErrataCacheDto;
 import com.redhat.rhn.frontend.dto.SystemOverview;
 import com.redhat.rhn.manager.channel.ChannelManager;
+import com.redhat.rhn.manager.channel.CloneChannelCommand;
 import com.redhat.rhn.manager.contentmgmt.ContentManager;
 import com.redhat.rhn.manager.errata.cache.ErrataCacheManager;
 import com.redhat.rhn.manager.system.SystemManager;
@@ -92,6 +94,7 @@ public class ContentManagerChannelAlignmentTest extends BaseTestCaseWithUser {
         errata.addPackage(pkg);
 
         srcChannel = ChannelFactoryTest.createTestChannel(user, false);
+        srcChannel.setChecksumType(ChannelFactory.findChecksumTypeByLabel("sha256"));
         srcChannel.addPackage(pkg);
         srcChannel.addErrata(errata);
         srcChannel = HibernateFactory.reload(srcChannel);
@@ -303,7 +306,7 @@ public class ContentManagerChannelAlignmentTest extends BaseTestCaseWithUser {
     }
 
     /**
-     * Tests that filtering errata from a channel when aliging channels
+     * Tests that filtering errata from a channel when aligning channels
      * removes the errata and its package from the rhnServerNeededCache.
      *
      * Configuration:
@@ -593,6 +596,50 @@ public class ContentManagerChannelAlignmentTest extends BaseTestCaseWithUser {
         assertTrue(needingUpdates.isEmpty());
         // nor should it be reported as the newest package in the channel
         assertEquals(pkg.getId(), ChannelManager.getLatestPackageEqual(tgtChannel.getId(), pkg.getPackageName().getName()));
+    }
+
+    /**
+     * Similar as testCachesAlignmentRetractedPackages, but we're using a cloned channel as a source.
+     * In this clone, there is a stable patch that has been cloned from another patch, which
+     * has been retracted in the meantime.
+     * @throws Exception if anything goes wrong
+     */
+    public void testCachesAlignmentRetractedPackagesClones() throws Exception {
+        // server has the pkg installed and is subscribed to the target channel
+        Server server = ServerFactoryTest.createTestServer(user);
+        SystemManager.subscribeServerToChannel(user, server, tgtChannel);
+        InstalledPackage installedPkg = copyPackage(pkg, empty());
+        setInstalledPackage(server, installedPkg);
+
+        // clear the existing patch
+        srcChannel.getErratas().clear();
+
+        // pkg2 is a part of a retracted patch
+        Package pkg2 = PackageTest.createTestPackage(user.getOrg());
+        pkg2.setPackageName(pkg.getPackageName());
+        PackageEvr evr = pkg.getPackageEvr();
+        pkg2.setPackageEvr(PackageEvrFactory.lookupOrCreatePackageEvr(evr.getEpoch(), "2.0.0", evr.getRelease(), pkg.getPackageType()));
+        Errata patch = ErrataFactoryTest.createTestErrata(user.getOrg().getId());
+        patch.addPackage(pkg2);
+        srcChannel.addPackage(pkg2);
+        srcChannel.addErrata(patch);
+
+        // we clone the source and retract the patch in the original afterwards
+        CloneChannelCommand ccc = new CloneChannelCommand(CURRENT_STATE, srcChannel);
+        ccc.setUser(user);
+        Channel sourceClone = ccc.create();
+        patch.setAdvisoryStatus(AdvisoryStatus.RETRACTED);
+
+        contentManager.alignEnvironmentTargetSync(emptyList(), sourceClone, tgtChannel, user);
+        // after aligning the channels, the package in the cloned channel should appear in the cache
+        DataResult<ErrataCacheDto> needingUpdates = ErrataCacheManager.packagesNeedingUpdates(server.getId());
+        assertEquals(2, needingUpdates.size());
+        assertTrue(needingUpdates.stream()
+                .anyMatch(c -> c.getPackageId().equals(pkg2.getId()) && c.getErrataId() == null));
+        assertTrue(needingUpdates.stream()
+                .anyMatch(c -> c.getPackageId().equals(pkg2.getId()) && sourceClone.getErratas().iterator().next().getId().equals(c.getErrataId())));
+        // and it should be reported as the newest package in the channel
+        assertEquals(pkg2.getId(), ChannelManager.getLatestPackageEqual(tgtChannel.getId(), pkg.getPackageName().getName()));
     }
 
     private static Package copyPackage(Package fromPkg, User user, String version) throws Exception {
