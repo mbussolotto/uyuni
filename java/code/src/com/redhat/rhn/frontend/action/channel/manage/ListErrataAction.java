@@ -71,7 +71,6 @@ public class ListErrataAction extends RhnListAction implements Listable<ErrataOv
         request.setAttribute("emptyKey", EMPTY_KEY);
         request.setAttribute("editUrl", "true");
 
-
         //Make sure the user is a channel admin for the given channel.
         if (!UserManager.verifyChannelAdmin(user, currentChan)) {
             throw new PermissionCheckFailureException();
@@ -79,14 +78,11 @@ public class ListErrataAction extends RhnListAction implements Listable<ErrataOv
 
         RhnSetDecl decl = RhnSetDecl.ERRATA_TO_REMOVE.createCustom(cid);
 
-
-
         ListRhnSetHelper helper = new ListRhnSetHelper(this, request, decl);
         helper.setDataSetName(ERRATA_DATA);
         helper.setListName("errata");
         helper.setWillClearSet(true);
         helper.execute();
-
 
         if (requestContext.wasDispatched(CONFIRM) && decl.get(user).size() > 0) {
             Map<String, Object> params = new HashMap<String, Object>();
@@ -95,13 +91,10 @@ public class ListErrataAction extends RhnListAction implements Listable<ErrataOv
                     params);
         }
 
-
         request.setAttribute("cid", cid);
         request.setAttribute(ListTagHelper.PARENT_URL, request.getRequestURI() + "?" + request.getQueryString());
         return mapping.findForward(RhnHelper.DEFAULT_FORWARD);
     }
-
-
 
     /**
      *
@@ -114,6 +107,5 @@ public class ListErrataAction extends RhnListAction implements Listable<ErrataOv
                 context.getCurrentUser());
         return ChannelManager.listErrata(currentChan, null, null, false, user);
     }
-
 
 }
