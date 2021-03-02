@@ -704,9 +704,9 @@ SELECT DISTINCT E.id , E.advisory_name AS advisory_name,
                Errata1.update_date AS UPDATE_DATE,
                Errata1.synopsis as ADVISORY_SYNOPSIS,
                Errata1.advisory_type as ADVISORY_TYPE,
-               Errara1.advisory_status
+               Errata1.advisory_status
   from
-  (  SELECT distinct E.id, E.synopsis, E.update_date, E.advisory_type, E.advisory_name, EC.original_id
+  (  SELECT distinct E.id, E.synopsis, E.update_date, E.advisory_type, E.advisory_name, E.advisory_status, EC.original_id
       FROM rhnErrata E left join
            rhnErrataCloned EC on EC.id = E.id
     where E.org_id = :org_id
