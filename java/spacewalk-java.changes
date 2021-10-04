@@ -1,3 +1,4 @@
+- mgr-sync refresh logs when a vendor channel is expire and shows how to remove it (bsc#1191222)
 - Add 'Flush cache' option to Ansible playbook execution
   (bsc#1190405)
 - Update kernel live patch version on minion startup (bsc#1190276)
