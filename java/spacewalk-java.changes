@@ -1,3 +1,4 @@
+- mgr-sync refresh logs when a vendor channel is expire and shows how to remove it (bsc#1191222)
 - Fix ISE in product migration if base product is missing (bsc#1190151)
 - use TLSv1.3 if it is a supported Protocol
 - Adapt auto errata update to respect maintenance windows
