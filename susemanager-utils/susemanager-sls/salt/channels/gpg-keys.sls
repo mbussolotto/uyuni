@@ -5,6 +5,7 @@
 {%- if grains['os_family'] == 'Debian' %}
 mgr_debian_repo_keyring:
   file.managed:
+    - template: jinja
     - name: /usr/share/keyrings/mgr-archive-keyring.gpg
     - source: salt://gpg/mgr-keyring.gpg
     - mode: 644

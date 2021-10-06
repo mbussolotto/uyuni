@@ -52,6 +52,7 @@ mgr_salt_minion:
 {%- if salt['pillar.get']('contact_method') in ['ssh-push', 'ssh-push-tunnel'] %}
 logrotate_configuration:
   file.managed:
+    - template: jinja
     - name: /etc/logrotate.d/salt-ssh
     - user: root
     - group: root
@@ -71,6 +72,7 @@ logrotate_configuration:
 {# ensure /etc/sysconfig/rhn/systemid is created to indicate minion is managed by SUSE Manager #}
 /etc/sysconfig/rhn/systemid:
   file.managed:
+    - template: jinja
     - mode: 0640
     - makedirs: True
     - replace: False

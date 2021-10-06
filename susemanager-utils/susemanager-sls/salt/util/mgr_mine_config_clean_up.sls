@@ -8,6 +8,7 @@
 {%- endif -%}
 mgr_disable_mine:
   file.managed:
+    - template: jinja
     - name: {{ susemanager_minion_config }}
     - contents: "mine_enabled: False"
 

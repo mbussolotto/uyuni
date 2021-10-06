@@ -30,6 +30,7 @@ mgr_buildimage_prepare_source:
 
 mgr_buildimage_prepare_activation_key_in_source:
   file.managed:
+    - template: jinja
     - name: {{ source_dir }}/root/etc/salt/minion.d/kiwi_activation_key.conf
     - makedirs: True
     - contents: |

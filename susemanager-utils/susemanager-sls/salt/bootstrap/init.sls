@@ -87,6 +87,7 @@ mgr_server_localhost_alias_absent:
 
 bootstrap_repo:
   file.managed:
+    - template: jinja
 {%- if grains['os_family'] == 'Suse' %}
     - name: /etc/zypp/repos.d/susemanager:bootstrap.repo
 {%- elif grains['os_family'] == 'RedHat' %}
@@ -129,6 +130,7 @@ salt-minion-package:
 
 {{ salt_config_dir }}/minion.d/susemanager.conf:
   file.managed:
+    - template: jinja
     - source:
       - salt://bootstrap/susemanager.conf
     - template: jinja
@@ -138,6 +140,7 @@ salt-minion-package:
 
 {{ salt_config_dir }}/minion_id:
   file.managed:
+    - template: jinja
     - contents_pillar: minion_id
     - require:
       - pkg: salt-minion-package
@@ -163,6 +166,7 @@ mgr_update_basic_pkgs:
 {% if pillar['minion_pub'] is defined and pillar['minion_pem'] is defined %}
 {{ salt_config_dir }}/pki/minion/minion.pub:
   file.managed:
+    - template: jinja
     - contents_pillar: minion_pub
     - mode: 644
     - makedirs: True
@@ -171,6 +175,7 @@ mgr_update_basic_pkgs:
 
 {{ salt_config_dir }}/pki/minion/minion.pem:
   file.managed:
+    - template: jinja
     - contents_pillar: minion_pem
     - mode: 400
     - makedirs: True

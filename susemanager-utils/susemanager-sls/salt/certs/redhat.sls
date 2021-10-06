@@ -7,6 +7,7 @@ enable_ca_store:
 {%- endif %}
 /etc/pki/ca-trust/source/anchors/RHN-ORG-TRUSTED-SSL-CERT:
   file.managed:
+    - template: jinja
     - source:
       - salt://certs/RHN-ORG-TRUSTED-SSL-CERT
 {%- if grains['osmajorrelease'] == 6 %}

@@ -1,11 +1,13 @@
 {% if pillar['kernel'] and pillar['initrd'] %}
 mgr_copy_kernel:
   file.managed:
+    - template: jinja
     - name: /boot/uyuni-reinstall-kernel
     - source: salt://bootloader/{{ pillar.get('kernel') }}
 
 mgr_copy_initrd:
   file.managed:
+    - template: jinja
     - name: /boot/uyuni-reinstall-initrd
     - source: salt://bootloader/{{ pillar.get('initrd') }}
 
@@ -57,6 +59,7 @@ mgr_elilo_copy_config:
 {% else %}
 mgr_create_grub2_entry:
   file.managed:
+    - template: jinja
     - name: /etc/grub.d/42_uyuni_reinstall
     - source: salt://bootloader/42_uyuni_reinstall.templ
     - template: jinja

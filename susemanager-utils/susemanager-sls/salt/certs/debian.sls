@@ -1,5 +1,6 @@
 mgr_download_mgr_cert:
   file.managed:
+    - template: jinja
     - name: /usr/local/share/ca-certificates/susemanager/RHN-ORG-TRUSTED-SSL-CERT.crt
     - makedirs: True
     - source:

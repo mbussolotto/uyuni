@@ -41,6 +41,7 @@ generate_own_ssh_key:
 
 ownership_own_ssh_key:
   file.managed:
+    - template: jinja
     - name: {{ home }}/.ssh/mgr_own_id
     - user: {{ salt['pillar.get']('mgr_sudo_user') or 'root' }}
     - require:

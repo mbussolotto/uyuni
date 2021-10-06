@@ -4,6 +4,7 @@
 /etc/pki/trust/anchors/RHN-ORG-TRUSTED-SSL-CERT:
 {%- endif %}
   file.managed:
+    - template: jinja
     - source:
       - salt://certs/RHN-ORG-TRUSTED-SSL-CERT
 

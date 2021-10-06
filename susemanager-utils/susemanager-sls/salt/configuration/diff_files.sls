@@ -4,6 +4,7 @@
 file_deploy_{{ loop.index }}:
 {% if file.type == 'file' %}
     file.managed:
+    -   template: jinja
 {% elif file.type == 'directory' %}
     file.directory:
 {% elif file.type == 'symlink' %}

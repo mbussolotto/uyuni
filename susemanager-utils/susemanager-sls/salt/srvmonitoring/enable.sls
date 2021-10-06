@@ -15,6 +15,7 @@ postgres_exporter:
 
 postgres_exporter_configuration:
   file.managed:
+    - template: jinja
     - name: /etc/postgres_exporter/postgres_exporter_queries.yaml
     - makedirs: True
     - source:
@@ -65,6 +66,7 @@ jmx_exporter_tomcat_service:
 
 jmx_exporter_taskomatic_systemd_config:
   file.managed:
+    - template: jinja
     - name: /etc/prometheus-jmx_exporter/taskomatic/environment
     - makedirs: True
     - user: root
@@ -85,6 +87,7 @@ jmx_taskomatic_config:
 
 jmx_exporter_taskomatic_yaml_config:
   file.managed:
+    - template: jinja
     - name: /etc/prometheus-jmx_exporter/taskomatic/prometheus-jmx_exporter.yml
     - makedirs: True
     - user: root

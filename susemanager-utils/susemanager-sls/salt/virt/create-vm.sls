@@ -1,12 +1,14 @@
 {% if pillar.get('boot', {}).get('kernel') -%}
 kernel_cached:
   file.managed:
+    - template: jinja
     - name: /tmp/virt/{{ pillar['name'] }}/kernel
     - source: salt://bootloader/{{ pillar['boot']['kernel'] }}
     - makedirs: True
 
 initrd_cached:
   file.managed:
+    - template: jinja
     - name: /tmp/virt/{{ pillar['name'] }}/initrd
     - source: salt://bootloader/{{ pillar['boot']['initrd'] }}
     - makedirs: True

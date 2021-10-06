@@ -59,6 +59,7 @@ mgr_kiwi_dir_repo_created:
 
 mgr_osimage_cert_deployed:
   file.managed:
+    - template: jinja
 {%- if grains.get('osfullname') == 'SLES' and grains.get('osmajorrelease') == '11' %}
     - name: {{ kiwi_dir }}/repo/rhn-org-trusted-ssl-cert-osimage-sle11-1.0-1.noarch.rpm
     - source: salt://images/rhn-org-trusted-ssl-cert-osimage-sle11-1.0-1.noarch.rpm
