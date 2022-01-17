@@ -1,0 +1,128 @@
+#
+# spec file for package susemanager-report-schema
+#
+# Copyright (c) 2021 SUSE LLC
+# Copyright (c) 2008-2018 Red Hat, Inc.
+#
+# All modifications and additions to the file contributed by third parties
+# remain the property of their copyright owners, unless otherwise agreed
+# upon. The license for this file, and modifications and additions to the
+# file, is the same license as for the pristine package itself (unless the
+# license for the pristine package is not an Open Source License, in which
+# case the license is the MIT License). An "Open Source License" is a
+# license that conforms to the Open Source Definition (Version 1.9)
+# published by the Open Source Initiative.
+
+# Please submit bugfixes or comments via https://bugs.opensuse.org/
+#
+
+
+%{!?fedora: %global sbinpath /sbin}%{?fedora: %global sbinpath %{_sbindir}}
+
+Name:           susemanager-report-schema
+Summary:        SQL schema for Spacewalk Reporting Tool
+License:        GPL-2.0-only
+Group:          Applications/Internet
+
+Version:        4.3.4
+Release:        1
+Source0:        %{name}-%{version}.tar.gz
+Source1:        %{name}-rpmlintrc
+
+URL:            https://github.com/uyuni-project/uyuni
+BuildArch:      noarch
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+
+BuildRequires:  /usr/bin/pod2man
+BuildRequires:  fdupes
+BuildRequires:  python3
+BuildRequires:  perl(Digest::SHA)
+Requires:       %{sbinpath}/restorecon
+
+Provides:       spacewalk-report-schema = %{version}
+
+%if 0%{?suse_version}
+BuildRequires:  fdupes
+%endif
+
+%define rhnroot /etc/sysconfig/rhn/
+%define postgres %{rhnroot}/postgres
+
+%description
+susemanager-report-schema is the SQL schema for the SUSE Manager reporting tool.
+
+%package sanity
+Summary:        Schema source sanity check for Spacewalk reporting database scripts.
+Group:          Applications/Internet
+
+%description sanity
+
+%prep
+
+%setup -q
+
+%build
+find . -name '*.91' | while read i ; do mv $i ${i%%.91} ; done
+make -f Makefile.schema SCHEMA=%{name} VERSION=%{version} RELEASE=%{release}
+pod2man spacewalk-report-schema-upgrade spacewalk-report-schema-upgrade.1
+pod2man spacewalk-sql spacewalk-sql.1
+
+%install
+install -m 0755 -d $RPM_BUILD_ROOT%{rhnroot}
+install -m 0755 -d $RPM_BUILD_ROOT%{postgres}
+install -m 0644 postgres/main.sql $RPM_BUILD_ROOT%{postgres}
+install -m 0644 postgres/end.sql $RPM_BUILD_ROOT%{postgres}/upgrade-end.sql
+install -m 0755 -d $RPM_BUILD_ROOT%{_bindir}
+install -m 0755 spacewalk-report-schema-upgrade $RPM_BUILD_ROOT%{_bindir}
+install -m 0755 spacewalk-sql $RPM_BUILD_ROOT%{_bindir}
+install -m 0755 -d $RPM_BUILD_ROOT%{rhnroot}/schema-upgrade
+( cd upgrade && tar cf - --exclude='*.sql' . | ( cd $RPM_BUILD_ROOT%{rhnroot}/schema-upgrade && tar xf - ) )
+mkdir -p $RPM_BUILD_ROOT%{_mandir}/man1
+cp -p spacewalk-report-schema-upgrade.1 $RPM_BUILD_ROOT%{_mandir}/man1
+cp -p spacewalk-sql.1 $RPM_BUILD_ROOT%{_mandir}/man1
+
+%if 0%{?suse_version}
+mkdir -p $RPM_BUILD_ROOT/usr/share/susemanager/
+install -m 0644 update-messages.txt $RPM_BUILD_ROOT/usr/share/susemanager/
+%fdupes %{buildroot}/%{rhnroot}
+%endif
+
+install -m 755 schema-source-sanity-check.pl $RPM_BUILD_ROOT%{_bindir}/schema-source-sanity-check.pl
+
+%if 0%{?suse_version}
+%post
+if [ $1 -eq 2 ] ; then
+    cp /usr/share/susemanager/update-messages.txt /var/adm/update-messages/%{name}-%{version}-%{release}
+else
+    # new install: empty messages are not shown
+    touch /var/adm/update-messages/%{name}-%{version}-%{release}
+fi
+%endif
+
+%posttrans
+systemctl is-active --quiet uyuni-check-database.service && {
+  echo "  Running DB schema upgrade. This may take a while."
+  echo "  Call the following command to see progress: journalctl -f -u uyuni-check-database.service"
+} ||:
+systemctl try-restart uyuni-check-database.service ||:
+
+%files
+%defattr(-,root,root)
+%dir %{rhnroot}
+%{postgres}
+%{rhnroot}/schema-upgrade
+%{_bindir}/spacewalk-report-schema-upgrade
+%{_bindir}/spacewalk-sql
+%{_mandir}/man1/spacewalk-report-schema-upgrade*
+%{_mandir}/man1/spacewalk-sql*
+%if 0%{?suse_version}
+%dir /usr/share/susemanager
+/usr/share/susemanager/update-messages.txt
+%ghost /var/adm/update-messages/%{name}-%{version}-%{release}
+%endif
+
+%files sanity
+%defattr(-,root,root)
+%attr(755,root,root) %{_bindir}/schema-source-sanity-check.pl
+
+%changelog

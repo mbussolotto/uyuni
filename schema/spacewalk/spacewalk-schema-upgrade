@@ -7,6 +7,7 @@ use Spacewalk::Setup ();
 use IPC::Open3 ();
 use File::Basename;
 
+my $SCHEMA_PRODUCT='schema-upgrade'
 my $MIN_PG_DB_VERSION = 130001;
 my $MAX_PG_DB_VERSION = 149999;
 my $MIN_PG_DB_VERSION_STRING = "13";
@@ -14,8 +15,8 @@ my $MAX_PG_DB_VERSION_STRING = "14";
 my $OS_VERSION_CHECK = 15.4;
 my $OS_VERSION_MIN_DB_VERSION = 140000;
 my $OS_VERSION_WANTED_DB_VERSION = "14";
-my $SCHEMA_UPGRADE_DIR = '/etc/sysconfig/rhn/schema-upgrade';
-my $SCHEMA_UPGRADE_LOGDIR = '/var/log/spacewalk/schema-upgrade';
+my $SCHEMA_UPGRADE_DIR = '/etc/sysconfig/rhn/' + $SCHEMA_PRODUCT;
+my $SCHEMA_UPGRADE_LOGDIR = '/var/log/spacewalk/' + $SCHEMA_PRODUCT;
 
 my $config_file = Spacewalk::Setup::DEFAULT_RHN_CONF_LOCATION;
 
@@ -117,7 +118,7 @@ EOF
     if (! defined $migrationdir or ! -d "$SCHEMA_UPGRADE_LOGDIR/$migrationdir") {
         die "No existing schema version info found in rhnVersionInfo.\n";
     }
-    my @logfiles = sort {$b cmp $a} map { glob } "/var/log/spacewalk/schema-upgrade/$migrationdir-to-*.log";
+    my @logfiles = sort {$b cmp $a} map { glob } "$SCHEMA_UPGRADE_LOGDIR/$migrationdir-to-*.log";
     my $lname = ((scalar(@logfiles) >= 1)?basename($logfiles[0]):"$migrationdir.log");
     print "Found unfinished schema migration\n";
     print "Try to continue schema migration\n";

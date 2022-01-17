@@ -398,7 +398,10 @@ public class DownloadController {
             halt(HttpStatus.SC_NOT_FOUND,
                  String.format("%s not found in %s", basename, channel));
         }
-
+        if (pkg.getPath() == null) {
+            halt(HttpStatus.SC_NOT_FOUND,
+                    String.format("Cannot find path for package ", pkg.getNameEvra()));
+        }
         File file = new File(mountPoint, pkg.getPath()).getAbsoluteFile();
 
         return downloadFile(request, response, file);
