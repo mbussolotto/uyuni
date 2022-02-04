@@ -138,6 +138,10 @@ systemctl try-restart uyuni-check-database.service ||:
 
 %files utility
 %defattr(-,root,root)
+%dir %{perl_vendorlib}/%{spacewalk_folder}
+%dir %{perl_vendorlib}/%{schema_upgrade_folder}
+%{perl_vendorlib}/%{schema_upgrade_folder}/MainDb.pm
+%{perl_vendorlib}/%{schema_upgrade_folder}/ReportDb.pm
 %{_bindir}/spacewalk-schema-upgrade
 %{_bindir}/spacewalk-sql
 %{_mandir}/man1/spacewalk-schema-upgrade*
