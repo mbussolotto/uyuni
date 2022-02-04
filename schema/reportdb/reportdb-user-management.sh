@@ -92,15 +92,16 @@ fi
 # It is getopt's responsibility to make this safe
 eval set -- "$OPTS"
 
+ACTION_COUNT=0
 while : ; do
     case "$1" in
         --help|-h)  print_help;;
         --non-interactive) INTERACTIVE=0;;
         --dbuser) set_value "$1" DBUSER "$2"; shift;;
         --dbpassword) set_value "$1" DBPASSWORD "$2"; shift;;
-        --add) ACTION="a";;
-        --delete) ACTION="d";;
-        --modify) ACTION="m";;
+        --add) ACTION="a" ACTION_COUNT=$((ACTION_COUNT+1)) ;;
+        --delete) ACTION="d" ACTION_COUNT=$((ACTION_COUNT+1)) ;;
+        --modify) ACTION="m" ACTION_COUNT=$((ACTION_COUNT+1)) ;;
         --) shift;
             if [ $# -gt 0 ] ; then
                 echo "Error: Extra arguments found: $@"
@@ -112,6 +113,7 @@ while : ; do
     esac
     shift
 done
+
 
 
 if [ "$INTERACTIVE" = "1" ] ; then
@@ -146,6 +148,13 @@ if [ "$INTERACTIVE" = "1" ] ; then
     echo "Answer is not y. Exiting"
     exit 0
   fi
+  
+else ### INTERACTIVE=0
+  if [ "$ACTION_COUNT" != "1" ] ; then
+    echo "Please provide only one action"
+    exit 1
+  fi
+
 fi
 
 QUERY=""
