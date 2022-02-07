@@ -49,12 +49,11 @@ default_or_input() {
     local VARIABLE_ISSET=$(set | grep "^$VARIABLE=")
 
     echo -n "$MSG [$DEFAULT]: "
-    if [ "$INTERACTIVE" = "1" -a  -z "$VARIABLE_ISSET" ]; then
-        MANUAL_ANSWERS=1
+    if [ "$INTERACTIVE" = "1" ] &&  [ -z "$VARIABLE_ISSET" ]; then
         if [ "$SILENT" = 1 ]; then
-          read -s INPUT
+          read -sr INPUT
         else
-          read INPUT
+          read -r INPUT
         fi
     elif [ -z "$VARIABLE_ISSET" ]; then
         echo "$DEFAULT"
@@ -63,7 +62,7 @@ default_or_input() {
         echo "$DEFAULT"
     fi
     if [ -z "$INPUT" ]; then
-        if [ "$DEFAULT" = "y/N" -o "$DEFAULT" = "Y/n" ]; then
+        if [ "$DEFAULT" = "y/N" ] || [ "$DEFAULT" = "Y/n" ]; then
             INPUT=$(yes_no "$DEFAULT")
         else
             INPUT="$DEFAULT"
@@ -83,7 +82,7 @@ set_value() {
     eval "$(printf "%q=%q" "$VAR" "$ARG")"
 }
 
-OPTS=$(getopt --longoptions=help,non-interactive,add,delete,modify,action:,dbuser:,dbpassword: -n ${0##*/} -- h "$@")
+OPTS=$(getopt --longoptions=help,non-interactive,add,delete,modify,action:,dbuser:,dbpassword: -n '${0##*/}' -- h "$@")
 
 if [ $? != 0 ] ; then
     print_help
@@ -174,4 +173,4 @@ case "$ACTION" in
   ;;
 esac
 
-echo ${QUERY} | spacewalk-sql --select-mode -
+echo $QUERY | spacewalk-sql --select-mode -
