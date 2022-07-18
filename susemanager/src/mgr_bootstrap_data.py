@@ -179,7 +179,8 @@ PKGLIST12 = [
 ONLYSLE12 = [
     "libzmq3",
     "gio-branding-SLE",
-    "wallpaper-branding-SLE"
+    "wallpaper-branding-SLE",
+    "venv-salt-minion",
 ]
 
 PKGLIST12_X86_ARM = [
@@ -352,7 +353,8 @@ RES7 = [
     "mgr-daemon|spacewalksd",
     "suseRegisterInfo",
     "python2-suseRegisterInfo",
-    "python2-hwdata"
+    "python2-hwdata",
+    "venv-salt-minion",
 ]
 
 RES7_X86 = [
@@ -425,7 +427,7 @@ AMAZONLINUX2 = [
     "zip"
 ]
 
-PKGLIST15_SALT = [
+PKGLIST15_SALT_NO_BUNDLE = [
     "libpgm-5_2-0",
     "libsodium23",
     "libzmq5",
@@ -455,6 +457,14 @@ PKGLIST15_SALT = [
     "salt",
     "python3-salt",
     "salt-minion",
+]
+
+PKGLIST15_SALT = PKGLIST15_SALT_NO_BUNDLE + [
+    "venv-salt-minion",
+]
+
+PKGLIST15_SALT_OPT_BUNDLE = PKGLIST15_SALT_NO_BUNDLE + [
+    "venv-salt-minion*",
 ]
 
 PKGLIST15SP0SP1_SALT = [
@@ -611,6 +621,7 @@ PKGLISTUBUNTU1804 = [
     "gnupg",
     "python3-immutables",
     "python3-contextvars",
+    "venv-salt-minion",
 ]
 
 PKGLISTUBUNTU2004 = [
@@ -631,6 +642,11 @@ PKGLISTUBUNTU2004 = [
     "salt-common",
     "salt-minion",
     "gnupg",
+    "venv-salt-minion",
+]
+
+PKGLISTUBUNTU2204 = [
+    "venv-salt-minion",
 ]
 
 PKGLISTDEBIAN9 = [
@@ -689,6 +705,10 @@ PKGLISTDEBIAN9 = [
     "python2.7-minimal",
     "salt-common",
     "salt-minion",
+    "dmidecode",
+    "gnupg",
+    "gnupg1",
+    "venv-salt-minion*",
 ]
 
 
@@ -748,6 +768,7 @@ PKGLISTDEBIAN10 = [
     "salt-common",
     "salt-minion",
     "gnupg",
+    "venv-salt-minion",
 ]
 
 PKGLISTDEBIAN11 = [
@@ -1304,6 +1325,22 @@ DATA = {
         'BASECHANNEL' : 'opensuse_leap15_3-aarch64', 'PKGLIST' : PKGLIST15_TRAD + PKGLIST15_SALT + PKGLIST15SP0SP1_SALT + PKGLIST15_X86_ARM,
         'DEST' : '/srv/www/htdocs/pub/repositories/opensuse/15/3/bootstrap/'
     },
+    'openSUSE-Leap-15.4-x86_64' : {
+        'PDID' : [2409], 'PKGLIST' : PKGLIST15_SALT + PKGLIST15_X86_ARM,
+        'DEST' : '/srv/www/htdocs/pub/repositories/opensuse/15/4/bootstrap/'
+    },
+    'openSUSE-Leap-15.4-aarch64' : {
+        'PDID' : [2406], 'PKGLIST' : PKGLIST15_SALT + PKGLIST15_X86_ARM,
+        'DEST' : '/srv/www/htdocs/pub/repositories/opensuse/15/4/bootstrap/'
+    },
+    'openSUSE-Leap-15.4-x86_64-uyuni' : {
+        'BASECHANNEL' : 'opensuse_leap15_4-x86_64', 'PKGLIST' : PKGLIST15_TRAD + PKGLIST15_SALT + PKGLIST15SP0SP1_SALT + PKGLIST15_X86_ARM,
+        'DEST' : '/srv/www/htdocs/pub/repositories/opensuse/15/4/bootstrap/'
+    },
+    'openSUSE-Leap-15.4-aarch64-uyuni' : {
+        'BASECHANNEL' : 'opensuse_leap15_4-aarch64', 'PKGLIST' : PKGLIST15_TRAD + PKGLIST15_SALT + PKGLIST15SP0SP1_SALT + PKGLIST15_X86_ARM,
+        'DEST' : '/srv/www/htdocs/pub/repositories/opensuse/15/4/bootstrap/'
+    },    
     'centos-6-x86_64' : {
         'PDID' : [-11, 1682], 'BETAPDID' : [2064], 'PKGLIST' : RES6,
         'DEST' : '/srv/www/htdocs/pub/repositories/centos/6/bootstrap/'
