@@ -1,3 +1,6 @@
+{%- set mgr_server = salt['pillar.get']('mgr_server')%}
+{%- set port = salt['pillar.get']('mgr_server_https_port', 443)%}
+
 {%- if salt['pillar.get']('mgr_metadata_signing_enabled', false) %}
 {%- if grains['os_family'] == 'Debian' %}
 mgr_debian_repo_keyring:
@@ -6,82 +9,47 @@ mgr_debian_repo_keyring:
     - source: salt://gpg/mgr-keyring.gpg
     - mode: 644
 {% else %}
-mgr_deploy_customer_gpg_key:
-  file.managed:
-    - name: /etc/pki/rpm-gpg/mgr-gpg-pub.key
-    - source: salt://gpg/mgr-gpg-pub.key
-    - makedirs: True
-    - mode: 644
-
 mgr_trust_customer_gpg_key:
-  mgrcompat.module_run:
-    - name: pkg.add_repo_key
-    - path: /etc/pki/rpm-gpg/mgr-gpg-pub.key
-    - onchanges:
-      - file: mgr_deploy_customer_gpg_key
-
+  cmd.run:
+    - name: rpm --import https://{{mgr_server}}:{{port}}/pub/mgr-gpg-pub.key
+    - runas: root
 {%- endif %}
 {%- endif %}
-
-mgr_deploy_tools_uyuni_key:
-  file.managed:
-    - name: /etc/pki/rpm-gpg/uyuni-tools-gpg-pubkey-0d20833e.key
-    - source: salt://gpg/uyuni-tools-gpg-pubkey-0d20833e.key
-    - makedirs: True
-    - mode: 644
 
 {%- if grains['os_family'] == 'RedHat' %}
-{# deploy all keys to the clients. If they get imported dependes on the used channels #}
+trust_res_gpg_key:
+  cmd.run:
+    - name: rpm --import https://{{mgr_server}}:{{port}}/pub/{{ salt['pillar.get']('gpgkeys:res:file') }}
+    - unless: rpm -q {{ salt['pillar.get']('gpgkeys:res:name') }}
+    - runas: root
 
-mgr_deploy_res_gpg_key:
-  file.managed:
-    - name: /etc/pki/rpm-gpg/res-gpg-pubkey-0182b964.key
-    - source: salt://gpg/res-gpg-pubkey-0182b964.key
-    - makedirs: True
-    - mode: 644
-
-mgr_deploy_tools_rhel_gpg_key:
-  file.managed:
-    - name: /etc/pki/rpm-gpg/el-tools-gpg-pubkey-39db7c82.key
-    - source: salt://gpg/el-tools-gpg-pubkey-39db7c82.key
-    - mode: 644
-
-mgr_deploy_legacy_tools_rhel_gpg_key:
-  file.managed:
-    - name: /etc/pki/rpm-gpg/el6-tools-gpg-pubkey-307e3d54.key
-    - source: salt://gpg/el6-tools-gpg-pubkey-307e3d54.key
-    - mode: 644
-
+trust_suse_manager_tools_rhel_gpg_key:
+  cmd.run:
+{%- if grains['osmajorrelease']|int == 6 %}
+    - name: rpm --import https://{{mgr_server}}:{{port}}/pub/{{ salt['pillar.get']('gpgkeys:res6tools:file') }}
+    - unless: rpm -q {{ salt['pillar.get']('gpgkeys:res6tools:name') }}
+{%- elif grains['osmajorrelease']|int == 7 %}
+    - name: rpm --import https://{{mgr_server}}:{{port}}/pub/{{ salt['pillar.get']('gpgkeys:res7tools:file') }}
+    - unless: rpm -q {{ salt['pillar.get']('gpgkeys:res7tools:name') }}
+{%- elif grains['osmajorrelease']|int == 8 %}
+    - name: rpm --import https://{{mgr_server}}:{{port}}/pub/{{ salt['pillar.get']('gpgkeys:res8tools:file') }}
+    - unless: rpm -q {{ salt['pillar.get']('gpgkeys:res8tools:name') }}
+{%- elif grains['osmajorrelease']|int == 2 and grains['os'] == 'Amazon' %}
+    - name: rpm --import https://{{ salt['pillar.get']('mgr_server') }}/pub/{{ salt['pillar.get']('gpgkeys:res7tools:file') }}
+    - unless: rpm -q {{ salt['pillar.get']('gpgkeys:res7tools:name') }}
+{% else %}
+    - name: /usr/bin/true
 {%- endif %}
+    - runas: root
 
+{%- elif grains['os_family'] == 'Debian' %}
+install_gnupg_debian:
+  pkg.latest:
+    - pkgs:
+      - gnupg
 
-{# deploy keys defined by the admin #}
-
-{%- for keyname in salt['pillar.get']('custom_gpgkeys', []) %}
-mgr_deploy_{{ keyname }}:
-    file.managed:
-{%- if grains['os_family'] == 'Debian' %}
-    - name: /usr/share/keyrings/{{ keyname }}
-{%- else %}
-    - name: /etc/pki/rpm-gpg/{{ keyname }}
-{%- endif %}
-    - source: salt://gpg/{{ keyname }}
-    - mode: 644
-{%- endfor %}
-
-
-{# trust GPG keys used in assigned channels #}
-
-{%- set gpg_urls = [] %}
-{%- for chan, args in pillar.get(pillar.get('_mgr_channels_items_name', 'channels'), {}).items() %}
-{%- if args['gpgkeyurl'] is defined %}
-{{ gpg_urls.append(args['gpgkeyurl']) | default("", True) }}
-{%- endif %}
-{%- endfor %}
-
-{% for url in gpg_urls | unique %}
-{{ url | replace(':', '_') }}:
+trust_suse_manager_tools_deb_gpg_key:
   mgrcompat.module_run:
     - name: pkg.add_repo_key
-    - path: {{ url }}
-{%- endfor %}
+    - path: https://{{mgr_server}}:{{port}}/pub/{{ salt['pillar.get']('gpgkeys:ubuntutools:file') }}
+{%- endif %}

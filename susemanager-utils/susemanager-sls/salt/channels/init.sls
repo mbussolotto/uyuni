@@ -81,9 +81,8 @@ mgrchannels_repo:
     - user: root
     - group: root
     - mode: 644
-    - require:
-       - file: mgr_ca_cert
 {%- if grains['os_family'] == 'RedHat' %}
+    - require:
 {%- if is_dnf %}
        - file: mgrchannels_susemanagerplugin_dnf
        - file: mgrchannels_susemanagerplugin_conf_dnf
