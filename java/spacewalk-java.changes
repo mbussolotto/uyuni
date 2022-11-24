@@ -1,4 +1,4 @@
-- Do not forward ssh command if command and tunnel is present (bsc#1200096)
+- Do not forward ssh command if proxy and tunnel are present (bsc#1200096)
 - Allowed cancelling pending actions with a failed prerequisite (bsc#1204712)
 - disable cloned vendor channel auto selection by default (bsc#1204186)
 - adapt permissions of temporary ssh key directory
