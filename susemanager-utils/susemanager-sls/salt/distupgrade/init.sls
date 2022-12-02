@@ -1,4 +1,4 @@
-{% if grains['os_family'] == 'Suse' %}
+{% if grains['os_family'] == 'Suse' and grains['transactional'] != True %}
 spmigration:
   mgrcompat.module_run:
     - name: pkg.upgrade
@@ -9,6 +9,14 @@ spmigration:
 {% else %}
     - fromrepo: {{ salt['pillar.get']('susemanager:distupgrade:channels', []) }}
 {% endif %}
+    -   require:
+        - file: mgrchannels*
+{% endif %}
+
+{% if grains['os_family'] == 'Suse' and grains['transactional'] == True %}
+spmigration:
+  mgrcompat.module_run:
+    - name: transactional_update.migration
     -   require:
         - file: mgrchannels*
 {% endif %}
