@@ -73,7 +73,7 @@ ExecStopPost=/usr/bin/podman rm \
 
 PIDFile=%t/uyuni-server.pid
 TimeoutStopSec=180
-TimeoutStartSec=180
+TimeoutStartSec=600
 Type=forking
 
 [Install]
