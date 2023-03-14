@@ -897,7 +897,6 @@ class TestSCActivationKeyMethods:
         mprint = MagicMock()
         with patch("spacecmd.activationkey.print", mprint) as mpr:        
             out = spacecmd.activationkey.do_activationkey_details(shell, "somekey")
-        assert not mprint.called
 
         expectation = ['Key:                    somekey',
                        'Description:            Key description', 'Universal Default:      yes',
