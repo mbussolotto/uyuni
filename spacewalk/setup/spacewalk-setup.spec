@@ -94,6 +94,7 @@ Requires:       perl-Satcon
 Requires:       spacewalk-admin
 Requires:       spacewalk-backend-tools
 Requires:       spacewalk-certs-tools
+Requires(pre):  tomcat
 %if 0%{?build_py3}
 Requires:       (python3-PyYAML or python3-pyyaml)
 %else
@@ -110,7 +111,6 @@ Requires:       spacewalk-base-minimal
 Requires:       spacewalk-base-minimal-config
 Requires:       spacewalk-java-lib >= 2.4.5
 Requires:       uyuni-setup-reportdb
-Requires:       tomcat
 %if 0%{?rhel}
 Requires(post): libxslt-devel
 %else
@@ -289,8 +289,6 @@ make test
 %dir %attr(0755, root, root) %{_prefix}/share/salt-formulas/states/
 %dir %attr(0755, root, root) %{_prefix}/share/salt-formulas/metadata/
 %dir %{_datadir}/spacewalk
-%dir %{_sysconfdir}/tomcat/
-%dir %{_sysconfdir}/tomcat/conf.d/
 %{_datadir}/spacewalk/*
 %if 0%{?rhel} || 0%{?fedora}
 %{misc_path}/spacewalk
