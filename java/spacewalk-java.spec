@@ -689,6 +689,8 @@ if [ ! -e /var/log/rhn/gatherer.log ]; then
 fi
 chown tomcat:%{apache_group} /var/log/rhn/gatherer.log
 
+sed -i 's/APACHE_CONF_INCLUDE_DIRS/APACHE_CONF_INCLUDE_DIRS="\/etc\/rhn\/apache2.conf.d\/*conf/"' /etc/sysconfig/apache2
+
 %files
 %defattr(-,root,root)
 %dir %{_localstatedir}/lib/spacewalk
