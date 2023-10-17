@@ -10,6 +10,8 @@ repositories:
     repository: openSUSE_Leap_15.5
   Leap_sle:
     url: https://download.opensuse.org/update/leap/15.5/sle
+  Tomcat_Other:
+    url: https://download.opensuse.org/repositories/home:/mbussolotto:/branches:/Java:/packages:/bump/openSUSE_Tumbleweed
 artifacts:
   - artifact: asm
     package: objectweb-asm
@@ -46,7 +48,8 @@ artifacts:
     package: apache-commons-collections
     repository: Leap
   - artifact: commons-digester
-    package: apache-commons-digester
+    package: jakarta-commons-digester
+    jar: jakarta-commons-digester-1.7.jar
     repository: Leap
   - artifact: commons-discovery
     package: jakarta-commons-discovery
@@ -55,7 +58,7 @@ artifacts:
     package: apache-commons-el
     repository: Leap
   - artifact: commons-fileupload
-    package: apache-commons-fileupload
+    package: jakarta-commons-fileupload
     repository: Leap
   - artifact: commons-io
     package: apache-commons-io
@@ -301,22 +304,22 @@ artifacts:
   - artifact: jasper
     package: tomcat-lib
     jar: jasper\.jar
-    repository: Leap_sle
+    repository: Tomcat_Other
   - artifact: jasper-el
     package: tomcat-lib
-    repository: Leap_sle
-  - artifact: tomcat-el-3.0-api
-    package: tomcat-el-3_0-api
-    repository: Leap_sle
-  - artifact: tomcat-jsp-2.3-api
-    package: tomcat-jsp-2_3-api
-    repository: Leap_sle
+    repository: Tomcat_Other
+  - artifact: tomcat-el-5_0-api
+    package: tomcat-el-5_0-api
+    repository: Tomcat_Other
+  - artifact: tomcat-jsp-3_1-api
+    package: tomcat-jsp-3_1-api
+    repository: Tomcat_Other
   - artifact: tomcat-juli
     package: tomcat-lib
-    repository: Leap_sle
-  - artifact: tomcat-servlet-4.0-api
-    package: tomcat-servlet-4_0-api
-    repository: Leap_sle
+    repository: Tomcat_Other
+  - artifact: tomcat-servlet-6_0-api
+    package: tomcat-servlet-6_0-api
+    repository: Tomcat_Other
 
   - artifact: hamcrest-core
     repository: Leap
