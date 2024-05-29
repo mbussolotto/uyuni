@@ -21,6 +21,7 @@ RUN zypper --gpg-auto-import-keys --non-interactive install --auto-agree-with-li
     susemanager-tftpsync-recv \
     release-notes-susemanager-proxy \
     python3-rhnlib \
+    supportutils \
     python3-PyYAML && \
     sh remove_unused.sh
 

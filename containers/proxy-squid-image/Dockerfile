@@ -16,6 +16,7 @@ RUN echo "rpm.install.excludedocs = yes" >>/etc/zypp/zypp.conf
 RUN zypper --gpg-auto-import-keys --non-interactive install --auto-agree-with-licenses \
     python3 \
     python3-PyYAML \
+    supportutils \
     squid && \
     sh remove_unused.sh
 

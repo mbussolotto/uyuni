@@ -17,6 +17,7 @@ RUN zypper --gpg-auto-import-keys --non-interactive install --auto-agree-with-li
     openssh-server \
     openssh \
     python3 \
+    supportutils \
     python3-PyYAML && \
     sh remove_unused.sh
 
