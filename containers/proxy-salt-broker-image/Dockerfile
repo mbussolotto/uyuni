@@ -11,7 +11,10 @@ COPY add_repos.sh /usr/bin
 RUN sh add_repos.sh ${PRODUCT_REPO}
 
 # Main packages
-RUN zypper --gpg-auto-import-keys --non-interactive install --auto-agree-with-licenses --force-resolution spacewalk-proxy-salt supportutils && zypper clean --all
+RUN zypper --gpg-auto-import-keys --non-interactive install --auto-agree-with-licenses --force-resolution \
+   awk \
+   spacewalk-proxy-salt \
+   supportutils && zypper clean --all
 
 # Additional material
 COPY uyuni-configure.py /usr/bin/uyuni-configure.py
