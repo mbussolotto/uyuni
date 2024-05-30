@@ -13,7 +13,7 @@ RUN sh add_repos.sh ${PRODUCT_REPO}
 # Main packages
 COPY remove_unused.sh .
 RUN echo "rpm.install.excludedocs = yes" >>/etc/zypp/zypp.conf
-RUN zypper --gpg-auto-import-keys --non-interactive install --auto-agree-with-licenses \
+RUN zypper --gpg-auto-import-keys --non-interactive install --auto-agree-with-licenses --force-resolution \
     openssh-server \
     openssh \
     python3 \
