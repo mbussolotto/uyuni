@@ -10,7 +10,6 @@ RUN zypper ref && \
       ant-junit5 \
       servletapi5 \
       cpio \
-      rpm \
       python3-PyYAML \
       spacecmd \
       expect \
