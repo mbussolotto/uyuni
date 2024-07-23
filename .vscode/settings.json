@@ -21,7 +21,22 @@
       "-Dlog4j2.configurationFile=${workspaceFolder}/java/buildconf/test/log4j2.properties"
     ]
   },
+  "java.project.referencedLibraries": [
+    "${workspaceFolder}/java/lib/*.jar",
+  ],
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.formatOnSave": true,
+  "ant.buildFilenames": "java/manager-build.xml",
   "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx8G -Xms2G -Xlog:disable",
+
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-17",
+      "path": "/usr/lib64/jvm/java-17-openjdk",
+      "default": true
+    },
+  ],
+
   "java.checkstyle.configuration": "${workspaceFolder}/java/buildconf/checkstyle.xml",
   "java.checkstyle.properties": {
     "checkstyle.cache.file": "${workspaceFolder}/java/build/checkstyle.cache.src",
