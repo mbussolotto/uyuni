@@ -11,6 +11,7 @@ RUN zypper ref && \
       servletapi5 \
       cpio \
       python3-PyYAML \
+      python3-pip \
       spacecmd \
       expect \
       git \
