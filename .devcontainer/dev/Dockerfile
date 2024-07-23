@@ -7,13 +7,23 @@ RUN zypper ref && \
       rsync \
       apache-ivy \
       ant \
+      ant-junit5 \
       ant-junit \
       servletapi5 \
       cpio \
+      python3-PyYAML \
+      python3-pip \
       spacecmd \
       expect \
       git \
       curl \
+      make \
+      sudo \
       wget && \
     zypper -n install obs-to-maven yarn && \
     zypper clean -a
+
+RUN git clone https://github.com/uyuni-project/uyuni.git
+RUN ant -f uyuni/java/manager-build.xml ivy
+RUN mv /uyuni/java/lib/ /uyuni-lib
+RUN mv /uyuni/java/buildconf/ivy/repository /

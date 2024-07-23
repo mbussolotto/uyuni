@@ -7,4 +7,5 @@
   "postCreateCommand": "cd /workspaces/uyuni &&  ant -f java/manager-build.xml ivy"
   
   // More info: https://containers.dev/implementors/json_reference/
+	"postStartCommand": "mv /repository /workspaces/uyuni/java/buildconf/ivy/ && mv /uyuni-lib/* /workspaces/uyuni/java/lib/"
 }
