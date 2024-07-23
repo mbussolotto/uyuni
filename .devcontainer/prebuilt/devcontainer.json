@@ -13,5 +13,5 @@
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	"remoteUser": "root",
-	"postStartCommand": "mv /repository /workspace/uyuni/java/buildconf/ivy/"
+	"postStartCommand": "mv /repository /workspaces/uyuni/java/buildconf/ivy/"
 }
