@@ -5,5 +5,5 @@
     "JAVA_HOME": "/usr/lib64/jvm/java-17-openjdk"
   }
   // More info: https://containers.dev/implementors/json_reference/
-	"postStartCommand": "mv /repository /workspaces/uyuni/java/buildconf/ivy/"
+	"postStartCommand": "mv /repository /workspaces/uyuni/java/buildconf/ivy/ && mv /classes /workspaces/uyuni/java/build/ && mkdir /workspaces/uyuni/java/lib "
 }
