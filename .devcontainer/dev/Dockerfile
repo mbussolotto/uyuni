@@ -21,5 +21,5 @@ RUN zypper ref && \
     zypper clean -a
 
 RUN git clone https://github.com/uyuni-project/uyuni.git
-RUN ant -f java/manager-build.xml ivy
+RUN ant -f uyuni/java/manager-build.xml ivy
 RUN mv /uyuni/java/buildconf/ivy/repository /
