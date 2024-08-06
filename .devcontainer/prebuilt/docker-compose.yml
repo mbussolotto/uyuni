@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  uyuni-code:
+  uyuni:
     image: docker.io/mbussolotto/uyuni-dev:latest
     network_mode: service:db
     command: sleep infinity
