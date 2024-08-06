@@ -2,7 +2,7 @@ version: '3.8'
 services:
   uyuni:
     image: docker.io/mbussolotto/uyuni-dev:latest
-    network_mode: service:db
+    network_mode: bridge
     entrypoint: /bin/sh
     command: -c "
       mv /repository /workspaces/uyuni/java/buildconf/ivy/ && \
