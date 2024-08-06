@@ -8,6 +8,7 @@ RUN zypper ref && \
       apache-ivy \
       ant \
       ant-junit5 \
+      ant-junit \
       servletapi5 \
       cpio \
       python3-PyYAML \
