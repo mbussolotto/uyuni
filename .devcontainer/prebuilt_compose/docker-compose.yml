@@ -4,6 +4,8 @@ services:
     image: docker.io/mbussolotto/uyuni-dev:latest
     network_mode: service:db
     command: sleep infinity
+    depends_on:
+      - prebuilt
 
   db:
     image: registry.opensuse.org/systemsmanagement/uyuni/master/docker/containers/uyuni-master-pgsql-4eclipse
