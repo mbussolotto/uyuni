@@ -3,7 +3,10 @@ services:
   uyuni:
     image: docker.io/mbussolotto/uyuni-dev:latest
     network_mode: service:db
-    command: sleep infinity
+    command: sh -c "mv /repository /workspaces/uyuni/java/buildconf/ivy/ &&
+      mkdir -p /workspaces/uyuni/java/lib &&
+      mv /uyuni-lib/* /workspaces/uyuni/java/lib/ &&
+      tail -f /dev/null"
     depends_on:
       - db
   db:
