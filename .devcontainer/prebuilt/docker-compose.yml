@@ -8,8 +8,7 @@ services:
       mv /repository /workspaces/uyuni/java/buildconf/ivy/ && \
       mkdir -p /workspaces/uyuni/java/lib && \
       mv /uyuni-lib/* /workspaces/uyuni/java/lib/ && \
-      tail -f /dev/null
-    "
+      tail -f /dev/null"
     depends_on:
       - db
   db:
