@@ -2,13 +2,8 @@ version: '3.8'
 services:
   uyuni:
     image: docker.io/mbussolotto/uyuni-dev:latest
-    network_mode: bridge
-    entrypoint: /bin/sh
-    command: -c "
-      mv /repository /workspaces/uyuni/java/buildconf/ivy/ && \
-      mkdir -p /workspaces/uyuni/java/lib && \
-      mv /uyuni-lib/* /workspaces/uyuni/java/lib/ && \
-      tail -f /dev/null"
+    network_mode: service:db
+    command: sleep infinity
     depends_on:
       - db
   db:
