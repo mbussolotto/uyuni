@@ -3,6 +3,5 @@
 // SPDX-License-Identifier: Apache-2.0
 {
     "dockerComposeFile": "docker-compose.yml",
-    "service": "prebuilt",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
 }
