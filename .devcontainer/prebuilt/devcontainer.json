@@ -6,14 +6,6 @@
     "dockerComposeFile": "docker-compose.yml",
     "service": "uyuni",
     "workspaceFolder": "",
-    // Uncomment to forward ports from the container to your local machine
-    // "forwardPorts": [8080],
-    // Configure tool-specific properties
-    // "customizations": {
-    //   "vscode": {
-    //     "extensions": ["ms-vscode.cpptools"]
-    //   }
-    // },
     "remoteUser": "root",
     "postAttachCommand": "mv /repository /workspaces/uyuni/java/buildconf/ivy/ && mkdir -p /workspaces/uyuni/java/lib && mv /uyuni-lib/* /workspaces/uyuni/java/lib/"
 }
