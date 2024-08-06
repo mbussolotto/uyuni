@@ -5,7 +5,7 @@
     "name": "Prebuilt",
     "dockerComposeFile": "docker-compose.yml",
     "service": "uyuni",
-    "workspaceFolder": "/workspaces/uyuni",
+    "workspaceFolder": "",
     // Uncomment to forward ports from the container to your local machine
     // "forwardPorts": [8080],
     // Configure tool-specific properties
