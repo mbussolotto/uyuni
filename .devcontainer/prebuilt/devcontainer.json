@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 {
-	"name": "Prebuilt",
+    "name": "Prebuilt",
     "dockerComposeFile": "docker-compose.yml",
     "service": "uyuni-code",
-    "workspaceFolder": "/workspaces/uyuni-code",
+    "workspaceFolder": "/workspaces/uyuni",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -15,5 +15,5 @@
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	"remoteUser": "root",
-    "postAttachCommand": "mv /repository /workspaces/uyuni-code/uyuni/java/buildconf/ivy/ && mkdir -p /workspaces/uyuni-code/uyuni/java/lib && mv /uyuni-lib/* /workspaces/uyuni-code/uyuni/java/lib/"
+    "postAttachCommand": "mv /repository /workspaces/uyuni/java/buildconf/ivy/ && mkdir -p /workspaces/uyuni/java/lib && mv /uyuni-lib/* /workspaces/uyuni/java/lib/"
 }
