@@ -19,7 +19,8 @@ RUN zypper ref && \
       curl \
       make \
       sudo \
-      wget && \
+      wget \
+      docker && \
     zypper -n install obs-to-maven yarn && \
     zypper clean -a
 

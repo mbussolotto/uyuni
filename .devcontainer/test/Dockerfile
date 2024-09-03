@@ -35,6 +35,7 @@ RUN zypper ref -f && \
       openssh-clients \
       hostname \
       iproute2 \
+      docker \
       && \
     zypper clean -a
 COPY etc_pam.d_sshd /etc/pam.d/sshd
