@@ -10,7 +10,7 @@
     
     "customizations": {
         "vscode": {
-            "extensions": ["vscjava.vscode-java-pack"]
+            "extensions": ["vscjava.vscode-java-pack", "ms-azuretools.vscode-docker"]
         }
     },
   
