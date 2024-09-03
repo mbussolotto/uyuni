@@ -23,7 +23,7 @@ RUN zypper ref && \
     zypper -n install obs-to-maven yarn && \
     zypper clean -a
 
-RUN git clone https://github.com/uyuni-project/uyuni.git
+RUN git clone https://github.com/mbussolotto/uyuni.git
 RUN ant -f uyuni/java/manager-build.xml ivy
 RUN mv /uyuni/java/lib/ /uyuni-lib
 RUN mv /uyuni/java/buildconf/ivy/repository /
