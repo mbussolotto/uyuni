@@ -92,7 +92,7 @@ setup_db_postgres() {
     if [ $EXTERNALDB = 0 ]; then
         POSTGRESQLSERVICE=postgresql
         DATADIR=$(runuser -l postgres -c env | grep PGDATA | cut -f2- -d=)
-        systemctl --quiet enable ${POSTGRESQLSERVICE} 2>&1
+        ln -s /usr/lib/systemd/system/postgresql.service /etc/systemd/system/multi-user.target.wants/postgresql.service
         # Define POSTGRES_LANG in system wide config. (Used during any DB creation)
         . /etc/sysconfig/postgresql
         if [ -z $POSTGRES_LANG ]; then
@@ -298,7 +298,7 @@ do_setup() {
     fi
 
     case $MANAGER_DB_HOST in
-        "localhost"|$(hostname -s)|$(hostname -f)|"")
+        "localhost"|"")
             EXTERNALDB=0 ;;
         *)
             EXTERNALDB=1 ;;
