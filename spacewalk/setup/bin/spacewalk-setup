@@ -92,14 +92,14 @@ setup_admin_email(\%opts, \%answers, \%rhnOptions);
 if(not $opts{"skip-initial-configuration"}) {
     print Spacewalk::Setup::loc("* Performing initial configuration.\n");
     my $config_opts = populate_initial_configs(\%opts, \%answers);
-    mkdir_mount_points($config_opts->{'mount_point'},
-            $config_opts->{'mount_point'} . '/packages',
-            $config_opts->{'mount_point'} . '/systems',
-            $config_opts->{'kickstart_mount_point'});
+    my $www_uid = (getpwnam('wwwrun') // "");
+    chown $www_uid, -1, $config_opts->{'mount_point'} . '/packages'
+    chmod 0775, $config_opts->{'mount_point'};
     chmod 0775, $config_opts->{'mount_point'} . '/systems';
+    chmod 0775, $config_opts->{'kickstart_mount_point'};
     # Check for both potential Apache groups (SUSE/RHEL)
     my $www_gid = getgrnam(`grep -hsoP "(?<=Group ).*" /etc/httpd/conf/*.conf /etc/apache2/*.conf | tr -d '\n'`);
-    chown -1, $www_gid, $config_opts->{'mount_point'} . '/systems';
+    chown $www_uid, $www_gid, $config_opts->{'mount_point'} . '/systems';
 }
 
 
@@ -122,10 +122,6 @@ setup_cobbler(\%opts, \%answers);
 print Spacewalk::Setup::loc("* Deploying configuration files.\n");
 populate_final_configs(\%opts, \%answers);
 
-print Spacewalk::Setup::loc("* Restarting services.\n");
-Spacewalk::Setup::system_or_exit(['/usr/sbin/spacewalk-service', 'restart'], 40,
-           'Could not restart spacewalk services.');
-wait_for_tomcat() or exit 56;
 print Spacewalk::Setup::loc("Installation complete.\n");
 
 exit 0;
@@ -161,25 +157,7 @@ sub setup_cobbler {
     system("cobbler sync");
   }
 
-  Spacewalk::Setup::ask(
-    -question => "Cobbler requires tftp and xinetd services be turned on for PXE provisioning functionality. Enable these services",
-    -test => sub { my $text = shift; return $text =~ /^[YyNn]/ },
-    -answer => \$answers->{"enable-tftp"},
-    -default => 'Y',
-  );
-
-  if (-e '/usr/lib/systemd/system/tftp.socket') {
-    system("systemctl --quiet enable tftp.socket 2>&1");
-    system("systemctl start tftp.socket 2>&1");
-  } else {
-    if (-e '/usr/lib/systemd/system/atftpd.socket') {
-      system("systemctl --quiet enable atftpd.socket 2>&1");
-      system("systemctl start atftpd.socket 2>&1");
-    } else {
-      system("systemctl --quiet enable atftpd.service 2>&1");
-      system("systemctl start atftpd.service 2>&1");
-    }
-  }
+  system("systemctl enable tftp.socket")
 }
 
 sub setup_admin_email {
@@ -755,13 +733,6 @@ sub populate_initial_configs {
   Spacewalk::Setup::satcon_deploy();
 
     return \%config_opts;
-}
-
-# given a list of directories (by default, /var/satellite)
-# check if they exist and if they do not exist, create them
-# with apache as owner
-sub mkdir_mount_points {
-  system('/usr/bin/spacewalk-make-mount-points', @_);
 }
 
 sub populate_final_configs {

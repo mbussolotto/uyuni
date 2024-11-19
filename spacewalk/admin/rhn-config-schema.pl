@@ -38,11 +38,6 @@ if ($help or not ($source and $target and $tablespace_name)) {
         die $usage;
 }
 
-my $backend = 'oracle';
-if ($source =~ m!/postgres(ql)?/!) {
-        $backend = 'postgresql';
-}
-
 open(SOURCE, "< $source") or die "Could not open $source: $OS_ERROR";
 open(TARGET, "> $target") or die "Could not open $target for writing: $OS_ERROR";
 
@@ -85,13 +80,13 @@ while ($line = <SOURCE>) {
                         $filename =~ s!^.+/([^/]+/[^/]+)$!$1!;
                 }
                 my $full_file = undef;
-                if (exists $exception_files{"$filename.$backend"}) {
-                        $full_file = "$exception_dir/$filename.$backend";
+                if (exists $exception_files{"$filename.postgresql"}) {
+                        $full_file = "$exception_dir/$filename.postgresql";
                 } elsif (exists $exception_files{$filename}) {
                         $full_file = "$exception_dir/$filename";
                 }
                 if (defined $full_file) {
-                        for my $e ( '', '.oracle', '.postgresql' ) {
+                        for my $e ( '', '.postgresql' ) {
                                 $exception_seen{"$filename$e"}++ if exists $exception_files{"$filename$e"};
                         }
                         open OVERRIDE, $full_file or die "Error reading file [$full_file]: $!\n";
@@ -134,15 +129,6 @@ for (sort keys %exception_files) {
         }
 }
 
-system('/usr/sbin/selinuxenabled');
-if ($? >> 8 == 0) {
-        if (-x '/usr/sbin/restorecon') {
-                system('/usr/sbin/restorecon', '-F', $target);
-        } elsif (-x '/sbin/restorecon') {
-                system('/sbin/restorecon', '-F', $target);
-        }
-}
-
 exit $error;
 
 =pod
@@ -168,11 +154,11 @@ it directly unless you really knows what are you doing.
 
 =item B<--source=SOURCE>
 
-Full path to main.sql file. Usually /usr/share/susemanager/db/I<backend>/main.sql
+Full path to main.sql file. Usually /usr/share/susemanager/db/postgresql/main.sql
 
 =item B<--target=TARGET>
 
-Full path to deploy.sql. Usually /usr/share/susemanager/db/I<backend>/deploy.sql
+Full path to deploy.sql. Usually /usr/share/susemanager/db/postgresql/deploy.sql
 
 =item B<--tablespace-name=TABLESPACE>
 

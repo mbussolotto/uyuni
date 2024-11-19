@@ -8,7 +8,7 @@ use English;
 
 use Exporter 'import';
 use vars '@EXPORT_OK';
-@EXPORT_OK = qw(loc system_debug system_or_exit postgresql_clear_db);
+@EXPORT_OK = qw(loc system_debug system_or_exit);
 
 use Getopt::Long qw(GetOptions);
 use Symbol qw(gensym);
@@ -697,8 +697,6 @@ sub postgresql_setup_db {
     print Spacewalk::Setup::loc("** Database: Setting up database connection for PostgreSQL backend.\n");
     my $connected;
 
-    postgresql_setup_embedded_db($opts, $answers);
-
     while (not $connected) {
         postgresql_get_database_answers($opts, $answers);
 
@@ -811,23 +809,10 @@ sub postgresql_populate_db {
     }
 
     if (postgresql_test_db_schema($answers)) {
-        ask(
-            -question => "The Database has schema.  Would you like to clear the database",
-            -test => qr/(Y|N)/i,
-            -answer => \$answers->{'clear-db'},
-            -default => 'Y',
-        );
-
-        if ($answers->{"clear-db"} =~ /Y/i) {
-            print Spacewalk::Setup::loc("** Database: Clearing database.\n");
-            my $dbh = get_dbh($answers);
-            postgresql_clear_db($dbh, $answers);
-            print Spacewalk::Setup::loc("** Database: Re-populating database.\n");
-        }
-        else {
-            print Spacewalk::Setup::loc("** Database: The database already has schema.  Skipping database population.\n");
-            return 1;
-        }
+        print Spacewalk::Setup::loc("** Database: Clearing database.\n");
+        my $dbh = get_dbh($answers);
+        postgresql_clear_db($dbh, $answers);
+        print Spacewalk::Setup::loc("** Database: Re-populating database.\n");
     }
 
     my $sat_schema = POSTGRESQL_SCHEMA_FILE;
@@ -892,15 +877,6 @@ my @POSTGRESQL_CLEAR_SCHEMA = (
 sub postgresql_clear_db {
         my $dbh = shift;
         my $answers = shift;
-        my $do_shutdown = (defined($_[0]) ? shift : 1);
-
-        if ($do_shutdown) {
-            print loc("** Database: Shutting down spacewalk services that may be using DB.\n");
-
-            # The --exclude=postgresql is needed for embedded database Satellites.
-            system_debug('/usr/sbin/spacewalk-service', '--exclude=postgresql', 'stop');
-            print loc("** Database: Services stopped.  Clearing DB.\n");
-        }
 
         local $dbh->{RaiseError} = 0;
         local $dbh->{PrintError} = 1;
@@ -941,28 +917,22 @@ sub get_dbh {
                 AutoCommit => 0,
         };
 
-        my $backend = $reportdb ? $answers->{'report-db-backend'} : $answers->{'db-backend'};
-
-        if ($backend eq 'postgresql') {
-                my $dsn = "dbi:Pg:dbname=";
-                $dsn .= $reportdb ? $answers->{'report-db-name'} : $answers->{'db-name'};
-                my $dbhost = $reportdb ? $answers->{'report-db-host'} : $answers->{'db-host'};
-                my $dbport = $reportdb ? $answers->{'report-db-port'} : $answers->{'db-port'};
-                if ($dbhost ne '' && $dbhost ne 'localhost') {
-                        $dsn .= ";host=$dbhost";
-                        if ($dbport ne '') {
-                                $dsn .= ";port=$dbport";
-                        }
+        my $dsn = "dbi:Pg:dbname=";
+        $dsn .= $reportdb ? $answers->{'report-db-name'} : $answers->{'db-name'};
+        my $dbhost = $reportdb ? $answers->{'report-db-host'} : $answers->{'db-host'};
+        my $dbport = $reportdb ? $answers->{'report-db-port'} : $answers->{'db-port'};
+        if ($dbhost ne '' && $dbhost ne 'localhost') {
+                $dsn .= ";host=$dbhost";
+                if ($dbport ne '') {
+                        $dsn .= ";port=$dbport";
                 }
-                my $dbh = DBI->connect($dsn,
-                        $reportdb ? $answers->{'report-db-user'} : $answers->{'db-user'},
-                        $reportdb ? $answers->{'report-db-password'} : $answers->{'db-password'},
-                        $dbh_attributes);
-
-                return $dbh;
         }
+        my $dbh = DBI->connect($dsn,
+                $reportdb ? $answers->{'report-db-user'} : $answers->{'db-user'},
+                $reportdb ? $answers->{'report-db-password'} : $answers->{'db-password'},
+                $dbh_attributes);
 
-        die "Unknown db-backend [$backend]\n";
+        return $dbh;
 }
 
 sub generate_satcon_dict {

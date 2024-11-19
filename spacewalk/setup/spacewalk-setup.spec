@@ -176,7 +176,6 @@ install -m 0644 salt/salt-ssh-logging.conf %{buildroot}%{_sysconfdir}/salt/maste
 install -d -m 755 %{buildroot}/%{misc_path}/spacewalk
 
 mkdir -p %{buildroot}%{_mandir}/man8
-%{_bindir}/pod2man --section=8 %{buildroot}%{_bindir}/spacewalk-make-mount-points | gzip > %{buildroot}%{_mandir}/man8/spacewalk-make-mount-points.8.gz
 %{_bindir}/pod2man --section=1 %{buildroot}%{_bindir}/spacewalk-setup-httpd | gzip > %{buildroot}%{_mandir}/man1/spacewalk-setup-httpd.1.gz
 # Sphinx built manpage
 %define SPHINX_BASE_DIR %(echo %{SOURCE0}| sed -e 's/\.tar\.gz//' | sed 's@.*/@@')
@@ -231,7 +230,6 @@ exit 0
 %{perl_vendorlib}/*
 %{_bindir}/spacewalk-setup
 %{_bindir}/spacewalk-setup-httpd
-%{_bindir}/spacewalk-make-mount-points
 %{_bindir}/spacewalk-setup-cobbler
 %{_mandir}/man[13]/*.[13]*
 %dir %attr(0755, root, root) %{_datadir}/salt-formulas/
@@ -240,7 +238,6 @@ exit 0
 %dir %{_datadir}/spacewalk
 %{_datadir}/spacewalk/*
 %attr(755, %{apache_user}, root) %{misc_path}/spacewalk
-%{_mandir}/man8/spacewalk-make-mount-points*
 %license LICENSE
 
 %changelog

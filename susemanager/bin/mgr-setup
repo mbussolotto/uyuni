@@ -92,7 +92,7 @@ setup_db_postgres() {
     if [ $EXTERNALDB = 0 ]; then
         POSTGRESQLSERVICE=postgresql
         DATADIR=$(runuser -l postgres -c env | grep PGDATA | cut -f2- -d=)
-        ln -s /usr/lib/systemd/system/postgresql.service /etc/systemd/system/multi-user.target.wants/postgresql.service
+        systemctl enable postgresql.service
         # Define POSTGRES_LANG in system wide config. (Used during any DB creation)
         . /etc/sysconfig/postgresql
         if [ -z $POSTGRES_LANG ]; then
@@ -375,6 +375,6 @@ do_setup
 if [ "$EXTERNALDB" = "0" ]; then
     /usr/bin/smdba system-check autotuning --max_connections=400
 fi
-ln -s /usr/lib/systemd/system/spacewalk-diskcheck.timer /etc/systemd/system/timers.target.wants/spacewalk-diskcheck.timer
+systemctl enable spacewalk-diskcheck.timer
 
 # vim: set expandtab:
