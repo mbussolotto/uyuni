@@ -117,7 +117,6 @@ sub parse_options {
             "skip-services-check",
             "clear-db",
             "answer-file=s",
-            "non-interactive",
             "db-only",
             "scc",
             "disconnected"
@@ -125,7 +124,7 @@ sub parse_options {
 
   my $usage = loc("usage: %s %s\n",
                   $0,
-                  "[ --help ] [ --answer-file=<filename> ] [ --non-interactive ] [ --skip-initial-configuration ] [ --skip-fqdn-test ] [ --skip-ssl-cert-generation ] [--skip-ssl-ca-generation] [--skip-ssl-vhost-setup] [ --skip-services-check ] [ --clear-db ] [--scc] [--disconnected]" );
+                  "[ --help ] [ --answer-file=<filename> ] [ --skip-initial-configuration ] [ --skip-fqdn-test ] [ --skip-ssl-cert-generation ] [--skip-ssl-ca-generation] [--skip-ssl-vhost-setup] [ --skip-services-check ] [ --clear-db ] [--scc] [--disconnected]" );
 
   # Terminate if any errors were encountered parsing the command line args:
   my %opts;
@@ -473,66 +472,23 @@ EOQ
 # as other routines on account of usage of $opts:
 sub ask {
     my %params = validate(@_, {
-            noninteractive => 1,
             question => 1,
             test => 0,
             answer => 1,
-            password => 0,
             default => 0,
-            completion => 0,
         });
 
     if (${$params{answer}} and not $params{default}) {
         $params{default} = ${$params{answer}};
     }
 
-    while (not defined ${$params{answer}} or
-        not answered($params{test}, ${$params{answer}})) {
-        if ($params{noninteractive}) {
-            if (defined ${$params{answer}}) {
-                die "The answer '" . ${$params{answer}} . "' provided for '" . $params{question} . "' is invalid.\n";
-            }
-            else {
-                die "No answer provided for '" . $params{question} . "'\n";
-            }
-        }
-
-        my $default_string = "";
-        if ($params{default}) {
-            if ($params{password}) {
-                $default_string = " [******]";
-            }
-            else {
-                $default_string = " [" . $params{default} . "]";
-            }
-        }
-
-        print loc("%s%s? ",
-            $params{question},
-            $default_string);
-
-        if ($params{password}) {
-            my $stty_orig_val = `stty -g`;
-            system('stty', '-echo');
-            ${$params{answer}} = <STDIN>;
-            system("stty $stty_orig_val");
-            print "\n";
+    if (not defined ${$params{answer}} or not answered($params{test}, ${$params{answer}})) {
+        if (defined ${$params{answer}}) {
+            die "The answer '" . ${$params{answer}} . "' provided for '" . $params{question} . "' is invalid.\n";
         }
         else {
-            if ($params{completion}) {
-                require Term::Completion::Path;
-                my $tc = Term::Completion::Path->new();
-                ${$params{answer}} = $tc->complete();
-            }
-            else {
-                ${$params{answer}} = <STDIN>;
-            }
+            die "No answer provided for '" . $params{question} . "'\n";
         }
-
-        chomp ${$params{answer}};
-        ${$params{answer}} =~ s/^\s+|\s+$//g;
-
-        ${$params{answer}} ||= $params{default} || '';
     }
 
     ${$params{answer}} ||= $params{default} || '';
@@ -644,7 +600,6 @@ sub postgresql_get_database_answers {
     read_config(DEFAULT_RHN_CONF_LOCATION, \%config);
 
     ask(
-        -noninteractive => $opts->{"non-interactive"},
         -question => "Hostname (leave empty for local)",
         -test => sub { 1 },
         -answer => \$answers->{'db-host'});
@@ -652,7 +607,6 @@ sub postgresql_get_database_answers {
     if ($answers->{'db-host'} ne '') {
         $answers->{'db-host'} = idn_to_ascii($answers->{'db-host'}, "utf8");
         ask(
-            -noninteractive => $opts->{"non-interactive"},
             -question => "Port",
             -test => qr/\d+/,
             -default => 5432,
@@ -662,26 +616,22 @@ sub postgresql_get_database_answers {
     }
 
     ask(
-        -noninteractive => $opts->{"non-interactive"},
         -question => "Database",
         -test => qr/\S+/,
         -default => $config{'db_name'},
         -answer => \$answers->{'db-name'});
 
     ask(
-        -noninteractive => $opts->{"non-interactive"},
         -question => "Username",
         -test => qr/\S+/,
         -default => $config{'db_user'},
         -answer => \$answers->{'db-user'});
 
     ask(
-        -noninteractive => $opts->{"non-interactive"},
         -question => "Password",
         -test => qr/\S+/,
         -default => $config{'db_password'},
-        -answer => \$answers->{'db-password'},
-        -password => 1);
+        -answer => \$answers->{'db-password'});
 
     return;
 }
@@ -694,7 +644,6 @@ sub postgresql_get_reportdb_answers {
     read_config(DEFAULT_RHN_CONF_LOCATION, \%config);
 
     ask(
-        -noninteractive => $opts->{"non-interactive"},
         -question => "Hostname (leave empty for local)",
         -test => sub { 1 },
         -answer => \$answers->{'report-db-host'});
@@ -702,7 +651,6 @@ sub postgresql_get_reportdb_answers {
     if ($answers->{'report-db-host'} ne '') {
         $answers->{'report-db-host'} = idn_to_ascii($answers->{'report-db-host'}, "utf8");
         ask(
-            -noninteractive => $opts->{"non-interactive"},
             -question => "Port",
             -test => qr/\d+/,
             -default => 5432,
@@ -712,28 +660,23 @@ sub postgresql_get_reportdb_answers {
     }
 
     ask(
-        -noninteractive => $opts->{"non-interactive"},
         -question => "Database",
         -test => qr/\S+/,
         -default => $config{'report_db_name'},
         -answer => \$answers->{'report-db-name'});
 
     ask(
-        -noninteractive => $opts->{"non-interactive"},
         -question => "Username",
         -test => qr/\S+/,
         -default => $config{'report_db_user'},
         -answer => \$answers->{'report-db-user'});
 
     ask(
-        -noninteractive => $opts->{"non-interactive"},
         -question => "Password (leave empty for autogenerated password)",
         -test => sub { 1 },
-        -answer => \$answers->{'report-db-password'},
-        -password => 1);
+        -answer => \$answers->{'report-db-password'});
 
     ask(
-       -noninteractive => $opts->{"non-interactive"},
        -question => "Path to CA certificate to connect to the reporting database",
        -test => sub { return (-f shift) },
        -default => "/etc/pki/trust/anchors/LOCAL-RHN-ORG-TRUSTED-SSL-CERT",
@@ -869,7 +812,6 @@ sub postgresql_populate_db {
 
     if (postgresql_test_db_schema($answers)) {
         ask(
-            -noninteractive => $opts->{"non-interactive"},
             -question => "The Database has schema.  Would you like to clear the database",
             -test => qr/(Y|N)/i,
             -answer => \$answers->{'clear-db'},
@@ -1117,11 +1059,6 @@ Print this help message.
 Indicates the location of an answer file to be use for answering
 questions asked during the installation process.
 See answers.txt for an example.
-
-=item B<--non-interactive>
-
-For use only with --answer-file.  If the --answer-file doesn't provide
-a required response, exit instead of prompting the user.
 
 # todo @
 

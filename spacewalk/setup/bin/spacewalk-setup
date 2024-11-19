@@ -162,26 +162,23 @@ sub setup_cobbler {
   }
 
   Spacewalk::Setup::ask(
-    -noninteractive => $opts{"non-interactive"},
     -question => "Cobbler requires tftp and xinetd services be turned on for PXE provisioning functionality. Enable these services",
     -test => sub { my $text = shift; return $text =~ /^[YyNn]/ },
     -answer => \$answers->{"enable-tftp"},
     -default => 'Y',
   );
 
-  if (($answers{'enable-tftp'} and $answers{'enable-tftp'} =~ /^[Yy]/) || $opts{"non-interactive"}) {
-      if (-e '/usr/lib/systemd/system/tftp.socket') {
-        system("systemctl --quiet enable tftp.socket 2>&1");
-        system("systemctl start tftp.socket 2>&1");
-      } else {
-        if (-e '/usr/lib/systemd/system/atftpd.socket') {
-          system("systemctl --quiet enable atftpd.socket 2>&1");
-          system("systemctl start atftpd.socket 2>&1");
-        } else {
-          system("systemctl --quiet enable atftpd.service 2>&1");
-          system("systemctl start atftpd.service 2>&1");
-        }
-      }
+  if (-e '/usr/lib/systemd/system/tftp.socket') {
+    system("systemctl --quiet enable tftp.socket 2>&1");
+    system("systemctl start tftp.socket 2>&1");
+  } else {
+    if (-e '/usr/lib/systemd/system/atftpd.socket') {
+      system("systemctl --quiet enable atftpd.socket 2>&1");
+      system("systemctl start atftpd.socket 2>&1");
+    } else {
+      system("systemctl --quiet enable atftpd.service 2>&1");
+      system("systemctl start atftpd.service 2>&1");
+    }
   }
 }
 
@@ -194,7 +191,6 @@ sub setup_admin_email {
     $answers->{'admin-email'} = $rhnoptions->{'traceback_mail'};
   } else {
     Spacewalk::Setup::ask(
-        -noninteractive => $opts{"non-interactive"},
         -question => "Admin Email Address",
         -test => sub { my $text = shift;
                        valid_multiple_email($text) && length($text) <= 128 },
@@ -258,19 +254,16 @@ sub setup_cc {
   $opts{disconnected} = 1;
   $answers{'setup-scc'} = 'Y';
   Spacewalk::Setup::ask(
-      -noninteractive => $opts{"non-interactive"},
       -question => "SCC Organization Credential Username",
       -test => sub { my $text = shift;
                      return $text =~ /\S+/ && length($text) <= 128 },
       -answer => \$answers{'scc-user'});
 
   Spacewalk::Setup::ask(
-      -noninteractive => $opts{"non-interactive"},
       -question => "SCC Organization Credential Password",
       -test => sub { my $text = shift;
                      return $text =~ /\S+/ && length($text) <= 128 },
-      -answer => \$answers{'scc-pass'},
-      -password => 1);
+      -answer => \$answers{'scc-pass'});
 }
 
 
@@ -353,7 +346,6 @@ sub setup_mod_ssl {
     return;
   }
   Spacewalk::Setup::ask(
-    -noninteractive => $opts{"non-interactive"},
     -question => "Should setup configure apache's default ssl server for you (saves original ssl.conf)",
     -test => sub { my $text = shift; return $text =~ /^[YyNn]/ },
     -answer => \$answers->{"ssl-config-sslvhost"},
@@ -380,7 +372,6 @@ sub setup_ssl_certs {
   }
 
   Spacewalk::Setup::ask(
-    -noninteractive => $opts{"non-interactive"},
     -question => "Do you want to import exising certificates?",
     -test => sub { my $text = shift; return $text =~ /^[YyNn]/ },
     -answer => \$answers->{"ssl-use-existing-certs"},
@@ -399,30 +390,24 @@ sub setup_ssl_certs {
           do {
             ($password_1, $password_2) = (undef, undef); # clear previous passwords
             Spacewalk::Setup::ask(
-              -noninteractive => $opts{"non-interactive"},
               -question => "CA certificate password",
               -test => \&valid_ssl_cert_password,
               -answer => \$password_1,
-              -password => 1,
             );
 
             Spacewalk::Setup::ask(
-              -noninteractive => $opts{"non-interactive"},
               -question => "Re-enter CA certificate password",
               -test => \&valid_ssl_cert_password,
               -answer => \$password_2,
-              -password => 1,
             );
           } until (passwords_match($password_1, $password_2));
         } else {
           do {
 	    $password_1 = undef;
             Spacewalk::Setup::ask(
-              -noninteractive => $opts{"non-interactive"},
               -question => "CA certificate password",
               -test => \&valid_ssl_cert_password,
               -answer => \$password_1,
-              -password => 1,
             );
           } until (check_ca_key($password_1)==0);
         }
@@ -430,7 +415,6 @@ sub setup_ssl_certs {
       };
 
       Spacewalk::Setup::ask(
-          -noninteractive => $opts{"non-interactive"},
           -question => "Cname alias of the machine (comma separated)",
           -test => sub { my $text = shift;
                          return length($text) <= 128 },
@@ -438,7 +422,6 @@ sub setup_ssl_certs {
          );
 
       Spacewalk::Setup::ask(
-          -noninteractive => $opts{"non-interactive"},
           -question => "Organization",
           -test => sub { my $text = shift;
                          return $text =~ /\S/ && length($text) <= 128 },
@@ -446,7 +429,6 @@ sub setup_ssl_certs {
          );
 
       Spacewalk::Setup::ask(
-          -noninteractive => $opts{"non-interactive"},
           -question => "Organization Unit",
           -test => sub { my $text = shift;
                          return $text =~ /\S/ && length($text) <= 128 },
@@ -457,7 +439,6 @@ sub setup_ssl_certs {
       $answers->{"ssl-set-common-name"} ||= $answers->{hostname};
 
       Spacewalk::Setup::ask(
-          -noninteractive => $opts{"non-interactive"},
           -question => 'Email Address',
           -test => sub { my $text = shift;
                          valid_multiple_email($text) && length($text) <= 128 },
@@ -466,7 +447,6 @@ sub setup_ssl_certs {
          );
 
       Spacewalk::Setup::ask(
-          -noninteractive => $opts{"non-interactive"},
           -question => 'City',
           -test => sub { my $text = shift;
                          $text =~ /\S+/ && length($text) < 128 },
@@ -474,7 +454,6 @@ sub setup_ssl_certs {
          );
 
       Spacewalk::Setup::ask(
-          -noninteractive => $opts{"non-interactive"},
           -question => 'State',
           -test => sub { my $text = shift;
                          length($text) > 0 && length($text) < 128 },
@@ -487,7 +466,6 @@ sub setup_ssl_certs {
              or not (exists $by_code->{$answers->{'ssl-set-country'}}
                      or exists $by_name->{$answers->{'ssl-set-country'}})) {
         Spacewalk::Setup::ask(
-            -noninteractive => $opts{"non-interactive"},
             -question => 'Country code (Examples: "US", "JP", "IN", or type "?" to see a list)',
             -test => sub { my $text = shift;
                            exists $by_code->{$text} or exists $by_name->{$text} or $text eq '?' },
@@ -508,21 +486,18 @@ sub setup_ssl_certs {
       $answers->{'ssl-server-cert-expiration'} ||= default_cert_expiration();
   } else {
       Spacewalk::Setup::ask(
-          -noninteractive => $opts{"non-interactive"},
           -question => "Path to CA Certificate",
           -test => sub { my $text = shift;
                          length($text) > 0 && -r $text && -s $text },
           -answer => \$answers->{"ssl-ca-cert"},
          );
       Spacewalk::Setup::ask(
-          -noninteractive => $opts{"non-interactive"},
           -question => "Path to Server Certificate",
           -test => sub { my $text = shift;
                          length($text) > 0 && -r $text && -s $text },
           -answer => \$answers->{"ssl-server-cert"},
          );
       Spacewalk::Setup::ask(
-          -noninteractive => $opts{"non-interactive"},
           -question => "Path to Server Key",
           -test => sub { my $text = shift;
                          length($text) > 0 && -r $text && -s $text },
