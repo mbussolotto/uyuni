@@ -658,8 +658,7 @@ sub populate_initial_configs {
     Spacewalk::Setup::set_hibernate_conf($answers);
 
     # Set the document root depending on OS.
-    my $DOC_ROOT = $Spacewalk::Setup::DEFAULT_DOC_ROOT;
-    $DOC_ROOT = $Spacewalk::Setup::SUSE_DOC_ROOT if(is_suse_like());
+    my $DOC_ROOT = $Spacewalk::Setup::SUSE_DOC_ROOT;
 
     my %config_opts =
     (
@@ -849,22 +848,6 @@ sub setup_services {
   Spacewalk::Setup::system_or_exit(["/usr/sbin/spacewalk-service", "--level", "35", "enable"], 11, 'Could not turn spacewalk services on.');
 
   return 1;
-}
-
-sub is_suse_like {
-  my $filename = '/etc/os-release';
-  if(! -e $filename) {
-    return;
-  }
-  open my $fh, "<", $filename or die "Could not open '$filename': $!\n";
-  while( my $line = <$fh> ) {
-    if ($line =~ m/ID_LIKE=".*suse.*"/) {
-      close $fh;
-      return 1;
-    }
-  }
-  close $fh;
-  return;
 }
 
 sub check_ca_key{
