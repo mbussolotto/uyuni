@@ -23,32 +23,8 @@ if [ ! -n "$PRODUCT_NAME" ]; then
     PRODUCT_NAME="SUSE Manager"
 fi
 
-DISTRIBUTION_ID="$(source /etc/os-release && echo ${ID})"
-case ${DISTRIBUTION_ID} in
-    sles|suse-manager-server)
-        JVM='/usr/lib64/jvm/jre-17-openjdk/bin/java'
-        if [ ! -f $JVM ]; then
-            JVM='/usr/lib64/jvm/jre-11-openjdk/bin/java'
-        fi;;
-    opensuse|opensuse-leap)
-        JVM='/usr/lib64/jvm/jre-17-openjdk/bin/java'
-        if [ ! -f $JVM ]; then
-            JVM='/usr/lib64/jvm/jre-11-openjdk/bin/java'
-        fi;;
-    *)                        echo 'Unknown distribution!'
-                              exit $EXIT_VALIDATION_ERROR;;
-esac
-
 if [ ! $UID -eq 0 ]; then
     echo "You need to be superuser (root) to run this script!"
-    exit $EXIT_VALIDATION_ERROR
-fi
-
-# ensure correct java version is being used (bsc#1049575)
-echo "Asserting correct java version..."
-update-alternatives --set java ${JVM}
-if [ ! $? -eq 0 ]; then
-    echo "Failed to set ${JVM} as default java version!"
     exit $EXIT_VALIDATION_ERROR
 fi
 
