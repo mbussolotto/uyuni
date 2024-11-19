@@ -135,15 +135,7 @@ Version for PostgreSQL database backend.
 #nothing to do here
 
 %install
-RDBMS="postgresql"
 install -d %{buildroot}%{_sysconfdir}
-install -d %{buildroot}%{_datadir}/spacewalk/setup/defaults.d
-for i in ${RDBMS} ; do
-    cat <<EOF >%{buildroot}%{_datadir}/spacewalk/setup/defaults.d/$i-backend.conf
-# database backend to be used by spacewalk
-db-backend = $i
-EOF
-done
 install -d %{buildroot}%{_bindir}
 %if 0%{?rhel}
 ln -s %{_prefix}/pgsql-14/bin/initdb %{buildroot}%{_bindir}/initdb
@@ -155,13 +147,6 @@ ln -s %{_prefix}/pgsql-14/bin/initdb %{buildroot}%{_bindir}/initdb
 %if 0%{?suse_version}
 %dir %{_datadir}/spacewalk
 %dir %{_datadir}/spacewalk/setup
-%dir %{_datadir}/spacewalk/setup/defaults.d
-%endif
-
-%files postgresql
-%{_datadir}/spacewalk/setup/defaults.d/postgresql-backend.conf
-%if 0%{?rhel}
-%{_bindir}/initdb
 %endif
 
 %changelog

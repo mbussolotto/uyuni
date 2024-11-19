@@ -168,8 +168,6 @@ install -m 0644 share/server_update.xml.xsl %{buildroot}%{_datadir}/spacewalk/se
 install -m 0644 share/add_appbase.xml.xsl %{buildroot}%{_datadir}/spacewalk/setup/
 install -m 0644 share/old-jvm-list %{buildroot}%{_datadir}/spacewalk/setup/
 install -m 0644 share/vhost-nossl.conf %{buildroot}%{_datadir}/spacewalk/setup/
-install -d -m 755 %{buildroot}%{_datadir}/spacewalk/setup/defaults.d/
-install -m 0644 share/defaults.d/defaults.conf %{buildroot}%{_datadir}/spacewalk/setup/defaults.d/
 install -d -m 755 %{buildroot}%{_datadir}/spacewalk/setup/cobbler
 install -m 0644 salt/susemanager.conf %{buildroot}%{_sysconfdir}/salt/master.d/
 install -m 0644 salt/salt-ssh-logging.conf %{buildroot}%{_sysconfdir}/salt/master.d/

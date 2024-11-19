@@ -51,8 +51,6 @@ my %opts = Spacewalk::Setup::parse_options();
 my %answers = ();
 $answers{'db-backend'} = 'postgresql'; # the only supported currently
 my @skip = ();
-push @skip, Spacewalk::Setup::EMBEDDED_DB_ANSWERS
-    if not Spacewalk::Setup::is_embedded_db(\%opts);
 Spacewalk::Setup::load_answer_file(\%opts, \%answers, \@skip);
 my $product_name = $answers{'product_name'} || 'Spacewalk';
 
@@ -69,25 +67,7 @@ if (not defined $opts{"clear-db"} and defined $answers{"clear-db"} and
     $opts{'clear-db'} = 1;
 }
 
-$opts{"skip-db-install"} = 1 if $opts{"clear-db"};
-
-# Skip the logfile init, normally just used when called from install.pl,
-# which already did this.
-if (not $opts{"skip-logfile-init"}) {
-    Spacewalk::Setup::init_log_files($product_name, @ARGV);
-}
-
-if (Spacewalk::Setup::have_selinux()) {
-    print Spacewalk::Setup::loc("* Setting up SELinux..\n");
-    Spacewalk::Setup::system_or_exit(['/usr/sbin/spacewalk-selinux-enable', ''], 42,
-               'Could not enable selinux policy.');
-}
-
-if ($opts{"run-cobbler"}) {
-    print Spacewalk::Setup::loc("* Setting up Cobbler..\n");
-    setup_cobbler(\%opts, \%answers);
-    exit 0;
-}
+Spacewalk::Setup::init_log_files($product_name, @ARGV);
 
 my %rhnOptions = ();
 if (-e Spacewalk::Setup::DEFAULT_RHN_CONF_LOCATION) {
@@ -104,9 +84,6 @@ Spacewalk::Setup::postgresql_setup_db(\%opts, \%answers);
 if ($opts{'db-only'}) {
     exit;
 }
-
-remove_old_jvm(\%opts, \%answers);
-remove_tomcat_cache(\%opts);
 
 setup_services();
 
@@ -132,16 +109,12 @@ setup_mod_ssl(\%opts, \%answers);
 print Spacewalk::Setup::loc("* Creating SSL certificates.\n");
 setup_ssl_certs(\%opts, \%answers);
 
-if(not $opts{"skip-reportdb-setup"}) {
-    Spacewalk::Setup::postgresql_reportdb_setup(\%opts, \%answers);
-    print Spacewalk::Setup::loc("* Report DB Configured. \n");
-}
+Spacewalk::Setup::postgresql_reportdb_setup(\%opts, \%answers);
+print Spacewalk::Setup::loc("* Report DB Configured. \n");
 
 
-if(not $opts{"skip-db-population"}) {
-    print Spacewalk::Setup::loc("* Update configuration in database.\n");
-    final_db_config(\%opts, \%answers);
-}
+print Spacewalk::Setup::loc("* Update configuration in database.\n");
+final_db_config(\%opts, \%answers);
 
 print Spacewalk::Setup::loc("* Setting up Cobbler..\n");
 setup_cobbler(\%opts, \%answers);
@@ -149,86 +122,13 @@ setup_cobbler(\%opts, \%answers);
 print Spacewalk::Setup::loc("* Deploying configuration files.\n");
 populate_final_configs(\%opts, \%answers);
 
-if ($opts{'upgrade'}) {
-  Spacewalk::Setup::postgresql_start() if (Spacewalk::Setup::is_embedded_db(\%opts));
-
-  print Spacewalk::Setup::loc("This portion of the $product_name upgrade process has successfully completed.\n");
-  if ($product_name =~ /Satellite/) {
-    print Spacewalk::Setup::loc("Please refer to appropriate upgrade document in /etc/sysconfig/rhn/satellite-upgrade\n");
-    print Spacewalk::Setup::loc("for any remaining steps in the process.\n");
-  }
-} else {
-  if (!$opts{'skip-services-restart'}){
-      print Spacewalk::Setup::loc("* Restarting services.\n");
-      Spacewalk::Setup::system_or_exit(['/usr/sbin/spacewalk-service', 'restart'], 40,
-                   'Could not restart spacewalk services.');
-      wait_for_tomcat() or exit 56;
-  }
-  print Spacewalk::Setup::loc("Installation complete.\n");
-}
+print Spacewalk::Setup::loc("* Restarting services.\n");
+Spacewalk::Setup::system_or_exit(['/usr/sbin/spacewalk-service', 'restart'], 40,
+           'Could not restart spacewalk services.');
+wait_for_tomcat() or exit 56;
+print Spacewalk::Setup::loc("Installation complete.\n");
 
 exit 0;
-
-
-sub remove_old_jvm {
-        my $opts = shift;
-        my $answers = shift;
-
-        return unless (($opts{"upgrade"}) and ($product_name =~ /Satellite/));
-
-        my $jvm_list = Spacewalk::Setup::SHARED_DIR . "/old-jvm-list";
-
-        local *F;
-        open F, $jvm_list or die "Error opening [$jvm_list]: $!\n";
-        my @jvms = <F>;
-        close F;
-        chomp @jvms;
-
-        my $remove;
-
-        foreach my $jvm (@jvms) {
-                system("rpm -q $jvm >& /dev/null");
-                $remove .= " $jvm" unless $? >> 8;
-        }
-
-        if ($remove) {
-                print Spacewalk::Setup::loc("Setup found following old java packages:\n");
-                foreach my $p (split (" ", $remove)) {
-                        print Spacewalk::Setup::loc("\t$p\n");
-                }
-        } else {
-                return;
-        }
-
-        Spacewalk::Setup::ask(
-                -noninteractive => $opts{"non-interactive"},
-                -question => "Should setup remove these packages",
-                -test => sub { my $text = shift; return $text =~ /^[YyNn]/ },
-                -answer => \$answers->{"remove-old-jvm"},
-                -default => 'Y',
-        );
-        unless ( $answers->{"remove-old-jvm"} =~ /^[Yy]/ ) {
-                print Spacewalk::Setup::loc("** Skipping removal of old java packages.\n");
-                return;
-        }
-
-        my $result = `rpm -e $remove 2>&1`;
-        if ($? >> 8) {
-                print Spacewalk::Setup::loc("** Error occurred while removing the packages:\n");
-                print Spacewalk::Setup::loc($result);
-        }
-}
-
-sub remove_tomcat_cache {
-        my $opts = shift;
-
-        return unless ($opts->{'upgrade'});
-
-        my @dirs = glob "/var/cache/tomcat?/work";
-        if (scalar @dirs > 0) {
-                system("rm -rf /var/cache/tomcat?/work/* > /dev/null 2>&1");
-        }
-}
 
 sub setup_cobbler {
   my $opts = shift;
@@ -268,10 +168,6 @@ sub setup_cobbler {
     -answer => \$answers->{"enable-tftp"},
     -default => 'Y',
   );
-
-  if ($opts{'enable-tftp'}) {
-    $answers{'enable-tftp'} = $opts{'enable-tftp'};
-  }
 
   if (($answers{'enable-tftp'} and $answers{'enable-tftp'} =~ /^[Yy]/) || $opts{"non-interactive"}) {
       if (-e '/usr/lib/systemd/system/tftp.socket') {
@@ -478,7 +374,7 @@ sub setup_ssl_certs {
   my $opts = shift;
   my $answers = shift;
 
-  if ($opts{"skip-ssl-cert-generation"} || $opts{"upgrade"}) {
+  if ($opts{"skip-ssl-cert-generation"}) {
     print Spacewalk::Setup::loc("** Skipping SSL certificate generation.\n");
     return;
   }
@@ -794,9 +690,9 @@ sub populate_initial_configs {
     (
      mount_point => $answers->{'mount-point'} || '/var/spacewalk',
      kickstart_mount_point => $answers->{'kickstart-mount-point'} || $answers->{'mount-point'} || '/var/spacewalk',
-     serverDOTsatelliteDOThttp_proxy => ($opts->{'rhn-http-proxy'} ? $opts->{'rhn-http-proxy'} : $answers->{'rhn-http-proxy'}) || '',
-     serverDOTsatelliteDOThttp_proxy_username => ($opts->{'rhn-http-proxy'} ? $opts->{'rhn-http-proxy-username'} : $answers->{'rhn-http-proxy-username'}) || '',
-     serverDOTsatelliteDOThttp_proxy_password => ($opts->{'rhn-http-proxy'} ? $opts->{'rhn-http-proxy-password'} :$answers->{'rhn-http-proxy-password'}) || '',
+     serverDOTsatelliteDOThttp_proxy => $answers->{'rhn-http-proxy'} || '',
+     serverDOTsatelliteDOThttp_proxy_username => $answers->{'rhn-http-proxy-username'} || '',
+     serverDOTsatelliteDOThttp_proxy_password => $answers->{'rhn-http-proxy-password'} || '',
      javaDOThostname => $answers->{hostname},
      encrypted_passwords => 1,
      db_backend => $answers->{'db-backend'},

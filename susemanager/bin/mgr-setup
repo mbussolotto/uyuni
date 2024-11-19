@@ -215,9 +215,7 @@ scc-pass = $SCC_PASS
         fi
     fi
 
-    PARAM_DB="--external-postgresql"
-
-    /usr/bin/spacewalk-setup --non-interactive --clear-db $PARAM_CC --answer-file=/root/spacewalk-answers $PARAM_DB
+    /usr/bin/spacewalk-setup --non-interactive --clear-db $PARAM_CC --answer-file=/root/spacewalk-answers
     SWRET=$?
     if [ "x" = "x$MANAGER_MAIL_FROM" ]; then
         MANAGER_MAIL_FROM="$PRODUCT_NAME ($HOSTNAME) <root@$HOSTNAME>"

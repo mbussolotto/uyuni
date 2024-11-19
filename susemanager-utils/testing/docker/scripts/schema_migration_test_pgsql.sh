@@ -66,7 +66,7 @@ if [ -d /etc/sysconfig/rhn/postgres -a ! -e /usr/share/susemanager/db/postgres ]
 fi
 
 # this command will fail with certificate error. This is ok, so ignore the error
-spacewalk-setup --skip-initial-configuration --skip-system-version-test --skip-selinux-test --skip-fqdn-test --skip-ssl-cert-generation --skip-ssl-vhost-setup --skip-services-check --clear-db --answer-file=clear-db-answers-pgsql.txt --external-postgresql --non-interactive ||:
+spacewalk-setup --skip-initial-configuration --skip-fqdn-test --skip-ssl-cert-generation --skip-ssl-vhost-setup --skip-services-check --clear-db --answer-file=clear-db-answers-pgsql.txt --non-interactive ||:
 
 
 # this copy the latest schema from the git into the system
