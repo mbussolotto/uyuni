@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 ## Exit codes
 
@@ -64,7 +65,7 @@ setup_mail () {
 exists_db() {
     PGNAME=$1
     if [ $EXTERNALDB = 0 ]; then
-        EXISTS=$(runuser - postgres -c 'psql -t -c "select datname from pg_database where datname='"'$PGNAME'"';"')
+        EXISTS=$(runuser postgres -c 'psql -t -c "select datname from pg_database where datname='"'$PGNAME'"';"')
     else
         EXISTS=$(echo "select datname from pg_database where datname='$PGNAME';" | (export PGPASSWORD=$EXTERNALDB_ADMIN_PASS; exec psql -t -U $EXTERNALDB_ADMIN_USER -h $MANAGER_DB_HOST))
     fi
@@ -77,7 +78,7 @@ exists_db() {
 
 exists_user() {
     if [ $EXTERNALDB = 0 ] ; then
-        EXISTS=$($RUNUSER - postgres -c 'psql -t -c "select usename from pg_user where usename='"'$MANAGER_USER'"';"')
+        EXISTS=$($RUNUSER postgres -c 'psql -t -c "select usename from pg_user where usename='"'$MANAGER_USER'"';"')
     else
         EXISTS=$(echo "select usename from pg_user where usename='$MANAGER_USER';" | (export PGPASSWORD=$EXTERNALDB_ADMIN_PASS; exec psql -t -U $EXTERNALDB_ADMIN_USER -h $MANAGER_DB_HOST))
     fi
@@ -103,9 +104,9 @@ setup_db_postgres() {
                 echo "POSTGRES_LANG=\"en_US.UTF-8\"" >> /etc/sysconfig/postgresql
             fi
         fi
-        su - postgres -c "/usr/share/postgresql/postgresql-script start"
+        su postgres -c "/usr/share/postgresql/postgresql-script start"
         if ! exists_db $MANAGER_DB_NAME; then
-            su - postgres -c "createdb -E UTF8 $MANAGER_DB_NAME ; echo \"CREATE ROLE $MANAGER_USER PASSWORD '$MANAGER_PASS' SUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;\" | psql"
+            su postgres -c "createdb -E UTF8 $MANAGER_DB_NAME ; echo \"CREATE ROLE $MANAGER_USER PASSWORD '$MANAGER_PASS' SUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;\" | psql"
 
             INT_NET=$(ip -o -4 addr show up scope global | head -1 | awk '{print $4}')
             echo "local $MANAGER_DB_NAME postgres peer
@@ -118,7 +119,7 @@ setup_db_postgres() {
             mv /tmp/pg_hba.conf ${DATADIR}/pg_hba.conf
             chmod 600 ${DATADIR}/pg_hba.conf
             chown postgres:postgres ${DATADIR}/pg_hba.conf
-            su - postgres -c "/usr/share/postgresql/postgresql-script restart"
+            su postgres -c "/usr/share/postgresql/postgresql-script reload"
         else
             echo "Database exists. Preparing for resetup. All data will be removed."
         fi
@@ -273,9 +274,6 @@ do_setup() {
         ask_input REPORT_DB_CA_CERT
         ask_input UYUNI_FQDN
     fi;
-    if [ -z "$SYS_DB_PASS" ]; then
-        SYS_DB_PASS=`dd if=/dev/urandom bs=16 count=4 2> /dev/null | md5sum | cut -b 1-8`
-    fi
     if [ -z "$MANAGER_DB_NAME" ]; then
         MANAGER_DB_NAME="susemanager"
     fi

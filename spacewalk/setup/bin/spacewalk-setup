@@ -93,7 +93,7 @@ if(not $opts{"skip-initial-configuration"}) {
     print Spacewalk::Setup::loc("* Performing initial configuration.\n");
     my $config_opts = populate_initial_configs(\%opts, \%answers);
     my $www_uid = (getpwnam('wwwrun') // "");
-    chown $www_uid, -1, $config_opts->{'mount_point'} . '/packages'
+    chown $www_uid, -1, $config_opts->{'mount_point'} . '/packages';
     chmod 0775, $config_opts->{'mount_point'};
     chmod 0775, $config_opts->{'mount_point'} . '/systems';
     chmod 0775, $config_opts->{'kickstart_mount_point'};

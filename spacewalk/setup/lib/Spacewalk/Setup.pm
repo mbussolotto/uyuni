@@ -770,12 +770,14 @@ sub postgresql_reportdb_setup {
     }
 
     print_progress(-init_message => "*** Progress: #",
-                      -log_file_name => DB_INSTALL_LOG_FILE,
+                      -log_file_name => "/dev/stdout",
                       -log_file_size => DB_INSTALL_LOG_SIZE,
                       -err_message => "Could not install report database.\n",
                       -err_code => 15,
                       -system_opts => \@cmd);
-    
+   
+    print log("repordb initialized");
+
     if (-e Spacewalk::Setup::DEFAULT_RHN_CONF_LOCATION) {
         my %dbOptions = ();
         ### uyuni-setup-reportdb writes param in rhn.conf. We need to read them and persists them in satellite-local-rules.conf
