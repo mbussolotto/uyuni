@@ -35,7 +35,7 @@
         "vscjava.vscode-java-test",
         "vscjava.vscode-maven",
         "vscjava.vscode-java-dependency",
-        "intersystems.language-server"
+        "ckolkman.vscode-postgres"
       ]
     }
   },
