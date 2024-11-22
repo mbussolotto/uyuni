@@ -411,4 +411,117 @@ public interface ChannelQueries {
                   LIMIT 1
             )) then 1 else 0 end AS result
             """;
+
+    // Moved MC queries to see how it looks like
+    String AccessibleChildChannels = """
+                SELECT c.*, c_1_.original_id,
+                       CASE WHEN c_1_.original_id IS NULL THEN 0 ELSE 1 END as clazz_
+                  FROM rhnChannel c
+       LEFT OUTER JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
+                 WHERE parent_channel = :cid
+                   AND (SELECT deny_reason
+                          FROM suseChannelUserRoleView scur
+                         WHERE scur.channel_id = c.id
+                           AND scur.user_id = :userId
+                           AND scur.role = 'subscribe'
+                       ) IS NULL
+       """;
+
+    String AccessibleChannelsByOrg = """
+                        SELECT  c.*, c_1_.original_id, CASE WHEN c_1_.original_id IS NULL THEN 0 ELSE 1 END as clazz_
+                          FROM  rhnChannel c
+                      LEFT JOIN rhnChannelCloned c_1_ ON c.id = c_1_.original_id
+                           JOIN rhnAvailableChannels cfp ON c.id = cfp.channel_id
+                          WHERE cfp.org_id = :org_id
+                      """;
+
+    String lookupByLabel = """
+        SELECT c.*, c_1_.original_id, CASE WHEN c_1_.original_id IS NULL THEN 0 ELSE 1 END as clazz_
+              FROM rhnChannel c
+                LEFT OUTER JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
+             WHERE c.label = :label
+               AND (rhn_channel.get_org_access(c.id, :orgId) = 1
+                   OR EXISTS (select id from rhnSharedChannelView scv
+                               where scv.label = :label
+                                 and scv.org_trust_id = :orgId))
+        """;
+
+    String KickstartableTreeChannels = """
+                        SELECT c.*, c_1_.original_id,
+                               CASE WHEN c_1_.original_id IS NULL THEN 0 ELSE 1 END as clazz_
+                        FROM rhnChannel c
+                            LEFT JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
+                            JOIN rhnAvailableChannels ach ON ach.channel_id = c.id
+                            JOIN rhnChannelArch ca ON ca.id = ach.channel_arch_id
+                        WHERE ach.org_id = :org_id
+                            AND ach.channel_depth = 1
+                        ORDER BY rhn_channel.channel_priority(ach.parent_or_self_id),
+                            UPPER(ach.channel_name)
+                        """;
+
+    String KickstartableChannels = """
+            SELECT DISTINCT c.*, c_1_.original_id,
+                CASE WHEN c_1_.original_id IS NULL THEN 0 ELSE 1 END as clazz_,
+                rhn_channel.channel_priority(ach.parent_or_self_id),
+                UPPER(ach.channel_name)
+            FROM rhnChannel c
+                LEFT JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
+                JOIN rhnAvailableChannels ach ON ach.channel_id = c.id
+                JOIN rhnChannelArch ca ON ca.id = ach.channel_arch_id
+                JOIN rhnKickstartableTree kt ON kt.channel_id = c.id
+                JOIN rhnKSInstallType ksit ON ksit.id = kt.install_type
+            WHERE ach.org_id = :org_id
+                AND ach.channel_depth = 1
+                AND (ksit.label LIKE 'rhel%' OR ksit.label LIKE 'fedora%')
+            ORDER BY rhn_channel.channel_priority(ach.parent_or_self_id),
+                UPPER(ach.channel_name)
+                """;
+
+    String findAllByUserOrderByChild = """
+    with user_channel_roles as materialized(
+        select * from suseChannelUserRoleView s
+        where s.user_id = :userId
+        and s.deny_reason is null
+    )
+    SELECT channel.*, channel_1_.original_id, CASE WHEN channel_1_.original_id IS NULL THEN 0 ELSE 1 END as clazz_
+    FROM rhnChannel channel
+        LEFT OUTER JOIN rhnChannel parent ON channel.parent_channel = parent.id
+        LEFT OUTER JOIN rhnChannelCloned channel_1_ ON channel.id = channel_1_.id
+    WHERE EXISTS (
+        SELECT 1
+        FROM user_channel_roles scur
+        WHERE scur.channel_id = channel.id
+    )
+    AND (
+        channel.parent_channel IS NULL
+        OR (
+            channel.parent_channel IS NOT NULL
+            AND EXISTS (
+                SELECT 1
+                FROM user_channel_roles scur
+                WHERE scur.channel_id = channel.parent_channel
+            )
+        )
+    )
+    ORDER BY
+        channel.org_id NULLS FIRST,
+        COALESCE(parent.label, channel.label),
+        channel.parent_channel NULLS FIRST,
+        channel.label
+                        """;
+
+    String listAllBaseChannels = """
+                SELECT c.*, c_1_.original_id,
+                       CASE WHEN c_1_.original_id IS NULL THEN 0 ELSE 1 END as clazz_
+                  FROM suseChannelUserRoleView SCURV
+                  JOIN rhnChannel c ON c.id = SCURV.channel_id
+                  LEFT OUTER JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
+                 WHERE SCURV.org_id = :org_id
+                   AND SCURV.deny_reason IS NULL
+                   AND SCURV.user_id = :user_id
+                   AND SCURV.role = 'subscribe'
+                   AND c.parent_channel is null
+                ORDER BY c.name
+                """;
+
 }
