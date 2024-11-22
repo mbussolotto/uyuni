@@ -35,6 +35,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.annotations.NamedNativeQueries;
 import org.hibernate.annotations.NamedNativeQuery;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.type.YesNoConverter;
 
 import java.util.ArrayList;
@@ -61,8 +63,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -85,7 +85,15 @@ import jakarta.persistence.Transient;
         @NamedQuery(name="Channel.findChannelIdsByLabels",
                 query = ChannelQueries.findChannelIdsByLabels),
         @NamedQuery(name="Channel.channelsWithClonableErrata",
-                query = ChannelQueries.channelsWithClonableErrata)
+                query = ChannelQueries.channelsWithClonableErrata),
+        @NamedQuery(name="Channel.lookupOriginal",
+                query = ChannelQueries.lookupOriginal),
+        @NamedQuery(name="Channel.findChannelArchLabelsSyncdChannels",
+                query = ChannelQueries.findChannelArchLabelsSyncdChannels),
+        @NamedQuery(name="Channel.findCustomChannelsWithRepositories",
+                query = ChannelQueries.findCustomChannelsWithRepositories),
+        @NamedQuery(name="Channel.findVendorChannels",
+                query = ChannelQueries.findVendorChannels)
 })
 @NamedNativeQueries({
         @NamedNativeQuery(name = "Channel.findCompatCustomBaseChsSSMNoBase",
@@ -117,10 +125,10 @@ import jakarta.persistence.Transient;
                 query = ChannelQueries.findSubscribableBaseChannels,
                 resultClass = com.redhat.rhn.domain.channel.Channel.class,
                 querySpaces = {"rhnChannel"}),
-        @NamedNativeQuery(name = "Channel.findByLabelAndUserId",
-                query = ChannelQueries.findByLabelAndUserId,
-                resultClass = com.redhat.rhn.domain.channel.Channel.class,
-                querySpaces = {"rhnChannel"}),
+//        @NamedNativeQuery(name = "Channel.findByLabelAndUserId",
+//                query = ChannelQueries.findByLabelAndUserId,
+//                resultClass = com.redhat.rhn.domain.channel.Channel.class,
+//                querySpaces = {"rhnChannel"}),
         @NamedNativeQuery(name = "Channel.findByLabelAndOrgId",
                 query = ChannelQueries.findByLabelAndOrgId,
                 resultClass = com.redhat.rhn.domain.channel.Channel.class,
@@ -145,6 +153,33 @@ import jakarta.persistence.Transient;
                 querySpaces = {"rhnChannel", "rhnPackage"}),
         @NamedNativeQuery(name = "Channel.isAccessibleByUser",
                 query = ChannelQueries.isAccessibleByUser,
+                querySpaces = {"rhnChannel"}),
+        @NamedNativeQuery(name = "Channel.findVendorRepositoryByChannelId",
+                query = ChannelQueries.findVendorRepositoryByChannelId,
+                resultClass = com.redhat.rhn.domain.scc.SCCRepository.class,
+                querySpaces = {"rhnChannel"}),
+        @NamedNativeQuery(name = "Channel.findOrphanVendorChannels",
+                query = ChannelQueries.findOrphanVendorChannels,
+                resultClass = com.redhat.rhn.domain.channel.Channel.class,
+                querySpaces = {"rhnChannel"}),
+        @NamedNativeQuery(name = "Channel.findModularChannels",
+                query = ChannelQueries.findModularChannels,
+                resultClass = com.redhat.rhn.domain.channel.Channel.class,
+                querySpaces = {"rhnChannel"}),
+        @NamedNativeQuery(name = "Channel.verifyLabel",
+                query = ChannelQueries.verifyLabel),
+        @NamedNativeQuery(name = "Channel.verifyName",
+                query = ChannelQueries.verifyName),
+        @NamedNativeQuery(name = "Channel.getPackageCount",
+                query = ChannelQueries.getPackageCount),
+        @NamedNativeQuery(name = "Channel.getErrataCount",
+                query = ChannelQueries.getErrataCount),
+        @NamedNativeQuery(name = "Channel.getPackageIdList",
+                query = ChannelQueries.getPackageIdList),
+        @NamedNativeQuery(name = "Channel.getClonedErrataOriginalIdList",
+                query = ChannelQueries.getClonedErrataOriginalIdList),
+        @NamedNativeQuery(name = "Channel.isAccessibleBy",
+                query = ChannelQueries.isAccessibleBy,
                 querySpaces = {"rhnChannel"}),
 })
 public class Channel extends BaseDomainHelper implements Comparable<Channel> {

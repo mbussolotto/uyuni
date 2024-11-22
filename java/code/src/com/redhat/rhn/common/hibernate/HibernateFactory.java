@@ -30,7 +30,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.MappingException;
 import org.hibernate.Session;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
+import org.hibernate.type.BasicTypeReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -188,6 +190,36 @@ public abstract class HibernateFactory {
             Session session = HibernateFactory.getSession();
 
             Query<T> query = session.getNamedQuery(qryName).setCacheable(cacheable);
+            bindParameters(query, qryParams);
+            return query.uniqueResult();
+        }
+        catch (MappingException me) {
+            throw new HibernateRuntimeException("Mapping not found for " + qryName, me);
+        }
+        catch (HibernateException he) {
+            throw new HibernateRuntimeException("Executing query " + qryName +
+                    " with params " + qryParams + " failed", he);
+        }
+    }
+
+
+    protected <T> T lookupObjectByNamedNativeQuery(String qryName,
+                                                   Map<String, Object> qryParams,
+                                                   Map<String, BasicTypeReference> scalar) {
+        return lookupObjectByNamedNativeQuery(qryName, qryParams, scalar, false);
+    }
+
+    protected <T> T lookupObjectByNamedNativeQuery(String qryName,
+                                                   Map<String, Object> qryParams,
+                                                   Map<String, BasicTypeReference> scalar,
+                                                   boolean cacheable) {
+        try {
+            Session session = HibernateFactory.getSession();
+
+            NativeQuery<T> query = session.getNamedNativeQuery(qryName).setCacheable(cacheable);
+            if (scalar != null) {
+                scalar.forEach(query::addScalar);
+            }
             bindParameters(query, qryParams);
             return query.uniqueResult();
         }

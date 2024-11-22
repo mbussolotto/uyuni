@@ -35,6 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.CacheMode;
 import org.hibernate.Session;
+import org.hibernate.type.StandardBasicTypes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -848,7 +849,10 @@ public class ChannelFactory extends HibernateFactory {
      * @return number of packages in this channel.
      */
     public static int getPackageCount(Channel channel) {
-        return singleton.lookupObjectByNamedQuery("Channel.getPackageCount", Map.of("cid", channel.getId()));
+        return singleton.lookupObjectByNamedNativeQuery("Channel.getPackageCount",
+                Map.of("cid", channel.getId()),
+                Map.of("package_count", StandardBasicTypes.INTEGER));
+
     }
 
     /**

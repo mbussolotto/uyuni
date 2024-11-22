@@ -4,153 +4,58 @@ PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-
-    <sql-query name="Channel.verifyLabel">
-        <return-scalar type="string" column="label"/>
-        <synchronize table="rhnChannel"/>
-        <![CDATA[select label from rhnChannel where label = :label]]>
-    </sql-query>
-
-    <sql-query name="Channel.verifyName">
-        <return-scalar type="string" column="name"/>
-        <synchronize table="rhnChannel"/>
-        <![CDATA[select name from rhnChannel where name = :name]]>
-    </sql-query>
-
-    <sql-query name="Channel.getPackageCount">
-        <return-scalar type="int" column="package_count"/>
-        <![CDATA[select count(*) as package_count from rhnChannelPackage cp where cp.channel_id = :cid]]>
-    </sql-query>
-
-   <sql-query name="Channel.getErrataCount">
-        <return-scalar type="int" column="errata_count"/>
-        <![CDATA[select count(*) as errata_count from rhnChannelErrata cp where cp.channel_id = :cid]]>
-    </sql-query>
-
-    <sql-query name="Channel.getPackageIdList">
-        <return-scalar type="long" column="package_id"/>
-        <![CDATA[select cp.package_id from rhnChannelPackage cp where cp.channel_id = :cid]]>
-    </sql-query>
-
-    <sql-query name="Channel.getClonedErrataOriginalIdList">
-        <return-scalar type="long" column="original_id"/>
-        <![CDATA[SELECT errataCloned.original_id
-                    FROM rhnChannelErrata channelErrata
-                    INNER JOIN rhnErrataCloned errataCloned ON errataCloned.id = channelErrata.errata_id
-                    WHERE channelErrata.channel_id = :cid
+    <sql-query name="Channel.findByLabelAndUserId">
+        <![CDATA[SELECT {c.*}
+              FROM rhnChannel {c}
+                LEFT OUTER JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
+             WHERE c.label = :label AND
+               EXISTS (SELECT 1
+                  FROM suseChannelUserRoleView scur
+                  WHERE scur.channel_id = c.id AND
+                    scur.user_id = :userId AND
+                    deny_reason IS NULL
+               )
         ]]>
-    </sql-query>
-
-    <sql-query name="Channel.isAccessibleBy">
-        <synchronize table="rhnChannel"/>
-        <return-scalar type="int" column="result"/>
-         <![CDATA[SELECT case when (EXISTS (
-              SELECT 1
-              FROM rhnChannel c
-              JOIN rhnChannelFamilyMembers cfm ON cfm.channel_id = c.id
-              JOIN rhnPrivateChannelFamily pcf ON pcf.channel_family_id = cfm.channel_family_id
-              WHERE c.label = :channel_label
-              AND pcf.org_id = :org_id
-              LIMIT 1
-        ) OR EXISTS (
-              SELECT 1
-              FROM rhnChannel c
-              JOIN rhnChannelFamilyMembers cfm ON cfm.channel_id = c.id
-              JOIN rhnPublicChannelFamily pcf ON pcf.channel_family_id = cfm.channel_family_id
-              WHERE c.label = :channel_label
-              LIMIT 1
-        ) OR EXISTS (
-              SELECT 1
-              FROM rhnChannel c
-              JOIN rhnTrustedOrgs tr ON c.org_id = tr.org_id
-              WHERE c.channel_access = 'public'
-              AND c.label = :channel_label
-              AND tr.org_trust_id = :org_id
-              LIMIT 1
-        ) OR EXISTS (
-              SELECT 1
-              FROM rhnChannel c
-              JOIN rhnChannelTrust tr ON c.id = tr.channel_id
-              WHERE c.channel_access = 'protected'
-              AND c.label = :channel_label
-              AND tr.org_trust_id = :org_id
-              LIMIT 1
-        )) then 1 else 0 end AS result
-        ]]>
-    </sql-query>
-
-    <sql-query name="Channel.lookupOriginalPackages">
-        <![CDATA[
-            SELECT DISTINCT cp.package_id AS id
-            FROM rhnChannelPackage cp
-            LEFT OUTER JOIN (
-                    SELECT ep.package_id, ep.errata_id
-                    FROM rhnChannelErrata ce
-                    JOIN rhnErrataPackage ep ON ep.errata_id = ce.errata_id
-                    WHERE ce.channel_id = :from_cid) e ON cp.package_id = e.package_id
-            WHERE cp.channel_id = :from_cid
-            AND e.errata_id IS NULL
-        ]]>
-        <return-scalar column="id" type="long"/>
-    </sql-query>
-
-
-
-
-    <query name="Channel.lookupOriginal">
-        <![CDATA[ select c.original
-                  from com.redhat.rhn.domain.channel.ClonedChannel as c where c = :clone
-        ]]>
-    </query>
-    <query name="Channel.findChannelArchLabelsSyncdChannels">
-        <![CDATA[select distinct c.channelArch.label from com.redhat.rhn.domain.channel.Channel as c]]>
-    </query>
-
-    <query name="Channel.findCustomChannelsWithRepositories">
-        <![CDATA[from com.redhat.rhn.domain.channel.Channel as c
-                where c.org is not null and c.sources is not empty]]>
-    </query>
-
-    <query name="Channel.findVendorChannels">
-        <![CDATA[from com.redhat.rhn.domain.channel.Channel as c
-                 where c.org is null]]>
-    </query>
-    <sql-query name="Channel.findVendorRepositoryByChannelId">
-        <![CDATA[
-          SELECT DISTINCT {r.*}
-            FROM rhnChannel c
-            JOIN suseProductSCCRepository pr ON c.label = pr.channel_label
-            JOIN suseSCCRepository r ON pr.repo_id = r.id
-           WHERE c.org_id IS NULL
-            AND c.id = :cid
-        ]]>
-        <synchronize table="rhnChannel"/>
-        <return alias="r" class="com.redhat.rhn.domain.scc.SCCRepository" />
-    </sql-query>
-    <sql-query name="Channel.findOrphanVendorChannels">
-        <![CDATA[
-            SELECT {c.*}
-            FROM rhnChannel c
-            LEFT JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
-            left join rhnChannelContentSource ccs on c.id = ccs.channel_id
-            where c.org_id is NULL
-            and ccs.source_id IS NULL
-        ]]>
-        <synchronize table="rhnChannel"/>
         <return alias="c" class="com.redhat.rhn.domain.channel.Channel" />
     </sql-query>
-    <sql-query name="Channel.findModularChannels">
-        <![CDATA[
-            SELECT {c.*}
-            FROM rhnChannel c
-            LEFT JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
-            WHERE c.org_id = :org_id
-            AND c.id in (
-              SELECT DISTINCT a.channel_id
-              FROM suseAppstream a)
-        ]]>
-        <synchronize table="rhnChannel"/>
-        <return alias="c" class="com.redhat.rhn.domain.channel.Channel" />
-    </sql-query>
+
+
+<!--    <sql-query name="Channel.verifyLabel">-->
+<!--        <return-scalar type="string" column="label"/>-->
+<!--        <synchronize table="rhnChannel"/>-->
+<!--        <![CDATA[]]>-->
+<!--    </sql-query>-->
+
+<!--    <sql-query name="Channel.verifyName">-->
+<!--        <return-scalar type="string" column="name"/>-->
+<!--        <synchronize table="rhnChannel"/>-->
+<!--        <![CDATA[select name from rhnChannel where name = :name]]>-->
+<!--    </sql-query>-->
+
+
+<!--   <sql-query name="Channel.getErrataCount">-->
+<!--        <return-scalar type="int" column="errata_count"/>-->
+<!--        <![CDATA[]]>-->
+<!--    </sql-query>-->
+
+<!--    <sql-query name="Channel.getPackageIdList">-->
+<!--        <return-scalar type="long" column="package_id"/>-->
+<!--        <![CDATA[]]>-->
+<!--    </sql-query>-->
+
+<!--    <sql-query name="Channel.getClonedErrataOriginalIdList">-->
+<!--        <return-scalar type="long" column="original_id"/>-->
+<!--        <![CDATA[-->
+<!--        ]]>-->
+<!--    </sql-query>-->
+
+<!--    <sql-query name="Channel.isAccessibleBy">-->
+<!--        <synchronize table="rhnChannel"/>-->
+<!--        <return-scalar type="int" column="result"/>-->
+<!--         <![CDATA[-->
+<!--        ]]>-->
+<!--    </sql-query>-->
+
+
 
 </hibernate-mapping>

@@ -198,15 +198,15 @@ public interface ChannelQueries {
 
     String findByLabelAndUserId = """
             SELECT c.*
-                          FROM rhnChannel c
-                            LEFT OUTER JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
-                         WHERE c.label = :label AND
-                           EXISTS (SELECT 1
-                              FROM suseChannelUserRoleView scur
-                              WHERE scur.channel_id = c.id AND
-                                scur.user_id = :userId AND
-                                deny_reason IS NULL
-                           )
+              FROM rhnChannel c
+                LEFT OUTER JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
+             WHERE c.label = :label AND
+               EXISTS (SELECT 1
+                  FROM suseChannelUserRoleView scur
+                  WHERE scur.channel_id = c.id AND
+                    scur.user_id = :userId AND
+                    deny_reason IS NULL
+               )
             """;
 
     String findByLabelAndOrgId = """
@@ -302,4 +302,112 @@ public interface ChannelQueries {
                 AND deny_reason IS NULL
             """;
 
+    String lookupOriginal = """
+            select c.original
+              from com.redhat.rhn.domain.channel.ClonedChannel as c where c = :clone
+            """;
+
+    String findChannelArchLabelsSyncdChannels = """
+            select distinct c.channelArch.label from com.redhat.rhn.domain.channel.Channel as c
+            """;
+
+    String findCustomChannelsWithRepositories = """
+            from com.redhat.rhn.domain.channel.Channel as c
+                where c.org is not null and c.sources is not empty
+            """;
+
+    String findVendorChannels = """
+            from com.redhat.rhn.domain.channel.Channel as c
+             where c.org is null
+            """;
+
+    String findVendorRepositoryByChannelId = """
+            SELECT DISTINCT r.*
+                FROM rhnChannel c
+                JOIN suseProductSCCRepository pr ON c.label = pr.channel_label
+                JOIN suseSCCRepository r ON pr.repo_id = r.id
+               WHERE c.org_id IS NULL
+                AND c.id = :cid
+            """;
+
+    String findOrphanVendorChannels = """
+            SELECT c.*
+                FROM rhnChannel c
+                LEFT JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
+                left join rhnChannelContentSource ccs on c.id = ccs.channel_id
+                where c.org_id is NULL
+                and ccs.source_id IS NULL
+            """;
+
+    String findModularChannels = """
+            SELECT c.*
+                FROM rhnChannel c
+                LEFT JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
+                WHERE c.org_id = :org_id
+                AND c.id in (
+                  SELECT DISTINCT a.channel_id
+                  FROM suseAppstream a)
+    """;
+
+    String verifyLabel = """
+            select label from rhnChannel where label = :label
+            """;
+
+    String verifyName = """
+            select name from rhnChannel where name = :name
+            """;
+
+    String getPackageCount = """
+            select count(*) as package_count from rhnChannelPackage cp where cp.channel_id = :cid
+            """;
+
+    String getErrataCount = """
+            select count(*) as errata_count from rhnChannelErrata cp where cp.channel_id = :cid
+            """;
+
+    String getPackageIdList = """
+            select cp.package_id from rhnChannelPackage cp where cp.channel_id = :cid
+            """;
+
+    String getClonedErrataOriginalIdList = """
+            SELECT errataCloned.original_id
+            FROM rhnChannelErrata channelErrata
+            INNER JOIN rhnErrataCloned errataCloned ON errataCloned.id = channelErrata.errata_id
+            WHERE channelErrata.channel_id = :cid
+            """;
+
+    String isAccessibleBy = """
+            SELECT case when (EXISTS (
+                  SELECT 1
+                  FROM rhnChannel c
+                  JOIN rhnChannelFamilyMembers cfm ON cfm.channel_id = c.id
+                  JOIN rhnPrivateChannelFamily pcf ON pcf.channel_family_id = cfm.channel_family_id
+                  WHERE c.label = :channel_label
+                  AND pcf.org_id = :org_id
+                  LIMIT 1
+            ) OR EXISTS (
+                  SELECT 1
+                  FROM rhnChannel c
+                  JOIN rhnChannelFamilyMembers cfm ON cfm.channel_id = c.id
+                  JOIN rhnPublicChannelFamily pcf ON pcf.channel_family_id = cfm.channel_family_id
+                  WHERE c.label = :channel_label
+                  LIMIT 1
+            ) OR EXISTS (
+                  SELECT 1
+                  FROM rhnChannel c
+                  JOIN rhnTrustedOrgs tr ON c.org_id = tr.org_id
+                  WHERE c.channel_access = 'public'
+                  AND c.label = :channel_label
+                  AND tr.org_trust_id = :org_id
+                  LIMIT 1
+            ) OR EXISTS (
+                  SELECT 1
+                  FROM rhnChannel c
+                  JOIN rhnChannelTrust tr ON c.id = tr.channel_id
+                  WHERE c.channel_access = 'protected'
+                  AND c.label = :channel_label
+                  AND tr.org_trust_id = :org_id
+                  LIMIT 1
+            )) then 1 else 0 end AS result
+            """;
 }
