@@ -1027,8 +1027,13 @@ public class ChannelFactory extends HibernateFactory {
      * @return List of child channel ids.
      */
     public static List<SsmChannelDto> findChildChannelsByParentInSSM(User user, long parentChannelId) {
-        List<Object[]> res = singleton.listObjectsByNamedQuery("Channel.findChildChannelsByParentInSSM",
-                Map.of("user_id", user.getId(), "parent_id", parentChannelId));
+        List<Object[]> res = getSession()
+                .createNativeQuery(ChannelQueries.findChildChannelsByParentInSSM)
+                .addScalar("channelId", Long.class)
+                .addScalar("channelName", String.class)
+                .addScalar("channelOrg", Long.class)
+                .addSynchronizedEntityClass(Channel.class)
+                .list();
         return res
                 .stream()
                 .map(Arrays::asList)
