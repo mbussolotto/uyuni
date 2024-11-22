@@ -202,6 +202,10 @@ public abstract class HibernateFactory {
         }
     }
 
+    protected <T> T lookupObjectByNamedNativeQuery(String qryName,
+                                                   Map<String, Object> qryParams) {
+        return lookupObjectByNamedNativeQuery(qryName, qryParams, null, false);
+    }
 
     protected <T> T lookupObjectByNamedNativeQuery(String qryName,
                                                    Map<String, Object> qryParams,

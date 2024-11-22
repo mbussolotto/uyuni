@@ -450,8 +450,9 @@ public class ChannelFactory extends HibernateFactory {
      * @return true if it is accessible
      */
     public static boolean isAccessibleBy(String channelLabel, Long orgId) {
-        return (int)singleton.lookupObjectByNamedQuery("Channel.isAccessibleBy",
-                Map.of("channel_label", channelLabel, ORG_ID, orgId)) > 0;
+        return (int)singleton.lookupObjectByNamedNativeQuery("Channel.isAccessibleBy",
+                Map.of("channel_label", channelLabel, ORG_ID, orgId),
+                Map.of("result", StandardBasicTypes.INTEGER)) > 0;
     }
 
     /**
@@ -861,7 +862,9 @@ public class ChannelFactory extends HibernateFactory {
      * @return the errata count as an int
      */
     public static int getErrataCount(Channel channel) {
-        return singleton.lookupObjectByNamedQuery("Channel.getErrataCount", Map.of("cid", channel.getId()));
+        return singleton.lookupObjectByNamedNativeQuery("Channel.getErrataCount",
+                Map.of("cid", channel.getId()),
+                Map.of("errata_count", StandardBasicTypes.INTEGER));
     }
 
     /**

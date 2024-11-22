@@ -197,7 +197,8 @@ public interface ChannelQueries {
             """;
 
     String findByLabelAndUserId = """
-            SELECT c.*
+            SELECT c.* , c_1_.original_id,
+                   CASE WHEN c_1_.original_id IS NULL THEN 0 ELSE 1 END as clazz_
               FROM rhnChannel c
                 LEFT OUTER JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
              WHERE c.label = :label AND

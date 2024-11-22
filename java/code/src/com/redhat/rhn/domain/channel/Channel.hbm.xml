@@ -4,22 +4,6 @@ PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <sql-query name="Channel.findByLabelAndUserId">
-        <![CDATA[SELECT {c.*}
-              FROM rhnChannel {c}
-                LEFT OUTER JOIN rhnChannelCloned c_1_ ON c.id = c_1_.id
-             WHERE c.label = :label AND
-               EXISTS (SELECT 1
-                  FROM suseChannelUserRoleView scur
-                  WHERE scur.channel_id = c.id AND
-                    scur.user_id = :userId AND
-                    deny_reason IS NULL
-               )
-        ]]>
-        <return alias="c" class="com.redhat.rhn.domain.channel.Channel" />
-    </sql-query>
-
-
 <!--    <sql-query name="Channel.verifyLabel">-->
 <!--        <return-scalar type="string" column="label"/>-->
 <!--        <synchronize table="rhnChannel"/>-->
@@ -32,11 +16,14 @@ PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 <!--        <![CDATA[select name from rhnChannel where name = :name]]>-->
 <!--    </sql-query>-->
 
+    <!--   <sql-query name="Channel.getErrataCount">-->
+    <!--        <return-scalar type="int" column="errata_count"/>-->
+    <!--        <![CDATA[]]>-->
+    <!--    </sql-query>-->
 
-<!--   <sql-query name="Channel.getErrataCount">-->
-<!--        <return-scalar type="int" column="errata_count"/>-->
-<!--        <![CDATA[]]>-->
-<!--    </sql-query>-->
+
+
+
 
 <!--    <sql-query name="Channel.getPackageIdList">-->
 <!--        <return-scalar type="long" column="package_id"/>-->
