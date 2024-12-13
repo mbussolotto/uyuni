@@ -20,34 +20,89 @@ import com.redhat.rhn.domain.common.Checksum;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * PackageArch
  */
-public class PackageFile extends BaseDomainHelper implements Serializable {
+@Entity
+@Table(name = "rhnPackageFile")
+public class PackageFile extends BaseDomainHelper {
 
     /**
      * Comment for <code>serialVersionUID</code>
      */
     private static final long serialVersionUID = 8009150853428038205L;
 
+    // Composite primary key
+    @EmbeddedId
+    private PackageFileId id;  // This will use the composite key class
+
+    @ManyToOne
+    @JoinColumn(name = "package_id", insertable = false, updatable = false)
     private Package pack;
+
+    @ManyToOne
+    @JoinColumn(name = "capability_id", insertable = false, updatable = false)
     private PackageCapability capability;
+
+    @Column(name = "device")
     private Long device;
+
+    @Column(name = "inode")
     private Long inode;
+
+    @Column(name = "file_mode")
     private Long fileMode;
+
+    @Column(name = "username")
     private String username;
+
+    @Column(name = "groupname")
     private String groupname;
+
+    @Column(name = "rdev")
     private Long rdev;
+
+    @Column(name = "file_size")
     private Long fileSize;
+
+    @Column(name = "mtime")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date mtime;
+
+    @ManyToOne
+    @JoinColumn(name = "checksum_id")
     private Checksum checksum;
+
+    @Column(name = "linkto")
     private String linkTo;
+
+    @Column(name = "flags")
     private Long flags;
+
+    @Column(name = "verifyflags")
     private Long verifyFlags;
+
+    @Column(name = "lang")
     private String lang;
+
+    public PackageFileId getId() {
+        return id;
+    }
+
+    public void setId(PackageFileId idIn) {
+        id = idIn;
+    }
 
     /**
      * @return Returns the pack.

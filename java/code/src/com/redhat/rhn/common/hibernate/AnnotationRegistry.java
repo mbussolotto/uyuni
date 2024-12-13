@@ -84,9 +84,12 @@ import com.redhat.rhn.domain.recurringactions.state.RecurringInternalState;
 import com.redhat.rhn.domain.recurringactions.type.RecurringHighstate;
 import com.redhat.rhn.domain.recurringactions.type.RecurringState;
 import com.redhat.rhn.domain.rhnpackage.PackageBreaks;
+import com.redhat.rhn.domain.rhnpackage.PackageCapability;
 import com.redhat.rhn.domain.rhnpackage.PackageConflicts;
 import com.redhat.rhn.domain.rhnpackage.PackageEnhances;
 import com.redhat.rhn.domain.rhnpackage.PackageExtraTagsKeys;
+import com.redhat.rhn.domain.rhnpackage.PackageFile;
+import com.redhat.rhn.domain.rhnpackage.PackageFileId;
 import com.redhat.rhn.domain.rhnpackage.PackageObsoletes;
 import com.redhat.rhn.domain.rhnpackage.PackagePreDepends;
 import com.redhat.rhn.domain.rhnpackage.PackageProvides;
@@ -291,8 +294,11 @@ public class AnnotationRegistry {
             UserGroupMembersId.class,
             PersonalInfo.class,
             UserInfo.class,
-            StateChange.class
-            );
+            StateChange.class,
+            PackageFile.class,
+            PackageFileId.class,
+            PackageCapability.class
+    );
 
     /**
      * Returns the list of all available hibernate annotation classes.
