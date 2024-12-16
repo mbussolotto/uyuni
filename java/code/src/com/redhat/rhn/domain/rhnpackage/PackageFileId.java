@@ -2,40 +2,44 @@ package com.redhat.rhn.domain.rhnpackage;
 
 import java.io.Serializable;
 import java.util.Objects;
+
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
+@MappedSuperclass
 @Embeddable
 public class PackageFileId implements Serializable {
 
-    @JoinColumn(name = "package_id")
-    private Long pack; // The package_id field
-    @JoinColumn(name = "capability_id")
-    private Long capability; // The capability_id field
+    @ManyToOne
+    @JoinColumn(name = "package_id", insertable = false, updatable = false)
+    private Package pack; // The package_id field
+    @ManyToOne
+    @JoinColumn(name = "capability_id", insertable = false, updatable = false)
+    private PackageCapability capability; // The capability_id field
 
-    // Default constructor
     public PackageFileId() {}
 
-    // Constructor with parameters to initialize the composite key fields
-    public PackageFileId(Long pack, Long capability) {
-        this.pack = pack;
-        this.capability = capability;
+    public PackageFileId(Package packIn, PackageCapability capabilityIn) {
+        pack = packIn;
+        capability = capabilityIn;
     }
 
     // Getters and setters
-    public Long getPack() {
+    public Package getPack() {
         return pack;
     }
 
-    public void setPack(Long pack) {
+    public void setPack(Package pack) {
         this.pack = pack;
     }
 
-    public Long getCapability() {
+    public PackageCapability getCapability() {
         return capability;
     }
 
-    public void setCapability(Long capability) {
+    public void setCapability(PackageCapability capability) {
         this.capability = capability;
     }
 

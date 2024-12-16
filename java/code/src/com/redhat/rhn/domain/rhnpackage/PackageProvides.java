@@ -14,6 +14,8 @@
  */
 package com.redhat.rhn.domain.rhnpackage;
 
+import com.redhat.rhn.domain.BaseDomainHelper;
+
 import java.io.Serializable;
 
 import javax.persistence.Entity;
@@ -22,13 +24,48 @@ import javax.persistence.Table;
 /**
  * PackageArch
  */
+import javax.persistence.*;
+
 @Entity
 @Table(name = "rhnPackageProvides")
 public class PackageProvides extends PackageProperty implements Serializable {
 
-    /**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = -6384010981726804938L;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "package_id", insertable = false, updatable = false, nullable = false)
+    private Package pack;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "capability_id", insertable = false, updatable = false, nullable = false)
+    private PackageCapability capability;
+
+
+    @Column(name = "sense", nullable = false)
+    private Long sense;
+
+    public PackageProvides() {
+    }
+
+    public Package getPack() {
+        return pack;
+    }
+
+    public void setPack(Package pack) {
+        this.pack = pack;
+    }
+
+    public PackageCapability getCapability() {
+        return capability;
+    }
+
+    public void setCapability(PackageCapability capability) {
+        this.capability = capability;
+    }
+
+    public Long getSense() {
+        return sense;
+    }
+
+    public void setSense(Long sense) {
+        this.sense = sense;
+    }
 }

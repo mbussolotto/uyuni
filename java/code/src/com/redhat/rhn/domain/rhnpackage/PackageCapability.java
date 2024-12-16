@@ -17,6 +17,7 @@ package com.redhat.rhn.domain.rhnpackage;
 import com.redhat.rhn.domain.BaseDomainHelper;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,12 +32,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "rhnPackageCapability")
+@Proxy(lazy = true) // Optional: To allow lazy-loading if needed
 public class PackageCapability extends BaseDomainHelper {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rhn_pkg_capability_seq")
     @SequenceGenerator(name = "rhn_pkg_capability_seq", sequenceName = "RHN_PKG_CAPABILITY_ID_SEQ", allocationSize = 1)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "name")
@@ -44,6 +46,9 @@ public class PackageCapability extends BaseDomainHelper {
 
     @Column(name = "version")
     private String version;
+
+    public PackageCapability() {
+    }
 
     /**
      * @return Returns the id.

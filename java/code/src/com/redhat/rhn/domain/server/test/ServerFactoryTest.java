@@ -702,7 +702,7 @@ public class ServerFactoryTest extends BaseTestCaseWithUser {
         }
 
         Long id = newS.getId();
-        TestUtils.saveAndReload(newS);
+        TestUtils.merge(newS);
         newS = ServerFactory.lookupByIdAndOrg(id, owner.getOrg());
         assertNotNull(newS.getEntitledGroupTypes());
         assertNotNull(newS.getManagedGroups());

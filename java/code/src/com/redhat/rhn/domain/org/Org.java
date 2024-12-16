@@ -85,7 +85,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "WEB_CUSTOMER")
-public class Org extends BaseDomainHelper implements SaltConfigurable, Serializable {
+public class Org extends BaseDomainHelper implements SaltConfigurable {
 
     private static final String USER_ID_KEY = "user_id";
     private static final String ORG_ID_KEY = "org_id";

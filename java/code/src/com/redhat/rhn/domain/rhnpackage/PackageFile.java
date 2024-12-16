@@ -30,12 +30,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 /**
  * PackageArch
  */
 @Entity
-@Table(name = "rhnPackageFile")
+@Table(name = "rhnPackageFile", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"package_id", "capability_id"})
+})
 public class PackageFile extends BaseDomainHelper {
 
     /**
@@ -47,12 +50,10 @@ public class PackageFile extends BaseDomainHelper {
     @EmbeddedId
     private PackageFileId id;  // This will use the composite key class
 
-    @ManyToOne
-    @JoinColumn(name = "package_id", insertable = false, updatable = false)
+    @Column(name = "package_id", insertable = false, updatable = false)
     private Package pack;
 
-    @ManyToOne
-    @JoinColumn(name = "capability_id", insertable = false, updatable = false)
+    @Column(name = "capability_id", insertable = false, updatable = false)
     private PackageCapability capability;
 
     @Column(name = "device")
@@ -95,6 +96,16 @@ public class PackageFile extends BaseDomainHelper {
 
     @Column(name = "lang")
     private String lang;
+
+    public PackageFile() {
+        this.id = new PackageFileId();
+    }
+
+    public PackageFile(Package pack, PackageCapability capability) {
+        this.pack = pack;
+        this.capability = capability;
+        this.id = new PackageFileId(pack, capability);
+    }
 
     public PackageFileId getId() {
         return id;
