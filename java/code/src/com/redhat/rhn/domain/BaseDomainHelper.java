@@ -20,7 +20,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -32,7 +31,7 @@ import javax.persistence.MappedSuperclass;
  * DB table: web_contact
  */
 @MappedSuperclass
-public abstract class BaseDomainHelper implements Serializable {
+public abstract class BaseDomainHelper {
     private Date created = new Date();
     private Date modified;
 

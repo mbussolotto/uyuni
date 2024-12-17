@@ -20,6 +20,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -27,7 +28,12 @@ import javax.persistence.Table;
 @Table(name = "rhnChannelSyncFlag")
 public class ChannelSyncFlag implements Serializable {
 
-    @Id @OneToOne
+    @Id
+    @Column(name = "channel_id", nullable = false)
+    private Long id;
+
+    @OneToOne(mappedBy = "channelSyncFlag")
+    @MapsId
     @JoinColumn(name = "channel_id")
     private Channel channel;
 
@@ -47,6 +53,14 @@ public class ChannelSyncFlag implements Serializable {
     private boolean quitOnError;
 
     // Getters and Setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long idnr) {
+        this.id = idnr;
+    }
 
     public boolean isNoStrict() {
         return noStrict;

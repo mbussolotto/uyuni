@@ -20,29 +20,18 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 /**
  * POJO for a rhnServerPath row.
  */
-@Entity
-@Table(name = "rhnServerPath")
 public class ServerPath extends BaseDomainHelper {
 
-    private static final long serialVersionUID = 1L;
-
-    // Embedded composite key
-    @EmbeddedId
+    /** The id. */
     private ServerPathId id;
 
-    // Regular properties
-    @Column(name = "position")
+    /** The position. */
     private Long position;
 
-    @Column(name = "hostname")
+    /** The hostname. */
     private String hostname;
 
     /**

@@ -64,7 +64,7 @@ public class TokenTest extends RhnBaseTestCase {
 
         Session session = HibernateFactory.getSession();
         token2 = (Token) session.getNamedQuery("Token.findById")
-                                   .setParameter("id", token1.getId())
+                                   .setLong("id", token1.getId())
                                    .uniqueResult();
 
         assertEquals(token1, token2);

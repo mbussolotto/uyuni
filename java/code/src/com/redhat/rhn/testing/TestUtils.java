@@ -267,7 +267,7 @@ public class TestUtils {
     public static Object lookupFromCacheById(Long id, String queryname) {
         Session session = HibernateFactory.getSession();
         return session.getNamedQuery(queryname)
-                        .setParameter("id", id)
+                        .setLong("id", id)
                         //Retrieve from cache if there
                         .setCacheable(true)
                         .uniqueResult();
@@ -284,7 +284,7 @@ public class TestUtils {
                                                 String queryname) {
         Session session = HibernateFactory.getSession();
         return session.getNamedQuery(queryname)
-                      .setParameter("label", label)
+                      .setString("label", label)
                       //Retrieve from cache if there
                       .setCacheable(true)
                       .uniqueResult();
@@ -367,7 +367,7 @@ public class TestUtils {
      */
     public static void saveAndFlush(Object obj) throws HibernateException {
         Session session = HibernateFactory.getSession();
-        session.saveOrUpdate(obj);
+        session.save(obj);
         session.flush();
     }
 
@@ -533,13 +533,6 @@ public class TestUtils {
      */
     public static <T> T saveAndReload(T o) {
         TestUtils.saveAndFlush(o);
-        return reload(o);
-    }
-
-    public static <T> T merge(T o) {
-        Session session = HibernateFactory.getSession();
-        session.merge(o);
-        session.flush();
         return reload(o);
     }
 

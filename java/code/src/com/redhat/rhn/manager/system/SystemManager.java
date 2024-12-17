@@ -3616,13 +3616,12 @@ public class SystemManager extends BaseManager {
      * @param minionId the Salt minion id
      */
     public static void addMinionInfoToServer(Long sid, String minionId) {
-        HibernateFactory.getSession().createNativeQuery("""
-                insert into suseMinionInfo (server_id, minion_id)
-                        values (:sid, :minion_id)
-                """)
-                .setParameter("sid", sid)
-                .setParameter("minion_id", minionId)
-                .executeUpdate();
+        WriteMode m = ModeFactory.getWriteMode("System_queries",
+                "add_minion_info");
+        Map<String, Object> params = new HashMap<>();
+        params.put("sid", sid);
+        params.put("minion_id", minionId);
+        m.executeUpdate(params);
     }
 
     /**

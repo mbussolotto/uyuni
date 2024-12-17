@@ -20,13 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.redhat.rhn.common.conf.Config;
-import com.redhat.rhn.common.hibernate.HibernateFactory;
 import com.redhat.rhn.domain.channel.AccessToken;
 import com.redhat.rhn.domain.channel.AccessTokenFactory;
 import com.redhat.rhn.domain.channel.Channel;
 import com.redhat.rhn.domain.channel.ChannelFactory;
 import com.redhat.rhn.domain.server.MinionServer;
-import com.redhat.rhn.domain.server.MinionServerFactory;
 import com.redhat.rhn.domain.server.test.MinionServerFactoryTest;
 import com.redhat.rhn.testing.BaseTestCaseWithUser;
 import com.redhat.rhn.testing.TestUtils;
@@ -145,9 +143,7 @@ public class AccessTokenFactoryTest extends BaseTestCaseWithUser {
         Channel child = ChannelFactoryTest.createTestChannel(user);
         assertTrue(AccessTokenFactory.generate(testMinionServer, Collections.singleton(base)).isPresent());
         assertTrue(AccessTokenFactory.generate(testMinionServer, Collections.singleton(child)).isPresent());
-        HibernateFactory.getSession().flush();
-        HibernateFactory.getSession().clear();
-        MinionServer minionServer = MinionServerFactory.lookupById(testMinionServer.getId()).orElseThrow();
+        MinionServer minionServer = TestUtils.saveAndReload(testMinionServer);
         assertEquals(2, minionServer.getAccessTokens().size());
     }
 
@@ -168,9 +164,7 @@ public class AccessTokenFactoryTest extends BaseTestCaseWithUser {
         assertEquals(0, AccessTokenFactory.unneededTokens(testMinionServer, Collections.emptySet()).size());
 
         testMinionServer.getChannels().remove(child);
-        HibernateFactory.getSession().flush();
-        HibernateFactory.getSession().clear();
-        MinionServer minionServer = MinionServerFactory.lookupById(testMinionServer.getId()).orElseThrow();
+        MinionServer minionServer = TestUtils.saveAndReload(testMinionServer);
         assertEquals(1, minionServer.getChannels().size());
         assertEquals(1, AccessTokenFactory.unneededTokens(minionServer, Collections.emptySet()).size());
 
@@ -184,22 +178,11 @@ public class AccessTokenFactoryTest extends BaseTestCaseWithUser {
         child.setParentChannel(base);
         testMinionServer.getChannels().add(base);
         testMinionServer.getChannels().add(child);
-        AccessTokenFactory.generate(testMinionServer, Collections.singleton(child));
+        AccessToken token = AccessTokenFactory.generate(testMinionServer, Collections.singleton(child)).get();
         testMinionServer.getChannels().remove(child);
-
-        HibernateFactory.getSession().flush();
-        HibernateFactory.getSession().clear();
-        MinionServer minionServer = MinionServerFactory.lookupById(testMinionServer.getId()).orElseThrow();
-        AccessToken token = minionServer.getAccessTokens().stream().findFirst().orElseThrow();
-        assertTrue(token.getValid());
-        assertEquals(child.getId(), token.getChannels().stream().findFirst().map(Channel::getId).orElse(-1L));
-
+        MinionServer minionServer = TestUtils.saveAndReload(testMinionServer);
         assertTrue(AccessTokenFactory.refreshTokens(minionServer));
-
         assertFalse(token.getValid());
-        assertEquals(base.getId(), minionServer.getAccessTokens().stream().flatMap(t -> t.getChannels().stream())
-                .findFirst()
-                .map(Channel::getId).orElse(-1L));
     }
 
     @Test

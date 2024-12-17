@@ -38,7 +38,6 @@ import com.redhat.rhn.common.hibernate.HibernateFactory;
 import com.redhat.rhn.common.security.PermissionException;
 import com.redhat.rhn.domain.channel.Channel;
 import com.redhat.rhn.domain.channel.ChannelFactory;
-import com.redhat.rhn.domain.channel.ClonedChannel;
 import com.redhat.rhn.domain.channel.Modules;
 import com.redhat.rhn.domain.channel.test.ChannelFactoryTest;
 import com.redhat.rhn.domain.contentmgmt.ContentEnvironment;
@@ -326,7 +325,7 @@ public class ContentManagerTest extends JMockBaseTestCaseWithUser {
                 createEnvironment(cp.getLabel(), of(fst.getLabel()), "mid", "middle env", "desc", false, user);
         assertEquals(1, mid.getTargets().size());
         Channel newChannel = mid.getTargets().get(0).asSoftwareTarget().get().getChannel();
-        assertEquals(channel, newChannel.asCloned().map(ClonedChannel::getOriginal).get());
+        assertEquals(channel, newChannel.getOriginal());
         assertTrue(newChannel.getLabel().startsWith("cplabel-mid-"));
         assertEquals(fst.getVersion(), mid.getVersion());
     }
@@ -805,7 +804,7 @@ public class ContentManagerTest extends JMockBaseTestCaseWithUser {
         assertEquals(Status.GENERATING_REPODATA, target.getStatus());
         assertEquals("cplabel-fst-" + channel.getLabel(), tgtChannel.getLabel());
         assertTrue(channel.getClonedChannels().contains(tgtChannel));
-        assertEquals(channel, tgtChannel.asCloned().map(ClonedChannel::getOriginal).get());
+        assertEquals(channel, tgtChannel.getOriginal());
         assertEquals(channel.getPackages(), tgtChannel.getPackages());
         assertEquals(channel.getErratas(), tgtChannel.getErratas());
         assertEquals(Long.valueOf(1), env.getVersion());
@@ -1545,7 +1544,7 @@ public class ContentManagerTest extends JMockBaseTestCaseWithUser {
 
         devChan = ChannelFactory.lookupById(devChan.getId());
         testChan = ChannelFactory.lookupById(testChan.getId());
-        assertEquals(srcChan, devChan.asCloned().map(ClonedChannel::getOriginal).get());
+        assertEquals(srcChan, devChan.getOriginal());
         assertFalse(testChan.isCloned());
 
         // let's promote the project and check that the procedure fixed the channel in the test environment as well
@@ -1555,15 +1554,13 @@ public class ContentManagerTest extends JMockBaseTestCaseWithUser {
 
         devChan = ChannelFactory.lookupById(devChan.getId());
         testChan = ChannelFactory.lookupById(testChan.getId());
-        assertEquals(srcChan, devChan.asCloned().map(ClonedChannel::getOriginal).get());
-        assertEquals(devChan, testChan.asCloned().map(ClonedChannel::getOriginal).get());
+        assertEquals(srcChan, devChan.getOriginal());
+        assertEquals(devChan, testChan.getOriginal());
     }
 
     // extract original channels from given channels
     private Set<Channel> getOriginalChannels(Collection<Channel> channels) {
-        return channels.stream()
-                .map(c -> c.asCloned().orElseThrow())
-                .map(ClonedChannel::getOriginal).collect(toSet());
+        return channels.stream().map(Channel::getOriginal).collect(toSet());
     }
 
     // get channels of given environment

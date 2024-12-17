@@ -21,116 +21,50 @@ import com.redhat.rhn.manager.entitlement.EntitlementManager;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 /**
  * Class that represents the rhnServerGroupType table.
  *
  */
-@Entity
-@Table(name = "rhnServerGroupType")
-@Cacheable
-@org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_ONLY)
 public class ServerGroupType extends AbstractLabelNameHelper {
+    private char permanent;
+    private char isBaseChar;
+    private Set<Feature> features = new HashSet<>();
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
-    @Column(name = "label")
-    private String label;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "permanent", insertable = false, updatable = false)
-    private Character permanent;
-
-    @Column(name = "is_base", insertable = false, updatable = false)
-    private Character isBaseChar;
-
-    @Column(name = "created", insertable = false, updatable = false)
-    private java.sql.Timestamp created;
-
-    @Column(name = "modified", insertable = false, updatable = false)
-    private java.sql.Timestamp modified;
-
-    @ManyToMany
-    @JoinTable(
-            name = "rhnServerGroupTypeFeature",
-            joinColumns = @JoinColumn(name = "server_group_type_id"),
-            inverseJoinColumns = @JoinColumn(name = "feature_id")
-    )
-    private Set<Feature> features = new HashSet<>(); // Initialize as an empty set
-
-    // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long idIn) {
-        this.id = idIn;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String labelIn) {
-        this.label = labelIn;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String nameIn) {
-        this.name = nameIn;
-    }
-
-    public Character getPermanent() {
-        return permanent;
-    }
-
-    public void setPermanent(Character permanentIn) {
-        this.permanent = permanentIn;
-    }
-
-    public Character getIsBaseChar() {
+    /**
+     * @return Returns the isBase.
+     */
+    public char getIsBaseChar() {
         return isBaseChar;
     }
-
-    public void setIsBaseChar(Character isBaseCharIn) {
+    /**
+     * @param isBaseCharIn The isBase to set.
+     */
+    public void setIsBaseChar(char isBaseCharIn) {
         this.isBaseChar = isBaseCharIn;
     }
 
-    public java.sql.Timestamp getCreated() {
-        return created;
+    /**
+     * @return true if this server group type is a base type, false otherwise
+     */
+    public boolean isBase() {
+        return getIsBaseChar() == 'Y';
+    }
+    /**
+     * @return Returns the permanent.
+     */
+    public char getPermanent() {
+        return permanent;
+    }
+    /**
+     * @param permanentIn The permanent to set.
+     */
+    public void setPermanent(char permanentIn) {
+        this.permanent = permanentIn;
     }
 
-    public void setCreated(java.sql.Timestamp createdIn) {
-        this.created = createdIn;
-    }
-
-    public java.sql.Timestamp getModified() {
-        return modified;
-    }
-
-    public void setModified(java.sql.Timestamp modifiedIn) {
-        this.modified = modifiedIn;
-    }
-
+    /**
+     * @return Returns the features.
+     */
     public Set<Feature> getFeatures() {
         return features;
     }
@@ -139,11 +73,7 @@ public class ServerGroupType extends AbstractLabelNameHelper {
      * @param featuresIn The features to set.
      */
     public void setFeatures(Set<Feature> featuresIn) {
-        this.features = featuresIn;
-    }
-
-    public boolean isBase() {
-        return getIsBaseChar() != null && getIsBaseChar() == 'Y';
+        features = featuresIn;
     }
 
     /**

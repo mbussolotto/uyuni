@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2009--2018 Red Hat, Inc.
- * Copyright (c) 2024 SUSE LLC
  *
  * This software is licensed to you under the GNU General Public License,
  * version 2 (GPLv2). There is NO WARRANTY for this software, express or
@@ -33,45 +32,19 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-
 /**
  * Channel
  */
-@Entity
-@Table(name = "rhnChannel")
-@Inheritance(strategy = InheritanceType.JOINED)
-
 public class Channel extends BaseDomainHelper implements Comparable<Channel> {
 
     /**
@@ -91,7 +64,7 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
 
     private String description;
     private Date endOfLife;
-    private boolean GPGCheck = true;
+    private boolean GPGCheck;
     private String GPGKeyUrl;
     private String GPGKeyId;
     private String GPGKeyFp;
@@ -148,7 +121,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * @param orgIn what org you want to know if it is globally subscribable in
      * @return Returns whether or not this channel is globally subscribable.
      */
-    @Transient
     public boolean isGloballySubscribable(Org orgIn) {
         return ChannelFactory.isGloballySubscribable(orgIn, this);
     }
@@ -167,7 +139,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Returns true if this Channel is a mgr server channel.
      * @return true if this Channel is a mgr server channel.
      */
-    @Transient
     public boolean isMgrServer() {
         return getChannelFamily().getLabel().startsWith(
                 ChannelFamilyFactory.SATELLITE_CHANNEL_FAMILY_LABEL);
@@ -177,7 +148,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Returns true if this Channel is a Proxy channel.
      * @return true if this Channel is a Proxy channel.
      */
-    @Transient
     public boolean isProxy() {
         ChannelFamily cfam = getChannelFamily();
 
@@ -192,15 +162,29 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Returns true if this Channel is a Vendor channel.
      * @return true if this Channel is a Vendor channel.
      */
-    @Transient
     public boolean isVendorChannel() {
         return org == null;
     }
 
     /**
+     * Returns true if this channel is of specified release (f.e. RHEL6)
+     * @param ver release version
+     * @return true if this channel is of specified release
+     */
+    public boolean isReleaseXChannel(Integer ver) {
+        if (getDistChannelMaps() != null) {
+            for (DistChannelMap map : getDistChannelMaps()) {
+                if (map.getRelease().contains(ver.toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * @return Returns the baseDir.
      */
-    @Column(name = "basedir")
     public String getBaseDir() {
         return baseDir;
     }
@@ -215,8 +199,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the channelArch.
      */
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_arch_id")
     public ChannelArch getChannelArch() {
         return channelArch;
     }
@@ -231,8 +213,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the channelChecksum.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "checksum_type_id")
     public ChecksumType getChecksumType() {
         return checksumType;
     }
@@ -255,7 +235,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the Comps.
      */
-    @OneToOne(mappedBy = "channel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public Comps getComps() {
         return comps;
     }
@@ -272,7 +251,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      *
      * @param from the Channel
      */
-    @Transient
     public void cloneModulesFrom(Channel from) {
         ChannelFactory.cloneModulesMetadata(from, this);
     }
@@ -280,12 +258,10 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the Modules.
      */
-    @OneToOne(mappedBy = "channel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public Modules getModules() {
         return modules;
     }
 
-    @Transient
     public boolean isModular() {
         return modules != null;
     }
@@ -300,7 +276,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the Modules.
      */
-    @OneToOne(mappedBy = "channel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public MediaProducts getMediaProducts() {
         return mediaProducts;
     }
@@ -308,7 +283,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the description.
      */
-    @Column(name = "description")
     public String getDescription() {
         return description;
     }
@@ -323,7 +297,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the endOfLife.
      */
-    @Column(name = "end_of_life")
     public Date getEndOfLife() {
         return endOfLife;
     }
@@ -338,7 +311,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the gPGKeyFp.
      */
-    @Column(name = "gpg_key_fp")
     public String getGPGKeyFp() {
         return GPGKeyFp;
     }
@@ -353,7 +325,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the gPGKeyId.
      */
-    @Column(name = "gpg_key_id")
     public String getGPGKeyId() {
         return GPGKeyId;
     }
@@ -368,7 +339,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the gPGKeyUrl.
      */
-    @Column(name = "gpg_key_url")
     public String getGPGKeyUrl() {
         return GPGKeyUrl;
     }
@@ -383,10 +353,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the id.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rhn_channel_seq")
-    @SequenceGenerator(name = "rhn_channel_seq", sequenceName = "RHN_CHANNEL_ID_SEQ",
-            allocationSize = 1)
     public Long getId() {
         return id;
     }
@@ -401,7 +367,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the label.
      */
-    @Column(name = "label")
     public String getLabel() {
         return label;
     }
@@ -416,7 +381,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the lastModified.
      */
-    @Column(name = "last_modified")
     public Date getLastModified() {
         return lastModified;
     }
@@ -431,7 +395,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the lastSynced.
      */
-    @Column(name = "last_synced")
     public Date getLastSynced() {
         return lastSynced;
     }
@@ -446,7 +409,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the name.
      */
-    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -461,8 +423,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the org.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "org_id")
     public Org getOrg() {
         return org;
     }
@@ -477,8 +437,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the parentChannel.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_channel", nullable = true)
     public Channel getParentChannel() {
         return parentChannel;
     }
@@ -493,7 +451,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the summary.
      */
-    @Column(name = "summary")
     public String getSummary() {
         return summary;
     }
@@ -508,10 +465,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the set of erratas for this channel.
      */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinTable(name = "rhnChannelErrata",
-               joinColumns = { @JoinColumn(name = "channel_id")},
-               inverseJoinColumns = { @JoinColumn(name = "errata_id")})
     public Set<Errata> getErratas() {
         return erratas;
     }
@@ -537,10 +490,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      *
      * @return Returns the set of packages for this channel.
      */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinTable(name = "rhnChannelPackage",
-            joinColumns = { @JoinColumn(name = "channel_id")},
-            inverseJoinColumns = { @JoinColumn(name = "package_id")})
     public Set<Package> getPackages() {
         return packages;
     }
@@ -548,7 +497,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the size of the package set for this channel.
      */
-    @Transient
     public int getPackageCount() {
         // we don;t want to use packages.size()
         // this could be a lot (we don't want to load all the packages
@@ -560,7 +508,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the size of the package set for this channel.
      */
-    @Transient
     public int getErrataCount() {
         return ChannelFactory.getErrataCount(this);
     }
@@ -586,10 +533,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      *
      * @return set of yum repos for this channel
      */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinTable(name = "rhnChannelContentSource",
-            joinColumns = { @JoinColumn(name = "channel_id")},
-            inverseJoinColumns = { @JoinColumn(name = "source_id")})
     public Set<ContentSource> getSources() {
         return sources;
     }
@@ -628,10 +571,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the set of channelFamiliess for this channel.
      */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinTable(name = "rhnChannelFamilyMembers",
-            joinColumns = { @JoinColumn(name = "channel_id")},
-            inverseJoinColumns = { @JoinColumn(name = "channel_family_id")})
     public Set<ChannelFamily> getChannelFamilies() {
         return channelFamilies;
     }
@@ -641,8 +580,11 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * @param channelFamiliesIn The set of channelFamilies
      */
     public void setChannelFamilies(Set<ChannelFamily> channelFamiliesIn) {
-        channelFamilies.clear();
-        this.channelFamilies.addAll(channelFamiliesIn);
+        if (channelFamiliesIn.size() > 1) {
+            throw new TooManyChannelFamiliesException(this.getId(),
+                    "A channel can only have one channel family");
+        }
+        this.channelFamilies = channelFamiliesIn;
     }
 
     /**
@@ -657,10 +599,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      *
      * @return set of trusted orgs for this channel
      */
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinTable(name = "rhnChannelTrust",
-            joinColumns = { @JoinColumn(name = "channel_id")},
-            inverseJoinColumns = { @JoinColumn(name = "org_trust_id")})
     public Set<Org> getTrustedOrgs() {
         return this.trustedOrgs;
     }
@@ -668,7 +606,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return number of trusted organizations that have access to this channel
      */
-    @Transient
     public int getTrustedOrgsCount() {
         if (trustedOrgs != null) {
             return trustedOrgs.size();
@@ -701,7 +638,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Get the channel family for this channel.
      * @return the channel's family, or null if none found
      */
-    @Transient
     public ChannelFamily getChannelFamily() {
         if (this.getChannelFamilies().size() == 1) {
             Object[] cfams = this.getChannelFamilies().toArray();
@@ -715,7 +651,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Returns true if this channel is considered a base channel.
      * @return true if this channel is considered a base channel.
      */
-    @Transient
     public boolean isBaseChannel() {
         return (getParentChannel() == null);
     }
@@ -724,7 +659,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Returns true if this channel is a cloned channel.
      * @return whether the channel is cloned or not
      */
-    @Transient
     public boolean isCloned() {
         return false;
     }
@@ -754,8 +688,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the product.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "channel_product_id")
     public ChannelProduct getProduct() {
         return product;
     }
@@ -770,7 +702,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the distChannelMaps.
      */
-    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<DistChannelMap> getDistChannelMaps() {
         return distChannelMaps;
     }
@@ -792,7 +723,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * @param server to check if subscribable
      * @return boolean if subscribable or not
      */
-    @Transient
     public boolean isSubscribable(Org orgIn, Server server) {
 
         if (log.isDebugEnabled()) {
@@ -814,8 +744,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return the productName
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_name_id")
     public ProductName getProductName() {
         return productName;
     }
@@ -832,7 +760,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * @param acc the access value being checked
      * @return true if the access provided is valid
      */
-    @Transient
     public boolean isValidAccess(String acc) {
         return acc.equals(Channel.PUBLIC) || acc.equals(Channel.PRIVATE) || acc.equals(Channel.PROTECTED);
     }
@@ -847,7 +774,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return public, protected, or private
      */
-    @Column(name = "channel_access")
     public String getAccess() {
         return access;
     }
@@ -856,7 +782,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      *
      * @return wheter channel is protected
      */
-    @Transient
     public boolean isProtected() {
         return this.getAccess().equals(Channel.PROTECTED);
     }
@@ -866,7 +791,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * @param user the User needed for accessibility issues
      * @return a list of child channels or empty list if there are none.
      */
-    @Transient
     public List<Channel> getAccessibleChildrenFor(User user) {
         if (isBaseChannel()) {
             return ChannelFactory.getAccessibleChildChannels(this, user);
@@ -885,7 +809,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return maintainer's name
      */
-    @Column(name = "maint_name")
     public String getMaintainerName() {
         return maintainerName;
     }
@@ -893,7 +816,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return maintainer's email
      */
-    @Column(name = "maint_email")
     public String getMaintainerEmail() {
         return maintainerEmail;
     }
@@ -901,7 +823,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return maintainer's phone number
      */
-    @Column(name = "maint_phone")
     public String getMaintainerPhone() {
         return maintainerPhone;
     }
@@ -909,7 +830,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return channel's support policy
      */
-    @Column(name = "support_policy")
     public String getSupportPolicy() {
         return supportPolicy;
     }
@@ -946,7 +866,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Created for taskomatic -- probably shouldn't be called from the webui
      * @return returns if custom channel
      */
-    @Transient
     public boolean isCustom() {
         return getOrg() != null;
     }
@@ -955,7 +874,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Does this channel need repodata generated
      * @return Returns a boolean if repodata generation Required
      */
-    @Transient
     public boolean isChannelRepodataRequired() {
         // generate repodata for all channels having channel checksum set except solaris
         if (archesToSkipRepodata.contains(this.channelArch.getLabel())) {
@@ -969,7 +887,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * true if the channel contains any kickstartstartable distros
      * @return true if the channel contains any distros.
      */
-    @Transient
     public boolean containsDistributions() {
         return ChannelFactory.containsDistributions(this);
     }
@@ -981,7 +898,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * If its RHEL-5 we use sha1 anything newer will be sha256.
      * @return checksumType
      */
-    @Transient
     public String getChecksumTypeLabel() {
 
         if ((checksumType == null) || (checksumType.getLabel() == null)) {
@@ -994,7 +910,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return the updateTag
      */
-    @Column(name = "update_tag")
     public String getUpdateTag() {
         return updateTag;
     }
@@ -1009,8 +924,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return Returns the installerUpdates.
      */
-    @Column(name = "installer_updates")
-    @Type(type = "yes_no")
     public boolean isInstallerUpdates() {
         return installerUpdates;
     }
@@ -1030,12 +943,10 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Returns all cloned channels of this channel which includes all clones of clones.
      * @return all cloned channels
      */
-    @Transient
     public Stream<ClonedChannel> allClonedChannels() {
         return getClonedChannels().stream().flatMap(c -> Stream.concat(Stream.of(c), c.allClonedChannels()));
     }
 
-    @OneToMany(mappedBy = "original", cascade = CascadeType.ALL)
     public Set<ClonedChannel> getClonedChannels() {
         return clonedChannels;
     }
@@ -1050,8 +961,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return the GPGCheck
      */
-    @Column(name = "gpg_check")
-    @Type(type = "yes_no")
     public boolean isGPGCheck() {
         return GPGCheck;
     }
@@ -1064,20 +973,25 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     }
 
     /**
+     * @return the original Channel the channel was cloned from
+     */
+    public Channel getOriginal() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Creates a Stream starting with this channel and waking up the getOriginal chain
      * until getting to the original non cloned channel.
      *
      * @return stream of channels
      */
-    @Transient
     public Stream<Channel> originChain() {
-        return Stream.iterate(this, Objects::nonNull, c -> c.asCloned().map(ClonedChannel::getOriginal).orElse(null));
+        return Stream.iterate(this, c -> c != null, c -> c.isCloned() ? c.getOriginal() : null);
     }
 
     /**
      * @return the {@link SUSEProductChannel}
      */
-    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
     public Set<SUSEProductChannel> getSuseProductChannels() {
         return suseProductChannels;
     }
@@ -1095,7 +1009,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      * Note: does not work for all channels see comment in source.
      * @return suse product channel
      */
-    @Transient
     public Optional<SUSEProductChannel> findProduct() {
         Set<SUSEProductChannel> suseProducts = getSuseProductChannels();
         if (suseProducts.isEmpty()) {
@@ -1110,7 +1023,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
         }
     }
 
-    @Transient
     private String getArchTypeLabel() {
         return this.getChannelArch().getArchType().getLabel();
     }
@@ -1118,7 +1030,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return whether the channel is a RPM chanel or not
      */
-    @Transient
     public boolean isTypeRpm() {
         return PackageFactory.ARCH_TYPE_RPM.equalsIgnoreCase(getArchTypeLabel());
     }
@@ -1126,7 +1037,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return whether the channel is a DEB chanel or not
      */
-    @Transient
     public boolean isTypeDeb() {
         return PackageFactory.ARCH_TYPE_DEB.equalsIgnoreCase(getArchTypeLabel());
     }
@@ -1136,7 +1046,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
      *
      * @return the optional of {@link ClonedChannel}
      */
-    @Transient
     public Optional<ClonedChannel> asCloned() {
         return Optional.empty();
     }
@@ -1148,7 +1057,6 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
     /**
      * @return the channels sync flag settings
      */
-    @OneToOne(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
     public ChannelSyncFlag getChannelSyncFlag() {
         if (channelSyncFlag == null) {
             channelSyncFlag = new ChannelSyncFlag();
@@ -1157,3 +1065,4 @@ public class Channel extends BaseDomainHelper implements Comparable<Channel> {
         return this.channelSyncFlag;
     }
 }
+

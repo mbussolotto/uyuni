@@ -25,7 +25,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.hibernate.annotations.Type;
 
 import java.security.SecureRandom;
 import java.util.Date;
@@ -179,7 +178,7 @@ public class SCCRegCacheItem extends BaseDomainHelper {
      * @return true when updating the registration at SCC is required, otherwise false
      */
     @Column(name = "scc_reg_required")
-    @Type(type = "yes_no")
+    @org.hibernate.annotations.Type(type = "yes_no")
     public boolean isSccRegistrationRequired() {
         return sccRegistrationRequired;
     }

@@ -70,7 +70,6 @@ public class ChannelFactoryTest extends RhnBaseTestCase {
         Channel c2 = ChannelFactory.lookupById(c.getId());
         assertEquals(c.getLabel(), c2.getLabel());
 
-        HibernateFactory.getSession().flush();
         Channel c3 = ChannelFactoryTest.createTestChannel(user);
         Long id = c3.getId();
         assertNotNull(c.getChannelArch());
@@ -379,6 +378,7 @@ public class ChannelFactoryTest extends RhnBaseTestCase {
         ChannelFactory.save(original);
         TestUtils.flushAndEvict(original);
 
+        original = (Channel)reload(original);
         assertEquals(1, ChannelFactory.getPackageCount(original));
     }
 
@@ -722,7 +722,6 @@ public class ChannelFactoryTest extends RhnBaseTestCase {
         assertFalse(csf.isOnlyLatest());
         assertFalse(csf.isQuitOnError());
 
-        channel = ChannelFactory.lookupByIdAndUser(channelId, user);
         ChannelSyncFlag csf2 = ChannelFactory.lookupChannelReposyncFlag(channel);
 
         assertNotNull(csf2);
@@ -741,7 +740,6 @@ public class ChannelFactoryTest extends RhnBaseTestCase {
         ChannelFactory.save(csf);
         flushAndEvict(csf);
 
-        csf = channel.getChannelSyncFlag();
         assertNotNull(csf);
         assertTrue(csf.isCreateTree());
         assertTrue(csf.isNoErrata());

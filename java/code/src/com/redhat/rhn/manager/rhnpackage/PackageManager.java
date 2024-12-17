@@ -636,7 +636,7 @@ public class PackageManager extends BaseManager {
         try {
             session = HibernateFactory.getSession();
             return (PackageName)session.getNamedQuery("PackageName.findByName")
-                                       .setParameter("name", name)
+                                       .setString("name", name)
                                        .uniqueResult();
         }
         catch (HibernateException e) {

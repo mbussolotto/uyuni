@@ -16,22 +16,11 @@ package com.redhat.rhn.domain.channel;
 
 import com.redhat.rhn.domain.common.ChecksumType;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.util.Optional;
-
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * ClonedChannel
  */
-@Entity
-@Table(name = "rhnChannelCloned")
 public class ClonedChannel extends Channel {
 
     private Channel original;
@@ -39,21 +28,23 @@ public class ClonedChannel extends Channel {
     /**
      * @return the original Channel the channel was cloned from
      */
-    @ManyToOne
-    @JoinColumn(name = "original_id")
+    @Override
     public Channel getOriginal() {
         return original;
     }
 
+    /**
+     * Set the original version of the clone
+     * @param originalIn original Channel this clone was created from
+     */
     public void setOriginal(Channel originalIn) {
-        original = originalIn;
+        this.original = originalIn;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @Transient
     public boolean isCloned() {
         return true;
     }
@@ -62,7 +53,6 @@ public class ClonedChannel extends Channel {
      * {@inheritDoc}
      */
     @Override
-    @Transient
     public Optional<ClonedChannel> asCloned() {
         return Optional.of(this);
     }
@@ -71,7 +61,6 @@ public class ClonedChannel extends Channel {
      * {@inheritDoc}
      */
     @Override
-    @Transient
     public ChecksumType getChecksumType() {
         // We can reach a StackOverflow here if the current channel is also the
         // original. Happening because of a Hibernate problem. See BZ 837913.
@@ -83,24 +72,4 @@ public class ClonedChannel extends Channel {
         }
         return super.getChecksumType();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(final Object other) {
-        if (!(other instanceof ClonedChannel castOther)) {
-            return false;
-        }
-        return new EqualsBuilder().append(getOriginal(), castOther.getOriginal()).isEquals();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(getOriginal()).toHashCode();
-    }
-
 }

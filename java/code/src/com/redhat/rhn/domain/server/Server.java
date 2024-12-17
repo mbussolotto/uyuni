@@ -33,9 +33,9 @@ import com.redhat.rhn.domain.org.CustomDataKey;
 import com.redhat.rhn.domain.org.Org;
 import com.redhat.rhn.domain.org.OrgFactory;
 import com.redhat.rhn.domain.product.SUSEProductSet;
+import com.redhat.rhn.domain.rhnpackage.PackageEvr;
 import com.redhat.rhn.domain.rhnpackage.PackageType;
 import com.redhat.rhn.domain.user.User;
-import com.redhat.rhn.domain.user.legacy.UserImpl;
 import com.redhat.rhn.manager.configuration.ConfigurationManager;
 import com.redhat.rhn.manager.entitlement.EntitlementManager;
 import com.redhat.rhn.manager.kickstart.cobbler.CobblerXMLRPCHelper;
@@ -47,15 +47,14 @@ import com.suse.manager.model.maintenance.MaintenanceSchedule;
 import com.suse.utils.Opt;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cobbler.CobblerConnection;
 import org.cobbler.SystemRecord;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
-import org.hibernate.annotations.WhereJoinTable;
 
 import java.net.IDN;
 import java.sql.Timestamp;
@@ -76,244 +75,80 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 /**
  * Server - Class representation of the table rhnServer.
  */
-@Entity
-@Table(name = "rhnServer")
-@Inheritance(strategy = InheritanceType.JOINED)  // Parent class inheritance strategy
 public class Server extends BaseDomainHelper implements Identifiable {
 
     /**
      * Logger for this class
      */
-    @Transient
     private static Logger log = LogManager.getLogger(Server.class);
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rhn_server_id_seq")
-    @SequenceGenerator(name = "rhn_server_id_seq", sequenceName = "rhn_server_id_seq", allocationSize = 1)
-    @Column(name = "id")
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "org_id")
-    private Org org;
-
-    @Column(name = "digital_server_id", length = 1024)
-    private String digitalServerId;
-
-    @Column(name = "os", length = 64)
-    private String os;
-
-    @Transient
-    private String osFamily;
-
-    @Column(name = "release", length = 64)
-    private String release;
-
-    @Column(name = "name", length = 128)
-    private String name;
-
-    @Column(name = "description", length = 256)
-    private String description;
-
-    @Column(name = "info", length = 128)
-    private String info;
-
-    @Column(name = "secret", length = 64)
-    private String secret;
-
-    @ManyToOne(targetEntity = UserImpl.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "creator_id")
-    private User creator;
-
-    @Column(name = "auto_update", length = 1)
-    private String autoUpdate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contact_method_id")
-    private ContactMethod contactMethod;
-
-    @Column(name = "running_kernel", length = 64)
-    private String runningKernel;
-
-    @Column(name = "last_boot")
-    private Long lastBoot;
-
-    @Column(name = "channels_changed")
-    private Date channelsChanged;
-
-    @Column(name = "cobbler_id", length = 64)
-    private String cobblerId;
-
-    @Column(name = "machine_id", length = 256)
-    private String machineId;
-
-    @Column(name = "hostname", length = 128)
-    private String hostname;
-
-    @Column(name = "payg")
-    @Type(type = "yes_no")
-    private Boolean payg = false;
-
-    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Note> notes = new HashSet<>();
-
-    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Device> devices = new HashSet<>();
-
-    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<NetworkInterface> networkInterfaces = new HashSet<>();
-
-    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<CustomDataValue> customDataValues = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(name = "rhnServerChannel",
-            joinColumns = @JoinColumn(name = "server_id"),
-            inverseJoinColumns = @JoinColumn(name = "channel_id"))
-    private Set<Channel> channels = new HashSet<>();
-
-    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ServerFQDN> fqdns = new HashSet<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "server_arch_id")
-    private ServerArch serverArch;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "provision_state_id")
-    private ProvisionState provisionState;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ServerInfo serverInfo;
-
-    @OneToMany(mappedBy = "id.server", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ServerPath> serverPaths = new HashSet<>();
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private CPU cpu;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ServerLock lock;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ServerUuid serverUuid;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ProxyInfo proxyInfo;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private MgrServerInfo mgrServerInfo;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private PushClient pushClient;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Ram ram;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Dmi dmi;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Location serverLocation;
-
-    @OneToOne(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ServerCoCoAttestationConfig cocoAttestationConfig;
-
-    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ServerCoCoAttestationReport> cocoAttestationReports = new HashSet<>();
-
-    @OneToMany(mappedBy = "hostSystem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<VirtualInstance> guests = new HashSet<>();
-
-    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<ServerHistoryEvent> history = new HashSet<>();
-
-    @OneToMany(mappedBy = "server", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<InstalledPackage> packages = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(name = "suseServerInstalledProduct",
-            joinColumns = @JoinColumn(name = "rhn_server_id"),
-            inverseJoinColumns = @JoinColumn(name = "suse_installed_product_id"))
-    private Set<InstalledProduct> installedProducts = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(name = "suseServerAppstream",
-            joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name = "server_id"))
-    private Set<ServerAppStream> appStreams = new HashSet<>();
-
-    @Transient
     private Boolean ignoreEntitlementsForMigration;
-    @Transient
-    private NetworkInterface primaryInterface;
-    @ManyToMany
-    @JoinTable(
-            name = "rhnServerConfigChannel",
-            joinColumns = @JoinColumn(name = "server_id"),
-            inverseJoinColumns = @JoinColumn(name = "config_channel_id"))
-    @WhereJoinTable(clause = "position > 0")
-    private List<ConfigChannel> configChannelsHibernate = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "rhnServerConfigChannel",
-            joinColumns = @JoinColumn(name = "server_id"),
-            inverseJoinColumns = @JoinColumn(name = "config_channel_id"))
-    @WhereJoinTable(clause = "position IS NULL")
+    private Long id;
+    private Org org;
+    private String digitalServerId;
+    private String os;
+    private String osFamily;
+    private String release;
+    private String name;
+    private String description;
+    private String info;
+    private String secret;
+    private User creator;
+    private String autoUpdate;
+    private ContactMethod contactMethod;
+    private String runningKernel;
+    private Long lastBoot;
+    private ServerArch serverArch;
+    private ProvisionState provisionState;
+    private Date channelsChanged;
+    private Date created;
+    private String cobblerId;
+    private Set<Device> devices;
+    private ServerInfo serverInfo;
+    private Set<ServerPath> serverPaths = new HashSet<>();
+    private CPU cpu;
+    private ServerLock lock;
+    private ServerUuid serverUuid;
+    private Set<Note> notes;
+    private Set<ServerFQDN> fqdns;
+    private Ram ram;
+    private Dmi dmi;
+    private NetworkInterface primaryInterface;
+    private Set<NetworkInterface> networkInterfaces;
+    private Set<CustomDataValue> customDataValues;
+    private Set<Channel> channels = new HashSet<>();
+    private List<ConfigChannel> configChannels = new ArrayList<>();
     private Set<ConfigChannel> localChannels = new HashSet<>();
-    @Transient
+    private Location serverLocation;
+    private ServerCoCoAttestationConfig cocoAttestationConfig;
+    private Set<ServerCoCoAttestationReport> cocoAttestationReports;
+    private Set<VirtualInstance> guests = new HashSet<>();
     private VirtualInstance virtualInstance;
-    @Transient
+    private PushClient pushClient;
     private final ConfigChannelListProcessor configListProc =
         new ConfigChannelListProcessor();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "rhnServerGroupMembers",
-            joinColumns = @JoinColumn(name = "server_id"),
-            inverseJoinColumns = @JoinColumn(name = "server_group_id")
-    )
+    private Set<ServerHistoryEvent> history = new HashSet<>();
+    private Set<InstalledPackage> packages = new HashSet<>();
+    private ProxyInfo proxyInfo;
+    private MgrServerInfo mgrServerInfo;
     private Set<ServerGroup> groups = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "server_id")  // Foreign key column
     private Set<ClientCapability> capabilities = new HashSet<>();
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "maintenance_schedule_id")
+    private Set<InstalledProduct> installedProducts = new HashSet<>();
+    private String machineId;
+    private String hostname;
+    private boolean payg;
     private MaintenanceSchedule maintenanceSchedule;
-
-    @Transient
     private Boolean hasConfigFeature;
+    private Set<ServerAppStream> appStreams = new HashSet<>();
 
-    @Column(name = "cpe", length = 64)
     private String cpe;
 
-    @Column(name = "valid_cnames")
     public static final String VALID_CNAMES = "valid_cnames_";
+
     /**
      * @return Returns the capabilities.
      */
@@ -504,8 +339,8 @@ public class Server extends BaseDomainHelper implements Identifiable {
      */
     protected void setConfigChannelsHibernate(
             List<ConfigChannel> configChannelsIn) {
-        configChannelsHibernate = configChannelsIn;
-        configChannelsHibernate.removeIf(Objects::isNull);
+        configChannels = configChannelsIn;
+        configChannels.removeIf(Objects::isNull);
     }
 
     /**
@@ -514,12 +349,12 @@ public class Server extends BaseDomainHelper implements Identifiable {
      * @return List of config channels
      */
     protected List<ConfigChannel> getConfigChannelsHibernate() {
-        return configChannelsHibernate;
+        return configChannels;
     }
 
     protected List<ConfigChannel> getConfigChannels() {
         ensureConfigManageable();
-        return configChannelsHibernate;
+        return configChannels;
     }
 
     /**
@@ -538,7 +373,7 @@ public class Server extends BaseDomainHelper implements Identifiable {
      * @return A stream of the ServerConfigChannels mappings
      */
     public Stream<ConfigChannel> getConfigChannelStream() {
-        return getConfigChannelsHibernate().stream();
+        return getConfigChannels().stream();
     }
 
     /**
@@ -557,7 +392,7 @@ public class Server extends BaseDomainHelper implements Identifiable {
      * @return A list of the ServerConfigChannels mappings
      */
     public List<ConfigChannel> getConfigChannelList() {
-        return new ArrayList<>(getConfigChannelsHibernate());
+        return new ArrayList<>(getConfigChannels());
     }
 
     /**
@@ -565,7 +400,7 @@ public class Server extends BaseDomainHelper implements Identifiable {
      * the server.
      */
     public int getConfigChannelCount() {
-        return getConfigChannelsHibernate().size();
+        return getConfigChannels().size();
     }
 
     public void setHasConfigFeature(Boolean hasConfig) {
@@ -625,7 +460,7 @@ public class Server extends BaseDomainHelper implements Identifiable {
      * @param user The user doing the action
      */
     public void unsubscribeConfigChannels(List<ConfigChannel> configChannelList, User user) {
-        configChannelList.forEach(cc -> configListProc.remove(getConfigChannelsHibernate(), cc));
+        configChannelList.forEach(cc -> configListProc.remove(getConfigChannels(), cc));
     }
 
     /**
@@ -634,7 +469,7 @@ public class Server extends BaseDomainHelper implements Identifiable {
      * @param user The user doing the action
      */
     public void setConfigChannels(List<ConfigChannel> configChannelList, User user) {
-        configListProc.replace(getConfigChannelsHibernate(), configChannelList);
+        configListProc.replace(getConfigChannels(), configChannelList);
     }
 
     /**
@@ -645,10 +480,10 @@ public class Server extends BaseDomainHelper implements Identifiable {
                 .setParameter("sid", getId())
                 .executeUpdate();
 
-        if (!configChannelsHibernate.isEmpty()) {
-            String values = IntStream.range(0, configChannelsHibernate.size())
+        if (!configChannels.isEmpty()) {
+            String values = IntStream.range(0, configChannels.size())
                     .boxed()
-                    .map(i -> String.format("(%s, %s, %s)", getId(), configChannelsHibernate.get(i).getId(), i + 1))
+                    .map(i -> String.format("(%s, %s, %s)", getId(), configChannels.get(i).getId(), i + 1))
                     .collect(Collectors.joining(","));
 
 
@@ -1933,15 +1768,33 @@ public class Server extends BaseDomainHelper implements Identifiable {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
+    public boolean equals(final Object other) {
+        if (!(other instanceof Server castOther)) {
             return false;
         }
-        Server server = (Server) o;
-        return Objects.equals(id, server.id);
+
+        Optional<PackageEvr> proxyVersion =
+                Optional.ofNullable(proxyInfo).map(ProxyInfo::getVersion);
+        Optional<PackageEvr> otherProxyVersion =
+                Optional.ofNullable(castOther.getProxyInfo()).map(ProxyInfo::getVersion);
+        Optional<PackageEvr> mgrVersion =
+                Optional.ofNullable(mgrServerInfo).map(MgrServerInfo::getVersion);
+        Optional<PackageEvr> otherMgrVersion =
+                Optional.ofNullable(castOther.getMgrServerInfo()).map(MgrServerInfo::getVersion);
+
+        return new EqualsBuilder().append(os, castOther.getOs())
+                .append(release, castOther.getRelease())
+                .append(name, castOther.getName())
+                .append(description, castOther.getDescription())
+                .append(info, castOther.getInfo())
+                .append(secret, castOther.getSecret())
+                .append(autoUpdate, castOther.getAutoUpdate())
+                .append(runningKernel, castOther.getRunningKernel())
+                .append(lastBoot, castOther.getLastBoot())
+                .append(channelsChanged, castOther.getChannelsChanged())
+                .append(proxyVersion, otherProxyVersion)
+                .append(mgrVersion, otherMgrVersion)
+                .isEquals();
     }
 
     /**
@@ -1949,7 +1802,18 @@ public class Server extends BaseDomainHelper implements Identifiable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        Optional<PackageEvr> proxyVersion =
+                Optional.ofNullable(getProxyInfo()).map(ProxyInfo::getVersion);
+        Optional<PackageEvr> mgrVersion =
+                Optional.ofNullable(getMgrServerInfo()).map(MgrServerInfo::getVersion);
+        return new HashCodeBuilder().append(id).append(digitalServerId).append(os)
+                .append(release).append(name).append(description)
+                .append(info).append(secret)
+                .append(autoUpdate).append(runningKernel)
+                .append(lastBoot).append(channelsChanged)
+                .append(proxyVersion)
+                .append(mgrVersion)
+                .toHashCode();
     }
 
     /**
@@ -1960,6 +1824,22 @@ public class Server extends BaseDomainHelper implements Identifiable {
         return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE).append(
                 "id", id).append("org", org).append("name", name).append(
                         "description", description).toString();
+    }
+
+    /**
+     * @return Returns the created.
+     */
+    @Override
+    public Date getCreated() {
+        return created;
+    }
+
+    /**
+     * @param createdIn The created to set.
+     */
+    @Override
+    public void setCreated(Date createdIn) {
+        this.created = createdIn;
     }
 
     /**

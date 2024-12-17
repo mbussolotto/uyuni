@@ -30,6 +30,7 @@ import org.jose4j.lang.JoseException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -188,7 +189,7 @@ public class AccessTokenFactory extends HibernateFactory {
                         .flatMap(s -> s.getChannels().stream())
                         .toList();
 
-        Set<Channel> withoutToken = minion.getChannels();
+        ArrayList<Channel> withoutToken = new ArrayList<>(minion.getChannels());
         withoutToken.removeAll(allTokenChannels);
 
         List<AccessToken> newTokens = withoutToken.stream().flatMap(channel ->
@@ -252,7 +253,7 @@ public class AccessTokenFactory extends HibernateFactory {
      * @param token AccessToken to delete.
      */
     public static void delete(AccessToken token) {
-        getSession().delete(token);
+        HibernateFactory.getSession().delete(token);
     }
 
     /**
@@ -261,7 +262,8 @@ public class AccessTokenFactory extends HibernateFactory {
      * @param channels set of channels
      * @return AccessToken if it could be generated
      */
-    public static Optional<AccessToken> generate(MinionServer minion, Set<Channel> channels) {
+    public static Optional<AccessToken> generate(MinionServer minion,
+            Set<Channel> channels) {
         try {
             DownloadTokenBuilder tokenBuilder = new DownloadTokenBuilder(minion.getOrg().getId());
             tokenBuilder.useServerSecret();
@@ -279,7 +281,6 @@ public class AccessTokenFactory extends HibernateFactory {
             newToken.setExpiration(Date.from(expiration));
             newToken.setChannels(channels);
             save(newToken);
-            minion.getAccessTokens().add(newToken);
             return Optional.of(newToken);
         }
         catch (JoseException e) {
@@ -298,8 +299,7 @@ public class AccessTokenFactory extends HibernateFactory {
      * the old token will not be unlinked.
      */
     public static AccessToken regenerate(AccessToken token) throws JoseException {
-        MinionServer minion = token.getMinion();
-        DownloadTokenBuilder tokenBuilder = new DownloadTokenBuilder(minion.getOrg().getId());
+        DownloadTokenBuilder tokenBuilder = new DownloadTokenBuilder(token.getMinion().getOrg().getId());
         tokenBuilder.useServerSecret();
         tokenBuilder.onlyChannels(token.getChannels().stream().map(Channel::getLabel)
                 .collect(Collectors.toSet()));
@@ -309,7 +309,7 @@ public class AccessTokenFactory extends HibernateFactory {
         AccessToken newToken = new AccessToken();
         newToken.setStart(Date.from(tokenBuilder.getIssuedAt()));
         newToken.setToken(tokenString);
-        newToken.setMinion(minion);
+        newToken.setMinion(token.getMinion());
         Instant expiration = tokenBuilder.getIssuedAt()
                 .plus(tokenBuilder.getExpirationTimeMinutesInTheFuture(),
                         ChronoUnit.MINUTES);
@@ -318,8 +318,6 @@ public class AccessTokenFactory extends HibernateFactory {
         newToken.setChannels(new HashSet<>(token.getChannels()));
 
         AccessTokenFactory.save(newToken);
-        minion.getAccessTokens().remove(token);
-        minion.getAccessTokens().add(newToken);
 
         // Unlink the old token
         token.setMinion(null);

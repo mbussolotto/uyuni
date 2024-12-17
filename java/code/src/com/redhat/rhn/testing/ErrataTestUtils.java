@@ -350,9 +350,8 @@ public class ErrataTestUtils {
 
         if (errata != null) {
             errata.addPackage(result);
-            HibernateFactory.getSession().flush();
+            result.setErrata(Set.of(errata));
             HibernateFactory.getSession().refresh(errata);
-            HibernateFactory.getSession().refresh(result);
         }
 
         return result;

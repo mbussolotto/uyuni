@@ -12,19 +12,21 @@
  * granted to use or replicate Red Hat trademarks that are incorporated
  * in this software or its documentation.
  */
+
 package com.redhat.rhn.domain.channel;
 
-import javax.persistence.EmbeddedId;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Index;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "suseAppstreamApi",
-        indexes = @Index(name = "suse_appstream_api_rpm_idx", columnList = "rpm"))
+@IdClass(AppStreamApiKey.class)
+@Table(name = "suseAppstreamApi")
 public class AppStreamApi {
 
     /**
@@ -39,47 +41,36 @@ public class AppStreamApi {
      * @param idIn the id of the appstream
      */
     public AppStreamApi(String rpmIn, Long idIn) {
-        this.id = new AppStreamApiKey(idIn, rpmIn);
+        id = idIn;
+        rpm = rpmIn;
     }
 
-    @EmbeddedId
-    private AppStreamApiKey id;
+    @Id
+    @Column(name = "module_id")
+    private Long id;
+
+    @Id
+    private String rpm;
 
     @ManyToOne
-    @JoinColumn(name = "module_id", nullable = false, insertable = false, updatable = false)
-    @MapsId("id")  // Maps the 'id' from AppStreamApiKey to the AppStream entity
+    @JoinColumn(name = "module_id")
+    @MapsId("id")
     private AppStream appStream;
 
-    public AppStreamApiKey getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(AppStreamApiKey idIn) {
-        this.id = idIn;
+    public void setId(Long idIn) {
+        id = idIn;
     }
 
     public String getRpm() {
-        return id.getRpm();
+        return rpm;
     }
 
-    /**
-     * set RPM
-     * @param rpmIn input RPM
-     */
     public void setRpm(String rpmIn) {
-        id.setRpm(rpmIn);
-    }
-
-    public Long getModuleId() {
-        return id.getId();
-    }
-
-    /**
-     * set module ID
-     * @param idIn input ID
-     */
-    public void setModuleId(Long idIn) {
-        id.setId(idIn);
+        rpm = rpmIn;
     }
 
     public AppStream getAppStream() {

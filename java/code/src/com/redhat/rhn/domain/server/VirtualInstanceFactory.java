@@ -251,7 +251,7 @@ public class VirtualInstanceFactory extends HibernateFactory {
      */
     public VirtualInstanceType getParaVirtType() {
         return (VirtualInstanceType)getSession().getNamedQuery(
-                "VirtualInstanceType.findByLabel").setParameter("label", "para_virtualized")
+                "VirtualInstanceType.findByLabel").setString("label", "para_virtualized")
                 .setCacheable(true).uniqueResult();
     }
 
@@ -262,7 +262,7 @@ public class VirtualInstanceFactory extends HibernateFactory {
      */
     public VirtualInstanceType getFullyVirtType() {
         return (VirtualInstanceType)getSession().getNamedQuery(
-                "VirtualInstanceType.findByLabel").setParameter("label", "fully_virtualized")
+                "VirtualInstanceType.findByLabel").setString("label", "fully_virtualized")
                 .setCacheable(true).uniqueResult();
     }
 
@@ -274,7 +274,7 @@ public class VirtualInstanceFactory extends HibernateFactory {
      */
     public VirtualInstanceType getVirtualInstanceType(String label) {
         return (VirtualInstanceType)getSession().getNamedQuery(
-                "VirtualInstanceType.findByLabel").setParameter("label", label)
+                "VirtualInstanceType.findByLabel").setString("label", label)
                 .setCacheable(true).uniqueResult();
     }
 
@@ -285,7 +285,7 @@ public class VirtualInstanceFactory extends HibernateFactory {
      */
     public VirtualInstanceState getRunningState() {
         return (VirtualInstanceState)getSession().getNamedQuery(
-                "VirtualInstanceState.findByLabel").setParameter("label", "running")
+                "VirtualInstanceState.findByLabel").setString("label", "running")
                 .uniqueResult();
     }
 
@@ -296,7 +296,7 @@ public class VirtualInstanceFactory extends HibernateFactory {
      */
     public VirtualInstanceState getStoppedState() {
         return (VirtualInstanceState)getSession().getNamedQuery(
-            "VirtualInstanceState.findByLabel").setParameter("label", "stopped")
+            "VirtualInstanceState.findByLabel").setString("label", "stopped")
             .uniqueResult();
     }
 
@@ -307,7 +307,7 @@ public class VirtualInstanceFactory extends HibernateFactory {
      */
     public VirtualInstanceState getPausedState() {
         return (VirtualInstanceState)getSession().getNamedQuery(
-            "VirtualInstanceState.findByLabel").setParameter("label", "paused")
+            "VirtualInstanceState.findByLabel").setString("label", "paused")
             .uniqueResult();
     }
 
@@ -318,7 +318,7 @@ public class VirtualInstanceFactory extends HibernateFactory {
      */
     public VirtualInstanceState getCrashedState() {
         return (VirtualInstanceState)getSession().getNamedQuery(
-            "VirtualInstanceState.findByLabel").setParameter("label", "crashed")
+            "VirtualInstanceState.findByLabel").setString("label", "crashed")
             .uniqueResult();
     }
 
@@ -329,7 +329,7 @@ public class VirtualInstanceFactory extends HibernateFactory {
      */
     public VirtualInstanceState getUnknownState() {
         return (VirtualInstanceState)getSession().getNamedQuery(
-                "VirtualInstanceState.findByLabel").setParameter("label", "unknown")
+                "VirtualInstanceState.findByLabel").setString("label", "unknown")
                 .uniqueResult();
     }
 
@@ -341,7 +341,7 @@ public class VirtualInstanceFactory extends HibernateFactory {
      */
     public Optional<VirtualInstanceState> getState(String label) {
         return Optional.ofNullable((VirtualInstanceState)getSession().getNamedQuery(
-                "VirtualInstanceState.findByLabel").setParameter("label", label)
+                "VirtualInstanceState.findByLabel").setString("label", label)
                 .uniqueResult());
     }
 

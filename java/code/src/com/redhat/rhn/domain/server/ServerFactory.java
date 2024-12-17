@@ -54,7 +54,13 @@ import com.suse.manager.webui.services.pillar.MinionPillarManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.hibernate.query.Query;
 import org.hibernate.type.StandardBasicTypes;
 
@@ -73,7 +79,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
@@ -197,45 +202,53 @@ public class ServerFactory extends HibernateFactory {
     @SuppressWarnings("unchecked")
     public static Optional<Server> lookupProxyServer(String name) {
         boolean nameIsFullyQualified = name.contains(".");
-        Optional<Server> result = Optional.empty();
+        if (!nameIsFullyQualified) {
+            log.warn("Specified master name \"{}\" is not fully-qualified,proxy attachment might not be correct", name);
+            log.warn("Please use a FQDN in /etc/salt/minion.d/susemanager.conf");
+        }
 
-        result = findByFqdn(name);
+        DetachedCriteria proxyIds = DetachedCriteria.forClass(ProxyInfo.class)
+                .setProjection(Projections.property("server.id"));
+
+        Optional<Server> result = findByFqdn(name);
+
         if (result.isPresent()) {
             return result;
         }
 
-        String sql
-                = "SELECT * FROM rhnServer WHERE hostname = :hostname AND id IN (SELECT server_id FROM rhnProxyInfo)";
-        Query<Server> query
-                = HibernateFactory.getSession().createNativeQuery(sql, Server.class);
-        query.setParameter("hostname", name);
-        List<Server> servers = query.getResultList();
-        result = servers.stream().findFirst();
+        result = HibernateFactory.getSession()
+                .createCriteria(Server.class)
+                .add(Subqueries.propertyIn("id", proxyIds))
+                .add(Restrictions.eq("hostname", name))
+                .list()
+                .stream()
+                .findFirst();
+
         if (result.isPresent()) {
             return result;
         }
 
+        // precise search did not work, try imprecise
         if (nameIsFullyQualified) {
-            String strippedHostname = name.split("\\.")[0];
-            sql = "SELECT * FROM rhnServer WHERE hostname = :hostname AND id IN" +
-                "(SELECT server_id FROM rhnProxyInfo)";
-            query = HibernateFactory.getSession().createNativeQuery(sql, Server.class);
-            query.setParameter("hostname", strippedHostname);
-            servers = query.getResultList();
-            result = servers.stream().findFirst();
-            if (result.isPresent()) {
-                return result;
-            }
+            String srippedHostname = name.split("\\.")[0];
+
+            return HibernateFactory.getSession()
+                    .createCriteria(Server.class)
+                    .add(Subqueries.propertyIn("id", proxyIds))
+                    .add(Restrictions.eq("hostname", srippedHostname))
+                    .list()
+                    .stream()
+                    .findFirst();
         }
         else {
-            sql = "SELECT * FROM rhnServer WHERE hostname LIKE :hostnamePattern AND " +
-                    "id IN (SELECT server_id FROM rhnProxyInfo)";
-            query = HibernateFactory.getSession().createNativeQuery(sql, Server.class);
-            query.setParameter("hostnamePattern", name + "%");
-            servers = query.getResultList();
-            result = servers.stream().findFirst();
+            return HibernateFactory.getSession()
+                    .createCriteria(Server.class)
+                    .add(Subqueries.propertyIn("id", proxyIds))
+                    .add(Restrictions.like("hostname", name + ".", MatchMode.START))
+                    .list()
+                    .stream()
+                    .findFirst();
         }
-        return result;
     }
 
     /**
@@ -380,52 +393,28 @@ public class ServerFactory extends HibernateFactory {
     }
 
     private static boolean insertServersToGroup(List<Long> serverIds, Long sgid) {
-        String sql = """
-                    INSERT INTO rhnServerGroupMembers (server_id, server_group_id)
-                    SELECT S.id AS server_id, :sgid
-                    FROM rhnServerGroup SG
-                    JOIN rhnServer S ON S.org_id = SG.org_id
-                    WHERE S.id IN (:serverIds)
-                    AND SG.id = :sgid
-                    AND NOT EXISTS (
-                       SELECT 1
-                       FROM rhnServerGroupMembers SGM
-                       WHERE SGM.server_id = S.id
-                       AND SGM.server_group_id = SG.id
-                    )
-                    ON CONFLICT (server_id, server_group_id) DO NOTHING
-                    """;
+        WriteMode m = ModeFactory.getWriteMode(SYSTEM_QUERIES, "add_servers_to_server_group");
 
-            // Create a native query
-            Query<ServerGroup> query = HibernateFactory.getSession().createNativeQuery(sql, ServerGroup.class);
+        Map<String, Object> params = new HashMap<>();
+        params.put("sgid", sgid);
 
-            // Set parameters for the query
-            query.setParameter("sgid", sgid);
-            query.setParameter("serverIds", serverIds);
+        int insertsCount = m.executeUpdate(params, serverIds);
 
-            // Execute the update
-            int insertsCount = query.executeUpdate();
-
-            if (insertsCount > 0) {
-                // Update the current members if there were inserts
-                updateCurrentMembersOfServerGroup(HibernateFactory.getSession(), sgid, insertsCount);
-                return true;
-            }
-            return false;
+        if (insertsCount > 0) {
+            updateCurrentMembersOfServerGroup(sgid, insertsCount);
+            return true;
+        }
+        return false;
     }
 
-    private static void updateCurrentMembersOfServerGroup(Session session, Long sgid, int membersCount) {
-        // Native query to update the current members count
-        String updateSql = """
-                UPDATE rhnServerGroup
-                SET current_members = :members_count
-                WHERE id = :sgid
-                """;
+    private static void updateCurrentMembersOfServerGroup(Long sgid, int membersCount) {
+        WriteMode mode = ModeFactory.getWriteMode(SYSTEM_QUERIES, "update_current_members_of_server_group");
 
-        Query<Object> updateQuery = session.createNativeQuery(updateSql, Object.class);
-        updateQuery.setParameter("sgid", sgid);
-        updateQuery.setParameter("members_count", membersCount);
-        updateQuery.executeUpdate();
+        Map<String, Object> params = new HashMap<>();
+        params.put("sgid", sgid);
+        params.put("members_count", membersCount);
+
+        mode.executeUpdate(params);
     }
 
     private static void updatePermissionsForServerGroup(Long sgid) {
@@ -498,7 +487,7 @@ public class ServerFactory extends HibernateFactory {
         int removesCount = m.executeUpdate(params, serverIds);
 
         if (removesCount > 0) {
-            updateCurrentMembersOfServerGroup(HibernateFactory.getSession(), sgid, -removesCount);
+            updateCurrentMembersOfServerGroup(sgid, -removesCount);
             return true;
         }
         return false;
@@ -767,11 +756,9 @@ public class ServerFactory extends HibernateFactory {
      */
     @SuppressWarnings("unchecked")
     public static Server lookupForeignSystemByDigitalServerId(String id) {
-        String sql = "SELECT * FROM Server WHERE rhnServer = :id";
-        List<Server> servers = getSession().createNativeQuery(sql, Server.class)
-                .setParameter("id", id).getResultList();
-
-        for (Server server : servers) {
+        Criteria criteria = getSession().createCriteria(Server.class);
+        criteria.add(Restrictions.eq("digitalServerId", id));
+        for (Server server : (List<Server>) criteria.list()) {
             if (server.hasEntitlement(EntitlementManager.getByName("foreign_entitled"))) {
                 return server;
             }
@@ -806,7 +793,7 @@ public class ServerFactory extends HibernateFactory {
      */
     public static ServerGroupType lookupServerGroupTypeByLabel(String label) {
         return (ServerGroupType) HibernateFactory.getSession().getNamedQuery("ServerGroupType.findByLabel")
-                .setParameter("label", label)
+                .setString("label", label)
                 // Retrieve from cache if there
                 .setCacheable(true).uniqueResult();
 
@@ -910,7 +897,7 @@ public class ServerFactory extends HibernateFactory {
     public static ServerArch lookupServerArchByLabel(String label) {
         Session session = HibernateFactory.getSession();
         return (ServerArch) session.getNamedQuery("ServerArch.findByLabel")
-                .setParameter("label", label)
+                .setString("label", label)
                 // Retrieve from cache if there
                 .setCacheable(true).uniqueResult();
     }
@@ -936,7 +923,7 @@ public class ServerFactory extends HibernateFactory {
     public static CPUArch lookupCPUArchByName(String name) {
         Session session = HibernateFactory.getSession();
         return (CPUArch) session.getNamedQuery("CPUArch.findByName")
-                .setParameter("name", name)
+                .setString("name", name)
                 // Retrieve from cache if there
                 .setCacheable(true).uniqueResult();
     }
@@ -1312,7 +1299,7 @@ public class ServerFactory extends HibernateFactory {
      */
     public static SnapshotTag lookupSnapshotTagbyName(String tagName) {
         return (SnapshotTag) HibernateFactory.getSession().getNamedQuery("SnapshotTag.lookupByTagName")
-                .setParameter("tag_name", tagName)
+                .setString("tag_name", tagName)
                 // Do not use setCacheable(true), as tag deletion will
                 // usually end up making this query's output out of date
                 .uniqueResult();
@@ -1324,7 +1311,7 @@ public class ServerFactory extends HibernateFactory {
      */
     public static SnapshotTag lookupSnapshotTagbyId(Long tagId) {
         return (SnapshotTag) HibernateFactory.getSession().getNamedQuery("SnapshotTag.lookupById")
-                .setParameter("id", tagId)
+                .setLong("id", tagId)
                 // Do not use setCacheable(true), as tag deletion will
                 // usually end up making this query's output out of date
                 .uniqueResult();
@@ -1353,17 +1340,10 @@ public class ServerFactory extends HibernateFactory {
      * @return contact method with the given label
      */
     public static ContactMethod findContactMethodByLabel(String label) {
-        String sql = "SELECT * FROM suseServerContactMethod WHERE label = :label";
-        TypedQuery<ContactMethod> query
-                = getSession().createNativeQuery(sql, ContactMethod.class);
-        query.setParameter("label", label);
-
-        // Execute the query and get the result
-        List<ContactMethod> results = query.getResultList();
-        if (!results.isEmpty()) {
-            return results.get(0); // Get the first result if available
-        }
-        return null;
+        Session session = getSession();
+        Criteria criteria = session.createCriteria(ContactMethod.class);
+        criteria.add(Restrictions.eq("label", label));
+        return (ContactMethod) criteria.uniqueResult();
     }
 
     /**
@@ -1519,10 +1499,10 @@ public class ServerFactory extends HibernateFactory {
      * @return the server if any
      */
     public static Optional<Server> findByMachineId(String machineId) {
-        String jpql = "SELECT s FROM rhnServer s WHERE s.machineId = :machineId";
-        TypedQuery<Server> query = getSession().createQuery(jpql, Server.class);
-        query.setParameter("machineId", machineId);
-        return Optional.ofNullable(query.getResultStream().findFirst().orElse(null));
+        Session session = getSession();
+        Criteria criteria = session.createCriteria(Server.class);
+        criteria.add(Restrictions.eq("machineId", machineId));
+        return Optional.ofNullable((Server) criteria.uniqueResult());
     }
 
     /**
@@ -1531,12 +1511,9 @@ public class ServerFactory extends HibernateFactory {
      * @return a {@link Capability} with the given name
      */
     public static Optional<Capability> findCapability(String name) {
-        String sql = "SELECT * FROM Capability WHERE name = :name";
-        Capability capability
-                = (Capability) getSession().createNativeQuery(sql, Capability.class)
-                        .setParameter("name", name).uniqueResult();
-        return Optional.ofNullable(capability);
-
+        Criteria criteria = getSession().createCriteria(Capability.class);
+        criteria.add(Restrictions.eq("name", name));
+        return Optional.ofNullable((Capability) criteria.uniqueResult());
     }
 
     /**
