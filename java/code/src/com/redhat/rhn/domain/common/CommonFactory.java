@@ -87,12 +87,9 @@ public class CommonFactory extends HibernateFactory {
         Session session = null;
         //look for Kickstart data by id
         session = HibernateFactory.getSession();
-        return session.createNativeQuery("""
-                                      SELECT * from rhnFileList
-                                      WHERE id = :id
-                                      and org_id = :org_id """, FileList.class)
-                                      .setParameter("id", idIn)
-                                      .setParameter("org_id", org.getId())
+        return (FileList) session.getNamedQuery("FileList.findByIdAndOrg")
+                                      .setLong("id", idIn)
+                                      .setLong("org_id", org.getId())
                                       .uniqueResult();
     }
 
@@ -106,8 +103,8 @@ public class CommonFactory extends HibernateFactory {
         Session session = null;
         //look for Kickstart data by label
         session = HibernateFactory.getSession();
-        return (FileList) session.getNamedQuery("FileList.findByLabelAndOrg").setParameter("label", labelIn)
-        .setParameter("org_id", org.getId()).uniqueResult();
+        return (FileList) session.getNamedQuery("FileList.findByLabelAndOrg").setString("label", labelIn)
+        .setLong("org_id", org.getId()).uniqueResult();
     }
 
     /**
@@ -153,6 +150,7 @@ public class CommonFactory extends HibernateFactory {
     public static TinyUrl lookupTinyUrl(String tokenIn) {
         Session session = HibernateFactory.getSession();
         return (TinyUrl) session.getNamedQuery("TinyUrl.findByToken")
-                .setParameter("token", tokenIn).uniqueResult();
+                                      .setString("token", tokenIn)
+                                      .uniqueResult();
     }
 }

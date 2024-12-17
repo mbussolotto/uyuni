@@ -45,7 +45,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
@@ -221,9 +220,7 @@ public class PackageFactory extends HibernateFactory {
      */
     public static PackageArch lookupPackageArchById(Long id) {
         return HibernateFactory.doWithoutAutoFlushing(
-          () -> HibernateFactory.getSession().createNativeQuery("""
-                SELECT p.* from rhnPackageArch as p WHERE p.id = :id
-                """, PackageArch.class).setParameter("id", id).getSingleResult()
+          () -> singleton.lookupObjectByNamedQuery("PackageArch.findById", Map.of("id", id), true)
         );
     }
 
@@ -236,16 +233,7 @@ public class PackageFactory extends HibernateFactory {
         if (label == null) {
             return null;
         }
-
-        try {
-        return HibernateFactory.doWithoutAutoFlushing(
-                () -> HibernateFactory.getSession().createNativeQuery("""
-                SELECT p.* from rhnPackageArch as p WHERE p.label = :label
-                """, PackageArch.class).setParameter("label", label).getSingleResult());
-        }
-        catch (NoResultException e) {
-            return null;
-        }
+        return singleton.lookupObjectByNamedQuery("PackageArch.findByLabel", Map.of("label", label), true);
     }
 
     /**
@@ -312,7 +300,7 @@ public class PackageFactory extends HibernateFactory {
      */
      public static PackageName lookupPackageName(Long id) {
          return (PackageName) HibernateFactory.getSession().getNamedQuery("PackageName.findById")
-                 .setParameter("id", id).uniqueResult();
+                 .setLong("id", id).uniqueResult();
     }
 
     /**
@@ -325,7 +313,7 @@ public class PackageFactory extends HibernateFactory {
      */
     public static PackageName lookupPackageName(String pn) {
         return (PackageName) HibernateFactory.getSession().getNamedQuery("PackageName.findByName")
-                .setParameter("name", pn).uniqueResult();
+                .setString("name", pn).uniqueResult();
     }
 
     /**
@@ -354,8 +342,8 @@ public class PackageFactory extends HibernateFactory {
             String release, String epoch, PackageArch arch) {
 
         List<Package> packages = HibernateFactory.getSession().getNamedQuery(
-                "Package.lookupByNevra").setParameter("org", org).setParameter("name", name)
-                .setParameter("version", version).setParameter("release", release).setParameter(
+                "Package.lookupByNevra").setParameter("org", org).setString("name", name)
+                .setString("version", version).setString("release", release).setParameter(
                         "arch", arch).list();
 
         if (epoch == null || packages.size() < 2) {
@@ -400,11 +388,11 @@ public class PackageFactory extends HibernateFactory {
         @SuppressWarnings("unchecked")
         List<Package> packages = HibernateFactory.getSession()
                 .getNamedQuery("Package.lookupByChannelLabelNevraCs")
-                .setParameter("channel", channel)
-                .setParameter("name", name)
-                .setParameter("version", version)
-                .setParameter("release", release)
-                .setParameter("arch", arch)
+                .setString("channel", channel)
+                .setString("name", name)
+                .setString("version", version)
+                .setString("release", release)
+                .setString("arch", arch)
                 .setString("checksum", checksum.orElse(null))
                 .list();
 

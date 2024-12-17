@@ -23,7 +23,6 @@ import com.redhat.rhn.domain.user.legacy.UserImpl;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.hibernate.annotations.Type;
 
 import java.util.List;
 
@@ -205,7 +204,7 @@ public abstract class RecurringAction extends BaseDomainHelper {
      * @return active - if action is active
      */
     @Column
-    @Type(type = "yes_no")
+    @org.hibernate.annotations.Type(type = "yes_no")
     public boolean isActive() {
         return active;
     }

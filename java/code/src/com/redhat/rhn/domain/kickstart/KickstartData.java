@@ -54,9 +54,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.persistence.OrderBy;
-
-
 /**
  * KickstartData - Class representation of the table RhnKSData.
  */
@@ -84,7 +81,6 @@ public class KickstartData {
     private Set<Token> defaultRegTokens;
     private Set<FileList> preserveFileLists;
     private Set<KickstartPackage> ksPackages = new HashSet<>();
-    @OrderBy("commandName.sortOrder, customPosition")
     private Collection<KickstartCommand> commands = new LinkedHashSet<>();
     private Set<KickstartIpRange> ips; // rhnKickstartIpRange
     private Set<KickstartScript> scripts;      // rhnKickstartScript

@@ -15,7 +15,6 @@
 package com.redhat.rhn.domain.image;
 
 import com.redhat.rhn.common.util.StringUtil;
-import com.redhat.rhn.domain.BaseDomainHelper;
 import com.redhat.rhn.domain.org.CustomDataKey;
 import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.domain.user.legacy.UserImpl;
@@ -42,7 +41,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "suseProfileCustomDataValue")
 
-public class ProfileCustomDataValue extends BaseDomainHelper {
+public class ProfileCustomDataValue {
 
     private Long id;
     private ImageProfile profile;
@@ -50,6 +49,8 @@ public class ProfileCustomDataValue extends BaseDomainHelper {
     private String value;
     private User creator;
     private User lastModifier;
+    private Date created;
+    private Date modified;
 
     /**
      * @return Returns the Id
@@ -100,6 +101,20 @@ public class ProfileCustomDataValue extends BaseDomainHelper {
     public User getLastModifier() {
         return lastModifier;
     }
+    /**
+     * @return Returns the created.
+     */
+    @Column(insertable = false, updatable = false)
+    public Date getCreated() {
+        return created;
+    }
+    /**
+     * @return Returns the modified.
+     */
+    @Column(insertable = false, updatable = false)
+    public Date getModified() {
+        return modified;
+    }
 
     /**
      * @param idIn the id to set
@@ -136,6 +151,18 @@ public class ProfileCustomDataValue extends BaseDomainHelper {
      */
     public void setLastModifier(User lastModifierIn) {
         this.lastModifier = lastModifierIn;
+    }
+    /**
+     * @param createdIn The created to set.
+     */
+    public void setCreated(Date createdIn) {
+        this.created = createdIn;
+    }
+    /**
+     * @param modifiedIn The modified to set.
+     */
+    public void setModified(Date modifiedIn) {
+        this.modified = modifiedIn;
     }
 
     /**

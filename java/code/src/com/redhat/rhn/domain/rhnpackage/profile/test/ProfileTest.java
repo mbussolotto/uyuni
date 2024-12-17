@@ -80,8 +80,8 @@ public class ProfileTest extends RhnBaseTestCase {
     public static Profile lookupByIdAndOrg(Long id, Org org) {
         Session session = HibernateFactory.getSession();
         return (Profile) session.getNamedQuery("Profile.findByIdAndOrg")
-                                    .setParameter("id", id)
-                                    .setParameter("org_id", org.getId())
+                                    .setLong("id", id)
+                                    .setLong("org_id", org.getId())
                                     .uniqueResult();
     }
 
@@ -126,8 +126,8 @@ public class ProfileTest extends RhnBaseTestCase {
         session.flush();
 
         Query qry = session.getNamedQuery("Profile.compatibleWithServer");
-        qry.setParameter("sid", server.getId());
-        qry.setParameter("org_id", user.getOrg().getId());
+        qry.setLong("sid", server.getId());
+        qry.setLong("org_id", user.getOrg().getId());
         List list = qry.list();
         assertNotNull(list, "List is null");
         assertFalse(list.isEmpty(), "List is empty");

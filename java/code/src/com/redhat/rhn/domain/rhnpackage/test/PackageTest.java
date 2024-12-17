@@ -21,10 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.hibernate.query.Query;
-import org.hibernate.type.LongType;
-import org.hibernate.type.Type;
-
 import com.redhat.rhn.common.db.datasource.ModeFactory;
 import com.redhat.rhn.common.db.datasource.WriteMode;
 import com.redhat.rhn.common.hibernate.HibernateFactory;
@@ -126,15 +122,13 @@ public class PackageTest extends BaseTestCaseWithUser {
     }
 
     public static Package createTestPackage(Org org) {
-        Package p = new Package();
-        p = populateTestPackage(p, org);
+        Package p = populateTestPackage(new Package(), org);
         TestUtils.saveAndFlush(p);
         return p;
     }
 
     public static Package createTestPackage(Org org, String packageName) {
-        Package p = new Package();
-        p = populateTestPackage(p, packageName, org);
+        Package p = populateTestPackage(new Package(), packageName, org);
         TestUtils.saveAndFlush(p);
         return p;
     }
@@ -187,17 +181,12 @@ public class PackageTest extends BaseTestCaseWithUser {
     }
 
     public static Package populateTestPackage(Package p, Org org) {
-        Query<PackageArch> q = HibernateFactory.getSession().createNativeQuery("""                
-                SELECT p.* FROM rhnPackageArch p WHERE p.id = :id
-                """, PackageArch.class).setParameter("id", 100L, LongType.INSTANCE);
-        PackageArch parch = q.getSingleResult();
+        PackageArch parch = (PackageArch) TestUtils.lookupFromCacheById(100L, "PackageArch.findById");
         return populateTestPackage(p, org, parch);
     }
 
     public static Package populateTestPackage(Package p, String packageName, Org org) {
-        PackageArch parch = HibernateFactory.getSession().createNativeQuery("""
-                SELECT p.* FROM rhnPackageArch p WHERE p.id = :id
-                """, PackageArch.class).setParameter("id",100L, LongType.INSTANCE).getSingleResult();
+        PackageArch parch = (PackageArch) TestUtils.lookupFromCacheById(100L, "PackageArch.findById");
         return populateTestPackage(p, org, parch, PackageNameTest.createTestPackageName(packageName));
     }
     public static PackageSource createTestPackageSource(SourceRpm rpm, Org org) {

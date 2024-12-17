@@ -141,7 +141,7 @@ public class ContentProjectHistoryEntry {
      *
      * @return created
      */
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @CreationTimestamp
     public Date getCreated() {
         return created;
