@@ -1364,7 +1364,7 @@ public class ServerFactory extends HibernateFactory {
             sql.append(" LEFT JOIN rhnServerGroupMembers rsgm ON s.id = rsgm.server_id");
             sql.append(" LEFT JOIN ServerGroup sg ON rsgm.server_group_id = sg.id ");
         }
-        return getSession().createQuery(sql.toString(), Server.class).getResultList();
+        return getSession().createNativeQuery(sql.toString(), Server.class).getResultList();
 
     }
 
