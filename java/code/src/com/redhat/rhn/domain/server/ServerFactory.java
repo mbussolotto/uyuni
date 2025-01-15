@@ -206,7 +206,7 @@ public class ServerFactory extends HibernateFactory {
             return result;
         }
         result = HibernateFactory.getSession().createNativeQuery("""
-                SELECT *
+                SELECT *, 0 as clazz_
                 FROM rhnServer
                 WHERE id IN (SELECT server_id FROM rhnProxyInfo)
                 AND hostname = :hostname
@@ -223,7 +223,7 @@ public class ServerFactory extends HibernateFactory {
             String srippedHostname = name.split("\\.")[0];
 
             return HibernateFactory.getSession().createNativeQuery("""
-                SELECT *
+                SELECT *, 0 as clazz_
                 FROM rhnServer
                 WHERE id IN (SELECT server_id FROM rhnProxyInfo)
                 AND hostname = :hostname
@@ -233,7 +233,7 @@ public class ServerFactory extends HibernateFactory {
         }
         else {
             return HibernateFactory.getSession().createNativeQuery("""
-                SELECT *
+                SELECT *, 0 as clazz_
                 FROM rhnServer
                 WHERE id IN (SELECT server_id FROM rhnProxyInfo)
                 AND hostname LIKE :hostname
@@ -355,7 +355,7 @@ public class ServerFactory extends HibernateFactory {
         return getSession().createNativeQuery("""
                                       SELECT * from rhnServerPath
                                       WHERE server_id = :server AND
-                                      WHERE proxy_server_id = :proxyserver
+                                      proxy_server_id = :proxyserver
                                       """, ServerPath.class)
                 .setParameter("server", server.getId(), LongType.INSTANCE)
                 .setParameter("proxyserver", proxyServer.getId(), LongType.INSTANCE)
