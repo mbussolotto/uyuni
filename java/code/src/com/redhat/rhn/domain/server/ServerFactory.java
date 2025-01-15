@@ -1355,10 +1355,7 @@ public class ServerFactory extends HibernateFactory {
      */
     public static List<Server> list(boolean fetchingVirtualGuests, boolean fetchingGroups) {
 
-        StringBuilder sql = new StringBuilder("""
-                SELECT DISTINCT s.*
-                FROM rhnServer s
-                """);
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT s.* FROM rhnServer s");
 
         if (fetchingVirtualGuests) {
             sql.append(" LEFT JOIN rhnVirtualInstance vg ON s.id = vg.host_system_id");
