@@ -201,7 +201,7 @@ public class SCCCachingFactory extends HibernateFactory {
      * Clear all subscriptions from the database.
      */
     public static void clearSubscriptions() {
-        getSession().createNativeQuery("DROP TABLE suseSCCSubscription CASCADE");
+        getSession().createNativeQuery("DELETE FROM suseSCCSubscription");
     }
 
     /**
