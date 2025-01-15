@@ -749,10 +749,10 @@ public class ServerFactory extends HibernateFactory {
     @SuppressWarnings("unchecked")
     public static Server lookupForeignSystemByDigitalServerId(String id) {
         List<Server> servers = getSession().createNativeQuery("""
-                                      SELECT * from rhnServer
+                                      SELECT *, 0 as clazz_  from rhnServer
                                       WHERE digital_server_id = :id
                                       """, Server.class)
-                .setParameter("id", id, LongType.INSTANCE)
+                .setParameter("id", id, StringType.INSTANCE)
                 .getResultList();
         for (Server server : servers) {
             if (server.hasEntitlement(EntitlementManager.getByName("foreign_entitled"))) {
