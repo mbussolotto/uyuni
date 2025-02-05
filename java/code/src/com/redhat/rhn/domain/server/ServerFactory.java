@@ -553,8 +553,20 @@ public class ServerFactory extends HibernateFactory {
      * @return the list of servers
      */
     public static List<Server> lookupByIdsAndOrg(Set<Long> serverIds, Org org) {
-        return SINGLETON.listObjectsByNamedQuery("Server.findByIdsAndOrgId",
-                Map.of("orgId", org.getId()), serverIds, "serverIds");
+        if (serverIds.isEmpty()) {
+            return HibernateFactory.getSession().createNativeQuery("""
+                SELECT *, 0 as clazz_ FROM rhnServer WHERE org_id = :orgId
+                """, Server.class)
+                    .setParameter("orgId", org.getId())
+                    .getResultList();
+        } else {
+            return HibernateFactory.getSession().createNativeQuery("""
+                SELECT *, 0 as clazz_ FROM rhnServer WHERE org_id = :orgId AND id IN (:serverIds)
+                """, Server.class)
+                    .setParameter("orgId", org.getId())
+                    .setParameterList("serverIds",  new ArrayList(serverIds))
+                    .getResultList();
+        }
     }
 
     /**
@@ -607,7 +619,12 @@ public class ServerFactory extends HibernateFactory {
         if (id == null || orgIn == null) {
             return null;
         }
-        return SINGLETON.lookupObjectByNamedQuery("Server.findByIdandOrgId", Map.of("sid", id, "orgId", orgIn.getId()));
+        return HibernateFactory.getSession().createNativeQuery("""
+                SELECT *, 0 as clazz_ FROM rhnServer WHERE id = :sid AND org_id = :orgId
+                """, Server.class)
+                .setParameter("sid", id , StandardBasicTypes.LONG)
+                .setParameter("orgId", orgIn.getId(), StandardBasicTypes.LONG)
+                .uniqueResultOptional().orElse(null);
     }
 
     /**
