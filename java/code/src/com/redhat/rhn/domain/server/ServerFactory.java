@@ -559,7 +559,8 @@ public class ServerFactory extends HibernateFactory {
                 """, Server.class)
                     .setParameter("orgId", org.getId())
                     .getResultList();
-        } else {
+        }
+        else {
             return HibernateFactory.getSession().createNativeQuery("""
                 SELECT *, 0 as clazz_ FROM rhnServer WHERE org_id = :orgId AND id IN (:serverIds)
                 """, Server.class)
