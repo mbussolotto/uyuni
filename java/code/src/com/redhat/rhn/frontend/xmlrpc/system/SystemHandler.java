@@ -46,8 +46,6 @@ import com.redhat.rhn.domain.action.script.ScriptActionDetails;
 import com.redhat.rhn.domain.action.script.ScriptResult;
 import com.redhat.rhn.domain.action.script.ScriptRunAction;
 import com.redhat.rhn.domain.action.server.ServerAction;
-import com.redhat.rhn.domain.action.virtualization.VirtualizationSetMemoryGuestAction;
-import com.redhat.rhn.domain.action.virtualization.VirtualizationSetVcpusGuestAction;
 import com.redhat.rhn.domain.channel.Channel;
 import com.redhat.rhn.domain.channel.ChannelArch;
 import com.redhat.rhn.domain.channel.ChannelFactory;
@@ -102,7 +100,6 @@ import com.redhat.rhn.domain.token.ActivationKey;
 import com.redhat.rhn.domain.token.ActivationKeyFactory;
 import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.frontend.action.kickstart.KickstartHelper;
-import com.redhat.rhn.frontend.context.Context;
 import com.redhat.rhn.frontend.dto.ActivationKeyDto;
 import com.redhat.rhn.frontend.dto.ErrataOverview;
 import com.redhat.rhn.frontend.dto.EssentialChannelDto;
@@ -127,6 +124,7 @@ import com.redhat.rhn.frontend.xmlrpc.InvalidEntitlementException;
 import com.redhat.rhn.frontend.xmlrpc.InvalidPackageArchException;
 import com.redhat.rhn.frontend.xmlrpc.InvalidPackageException;
 import com.redhat.rhn.frontend.xmlrpc.InvalidParameterException;
+import com.redhat.rhn.frontend.xmlrpc.InvalidParentChannelException;
 import com.redhat.rhn.frontend.xmlrpc.InvalidProfileLabelException;
 import com.redhat.rhn.frontend.xmlrpc.InvalidSystemException;
 import com.redhat.rhn.frontend.xmlrpc.MethodInvalidParamException;
@@ -197,9 +195,6 @@ import com.suse.manager.model.attestation.CoCoAttestationResult;
 import com.suse.manager.model.attestation.CoCoEnvironmentType;
 import com.suse.manager.model.attestation.ServerCoCoAttestationConfig;
 import com.suse.manager.model.attestation.ServerCoCoAttestationReport;
-import com.suse.manager.virtualization.VirtualizationActionHelper;
-import com.suse.manager.webui.controllers.virtualization.gson.VirtualGuestSetterActionJson;
-import com.suse.manager.webui.controllers.virtualization.gson.VirtualGuestsBaseActionJson;
 import com.suse.manager.webui.services.pillar.MinionPillarManager;
 import com.suse.manager.webui.utils.gson.BootstrapParameters;
 import com.suse.manager.xmlrpc.NoSuchHistoryEventException;
@@ -215,8 +210,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -564,8 +557,15 @@ public class SystemHandler extends BaseHandler {
      * @apidoc.doc Schedule an action to change the channels of the given system. Works for both traditional
      * and Salt systems.
      * This method accepts labels for the base and child channels.
-     * If the user provides an empty string for the channelLabel, the current base channel and
-     * all child channels will be removed from the system.
+     * If the user provides an empty string for the baseChannelLabel and an empty list for the childLabels,
+     * the current base channel and all child channels will be removed from the system.
+     * If the user provides only a different baseChannelLabel and an empty list for childLabels,
+     * the new base channel is assigned to the system and we search for compatible child channels for the assigned one.
+     * If the base channel stay empty, all the child channels from the list should be compatible with the currently
+     * assigned base channel. The currently assigned child channels are exchanged with the channels provided in
+     * the childLabels list.
+     * When both baseChannelLabel and childLabels are provided, the compatibility is checked, and the system
+     * gets these new set of channels assigned.
      *
      * @apidoc.param #session_key()
      * @apidoc.param #array_single("int", "sids")
@@ -596,7 +596,7 @@ public class SystemHandler extends BaseHandler {
                 .collect(toSet());
 
         for (Server s : servers) {
-            if (baseChannel.map(Channel::getChannelArch)
+            if (baseChannel.isPresent() && baseChannel.map(Channel::getChannelArch)
                     .filter(arch -> arch.isCompatible(s.getServerArch()))
                     .isEmpty()) {
                 throw new InvalidChannelException();
@@ -624,6 +624,19 @@ public class SystemHandler extends BaseHandler {
         List<Channel> childChannels = channelIds.stream()
                 .map(cid -> ChannelFactory.lookupByIdAndUser(cid, loggedInUser))
                 .toList();
+
+        // consistent check
+        long bid = baseChannel.map(Channel::getId).orElse(-1L);
+        for (Server s : servers) {
+            if (bid == -1L) {
+                bid = s.getBaseChannel().getId();
+            }
+            for (Channel cch : childChannels) {
+                if (!cch.getParentChannel().getId().equals(bid)) {
+                    throw new InvalidParentChannelException();
+                }
+            }
+        }
 
         try {
             Set<Action> action = ActionChainManager.scheduleSubscribeChannelsAction(loggedInUser,
@@ -672,7 +685,7 @@ public class SystemHandler extends BaseHandler {
         Channel baseChannel = server.getBaseChannel();
         List<Map<String, Object>> returnList = new ArrayList<>();
 
-        Set<EssentialChannelDto> list = ChannelManager.listBaseChannelsForSystem(loggedInUser, server);
+        List<EssentialChannelDto> list = ChannelManager.listBaseChannelsForSystem(loggedInUser, server);
         for (EssentialChannelDto ch : list) {
             Boolean currentBase = (baseChannel != null) &&
                     baseChannel.getId().equals(ch.getId());
@@ -6498,173 +6511,6 @@ public class SystemHandler extends BaseHandler {
     }
 
     /**
-     * Schedules an action to set the guests memory usage
-     * @param loggedInUser The current user
-     * @param sid the server ID of the guest
-     * @param memory the amount of memory to set the guest to use
-     * @return the action id of the scheduled action
-     *
-     * @apidoc.doc Schedule an action of a guest's host, to set that guest's memory
-     *          allocation
-     * @apidoc.param #session_key()
-     * @apidoc.param #param_desc("int", "sid", "The guest's system id")
-     * @apidoc.param #param_desc("int", "memory", "The amount of memory to
-     *          allocate to the guest")
-     *  @apidoc.returntype #param_desc("int", "actionID", "the action Id for the schedule action
-     *              on the host system")
-     *
-     */
-    public int setGuestMemory(User loggedInUser, Integer sid, Integer memory) {
-        VirtualInstance vi = VirtualInstanceFactory.getInstance().lookupByGuestId(
-                loggedInUser.getOrg(), sid.longValue());
-
-        try {
-            return VirtualizationActionHelper.scheduleAction(
-                    vi.getUuid(),
-                    loggedInUser,
-                    vi.getHostSystem(),
-                    VirtualizationActionHelper.getGuestSetterActionCreator(
-                            ActionFactory.TYPE_VIRTUALIZATION_SET_MEMORY,
-                            (data) -> memory * 1024,
-                            (action, value) -> ((VirtualizationSetMemoryGuestAction)action).setMemory(value),
-                            Map.of(vi.getUuid(), vi.getGuestSystem().getName())
-                    ),
-                    new VirtualGuestSetterActionJson());
-        }
-        catch (com.redhat.rhn.taskomatic.TaskomaticApiException e) {
-            throw new TaskomaticApiException(e.getMessage());
-        }
-    }
-
-
-    /**
-     * Schedules an actino to set the guests CPU allocation
-     * @param loggedInUser The current user
-     * @param sid the server ID of the guest
-     * @param numOfCpus the num of cpus to set
-     * @return the action id of the scheduled action
-     *
-     * @apidoc.doc Schedule an action of a guest's host, to set that guest's CPU
-     *          allocation
-     * @apidoc.param #session_key()
-     * @apidoc.param #param_desc("int", "sid", "The guest's system id")
-     * @apidoc.param #param_desc("int", "numOfCpus", "The number of virtual cpus to
-     *          allocate to the guest")
-     *  @apidoc.returntype #param_desc("int", "actionID", "the action Id for the schedule action
-     *              on the host system")
-     *
-     */
-    public int setGuestCpus(User loggedInUser, Integer sid, Integer numOfCpus) {
-        VirtualInstance vi = VirtualInstanceFactory.getInstance().lookupByGuestId(
-                loggedInUser.getOrg(), sid.longValue());
-
-        try {
-            return VirtualizationActionHelper.scheduleAction(
-                    vi.getUuid(),
-                    loggedInUser,
-                    vi.getHostSystem(),
-                    VirtualizationActionHelper.getGuestSetterActionCreator(
-                            ActionFactory.TYPE_VIRTUALIZATION_SET_VCPUS,
-                            (data) -> numOfCpus,
-                            (action, value) -> ((VirtualizationSetVcpusGuestAction)action).setVcpu(value),
-                            Map.of(vi.getUuid(), vi.getGuestSystem().getName())
-                    ),
-                    new VirtualGuestSetterActionJson());
-        }
-        catch (com.redhat.rhn.taskomatic.TaskomaticApiException e) {
-            throw new TaskomaticApiException(e.getMessage());
-        }
-    }
-
-    /**
-     *  schedules the specified action on the guest
-     * @param loggedInUser The current user
-     * @param sid the id of the system
-     * @param state one of the following: 'start', 'suspend', 'resume', 'restart',
-     *          'shutdown'
-     * @param date the date to schedule it
-     * @return action ID
-     *
-     * @apidoc.doc Schedules a guest action for the specified virtual guest for a given
-     *          date/time.
-     * @apidoc.param #session_key()
-     * @apidoc.param #param_desc("int", "sid", "the system Id of the guest")
-     * @apidoc.param #param_desc("string", "state", "One of the following actions  'start',
-     *          'suspend', 'resume', 'restart', 'shutdown'.")
-     * @apidoc.param  #param_desc($date, "date", "the time/date to schedule the action")
-     * @apidoc.returntype #param_desc("int", "actionId", "The action id of the scheduled action")
-     */
-    public int scheduleGuestAction(User loggedInUser, Integer sid, String state,
-            Date date) {
-        VirtualInstance vi = VirtualInstanceFactory.getInstance().lookupByGuestId(
-                loggedInUser.getOrg(), sid.longValue());
-
-        ActionType action;
-        if (state.equals("start")) {
-            action = ActionFactory.TYPE_VIRTUALIZATION_START;
-        }
-        else if (state.equals("suspend")) {
-            action = ActionFactory.TYPE_VIRTUALIZATION_SUSPEND;
-        }
-        else if (state.equals("resume")) {
-            action = ActionFactory.TYPE_VIRTUALIZATION_RESUME;
-        }
-        else if (state.equals("restart")) {
-            action = ActionFactory.TYPE_VIRTUALIZATION_REBOOT;
-        }
-        else if (state.equals("shutdown")) {
-            action = ActionFactory.TYPE_VIRTUALIZATION_SHUTDOWN;
-        }
-        else {
-            throw new InvalidActionTypeException();
-        }
-
-        try {
-            VirtualGuestsBaseActionJson data = new VirtualGuestsBaseActionJson();
-            data.setUuids(List.of(vi.getUuid()));
-            data.setForce(false);
-            data.setEarliest(
-                Optional.ofNullable(date).map((localDate) -> {
-                    ZoneId zoneId = Optional.ofNullable(Context.getCurrentContext().getTimezone())
-                            .orElse(TimeZone.getDefault()).toZoneId();
-                    return LocalDateTime.ofInstant(localDate.toInstant(), zoneId);
-                })
-            );
-            return VirtualizationActionHelper.scheduleAction(
-                    vi.getUuid(),
-                    loggedInUser,
-                    vi.getHostSystem(),
-                    VirtualizationActionHelper.getGuestActionCreator(
-                            action,
-                            Map.of(vi.getUuid(), vi.getGuestSystem().getName())),
-                    data);
-        }
-        catch (com.redhat.rhn.taskomatic.TaskomaticApiException e) {
-            throw new TaskomaticApiException(e.getMessage());
-        }
-    }
-
-    /**
-     *  schedules the specified action on the guest
-     * @param loggedInUser The current user
-     * @param sid the id of the system
-     * @param state one of the following: 'start', 'suspend', 'resume', 'restart',
-     *          'shutdown'
-     * @return action ID
-     *
-     * @apidoc.doc Schedules a guest action for the specified virtual guest for the
-     *          current time.
-     * @apidoc.param #session_key()
-     * @apidoc.param #param_desc("int", "sid", "the system Id of the guest")
-     * @apidoc.param #param_desc("string", "state", "One of the following actions  'start',
-     *          'suspend', 'resume', 'restart', 'shutdown'.")
-     * @apidoc.returntype #param_desc("int", "actionId", "The action id of the scheduled action")
-     */
-    public int scheduleGuestAction(User loggedInUser, Integer sid, String state) {
-        return scheduleGuestAction(loggedInUser, sid, state, null);
-    }
-
-    /**
      * List the activation keys the system was registered with.
      * @param loggedInUser The current user
      * @param sid the host system id
@@ -9051,7 +8897,7 @@ public class SystemHandler extends BaseHandler {
      *
      * @apidoc.doc refresh all the pillar data of a list of systems.
      * @apidoc.param #session_key()
-     * @apidoc.param #array_single("int", "sids")
+     * @apidoc.param #array_single("int", "sids", "System IDs to be refreshed. If empty, all systems will be refreshed")
      * @apidoc.returntype #array_single("int", "skippedIds", "System IDs which couldn't be refreshed")
      */
     public List<Integer> refreshPillar(User loggedInUser, List<Integer> sids) {
@@ -9070,7 +8916,7 @@ public class SystemHandler extends BaseHandler {
      * and can be one of 'general', 'group_membership', 'virtualization' or 'custom_info'.
      * @apidoc.param #session_key()
      * @apidoc.param #param("string", "subset", "subset of the pillar to refresh.")
-     * @apidoc.param #array_single("int", "sids")
+     * @apidoc.param #array_single("int", "sids", "System IDs to be refreshed. If empty, all systems will be refreshed")
      * @apidoc.returntype #array_single("int", "skippedIds", "System IDs which couldn't be refreshed")
      */
     public List<Integer> refreshPillar(User loggedInUser, String subset, List<Integer> sids) {
@@ -9078,9 +8924,16 @@ public class SystemHandler extends BaseHandler {
         MinionPillarManager.PillarSubset subsetValue = subset != null ?
                 MinionPillarManager.PillarSubset.valueOf(subset.toUpperCase()) :
                 null;
-        for (Integer sysId : sids) {
-            if (SystemManager.isAvailableToUser(loggedInUser, sysId.longValue())) {
-                Server system = SystemManager.lookupByIdAndUser(Long.valueOf(sysId), loggedInUser);
+        List<Long> sysids;
+        if (sids == null || sids.isEmpty()) {
+            sysids = MinionServerFactory.lookupVisibleToUser(loggedInUser).map(MinionServer::getId).toList();
+        }
+        else {
+            sysids = sids.stream().map(Integer::longValue).toList();
+        }
+        for (Long sysId : sysids) {
+            if (SystemManager.isAvailableToUser(loggedInUser, sysId)) {
+                Server system = SystemManager.lookupByIdAndUser(sysId, loggedInUser);
                 system.asMinionServer().ifPresentOrElse(
                     minionServer -> {
                         if (subsetValue != null) {
@@ -9092,13 +8945,13 @@ public class SystemHandler extends BaseHandler {
                     },
                     () -> {
                         log.warn("system {} is not a salt minion, hence pillar will not be updated", sysId);
-                        skipped.add(sysId);
+                        skipped.add(sysId.intValue());
                     }
                 );
             }
             else {
                 log.warn("system {} is not available to user, hence pillar will not be refreshed", sysId);
-                skipped.add(sysId);
+                skipped.add(sysId.intValue());
             }
         }
         return skipped;

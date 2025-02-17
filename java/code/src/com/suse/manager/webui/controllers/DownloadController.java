@@ -27,6 +27,7 @@ import com.redhat.rhn.domain.channel.AccessToken;
 import com.redhat.rhn.domain.channel.AccessTokenFactory;
 import com.redhat.rhn.domain.channel.Channel;
 import com.redhat.rhn.domain.channel.ChannelFactory;
+import com.redhat.rhn.domain.channel.ClonedChannel;
 import com.redhat.rhn.domain.channel.Comps;
 import com.redhat.rhn.domain.channel.MediaProducts;
 import com.redhat.rhn.domain.channel.Modules;
@@ -265,6 +266,19 @@ public class DownloadController {
     }
 
     /**
+     * Predicate telling if a file is a key or a signature file,
+     * also filters Debian files InRelease and Release.gpg in order to avoid extra log messages
+     *
+     * @param filename name of the file
+     */
+    private boolean isKeyOrSignatureFile(String filename) {
+        return filename.endsWith(".asc") ||
+                filename.endsWith(".key") ||
+                filename.equals("InRelease") ||
+                filename.equals("Release.gpg");
+    }
+
+    /**
      * Download metadata taking the channel and filename from the request path.
      *
      * @param request the request object
@@ -279,7 +293,7 @@ public class DownloadController {
 
         File file = Path.of(mountPoint, prefix, channelLabel, filename).toAbsolutePath().toFile();
 
-        if (!file.exists() && (filename.endsWith(".asc") || filename.endsWith(".key"))) {
+        if (!file.exists() && isKeyOrSignatureFile(filename)) {
             halt(HttpStatus.SC_NOT_FOUND,
                     String.format("Key or signature file not provided: %s", filename));
         }
@@ -342,7 +356,7 @@ public class DownloadController {
         Comps comps = channel.getComps();
 
         if (comps == null && channel.isCloned()) {
-            comps = channel.getOriginal().getComps();
+            comps = channel.asCloned().map(ClonedChannel::getOriginal).map(Channel::getComps).orElse(null);
         }
         if (comps != null) {
             return new File(mountPointPath, comps.getRelativeFilename())
@@ -364,7 +378,7 @@ public class DownloadController {
         Modules modules = channel.getModules();
 
         if (modules == null && channel.isCloned()) {
-            modules = channel.getOriginal().getModules();
+            modules = channel.asCloned().map(ClonedChannel::getOriginal).map(Channel::getModules).orElse(null);
         }
         if (modules != null) {
             return new File(mountPointPath, modules.getRelativeFilename()).getAbsoluteFile();
@@ -385,7 +399,7 @@ public class DownloadController {
         MediaProducts product = channel.getMediaProducts();
 
         if (product == null && channel.isCloned()) {
-            product = channel.getOriginal().getMediaProducts();
+            product = channel.asCloned().map(ClonedChannel::getOriginal).map(Channel::getMediaProducts).orElse(null);
         }
         if (product != null) {
             return new File(mountPointPath, product.getRelativeFilename())

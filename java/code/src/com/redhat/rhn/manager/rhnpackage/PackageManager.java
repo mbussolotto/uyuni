@@ -68,6 +68,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.type.StandardBasicTypes;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -636,7 +637,7 @@ public class PackageManager extends BaseManager {
         try {
             session = HibernateFactory.getSession();
             return (PackageName)session.getNamedQuery("PackageName.findByName")
-                                       .setString("name", name)
+                                       .setParameter("name", name, StandardBasicTypes.STRING)
                                        .uniqueResult();
         }
         catch (HibernateException e) {
@@ -1291,7 +1292,7 @@ public class PackageManager extends BaseManager {
                         "left join rhnPackageKeyAssociation assoc on assoc.package_id = P.id " +
                         "left join rhnPackageKey KEY on KEY.id = assoc.key_id " +
                         "left join rhnPackageProvider PP on KEY.provider_id = PP.id")
-                .countFrom("rhnPackage P")
+                .countFrom("rhnPackage P inner join rhnPackageName PN on P.name_id = PN.id")
                 .where("P.org_id = :org_id")
                 .run(Map.of("org_id", orgId), pc, PagedSqlQueryBuilder::parseFilterAsText, PackageOverview.class);
     }

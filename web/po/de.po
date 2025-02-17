@@ -3,22 +3,18 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: ../html/src/components/input/range/Range.tsx:46
 #: ../html/src/components/input/range/Range.tsx:47
-#: ../html/src/components/input/range/Range.tsx:59
+#: ../html/src/components/input/range/Range.tsx:48
 #: ../html/src/components/input/range/Range.tsx:60
+#: ../html/src/components/input/range/Range.tsx:61
 #: ../html/src/core/intl/index.test.tsx:11
-#: ../html/src/manager/content-management/list-filters/list-filters.tsx:199
-#: ../html/src/manager/virtualization/nets/properties/NetworkAddress.tsx:79
-#: ../html/src/manager/virtualization/nets/properties/NetworkAddress.tsx:80
-#: ../html/src/manager/virtualization/nets/properties/NetworkAddress.tsx:91
-#: ../html/src/manager/virtualization/nets/properties/NetworkAddress.tsx:92
+#: ../html/src/manager/content-management/list-filters/list-filters.tsx:200
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-08 15:02+0100\n"
-"PO-Revision-Date: 2024-10-05 15:48+0000\n"
+"POT-Creation-Date: 2025-02-14 14:16+0100\n"
+"PO-Revision-Date: 2025-02-02 16:50+0000\n"
 "Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
 "Language-Team: German <https://l10n.opensuse.org/projects/uyuni/web/de/>\n"
 "Language: de\n"
@@ -26,13 +22,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.9.2\n"
 
-#: ../html/javascript/spacewalk-essentials.js:442
+#: ../html/javascript/spacewalk-essentials.js:446
 msgid "remaining"
 msgstr "übrig"
 
-#: ../html/javascript/spacewalk-essentials.js:462
+#: ../html/javascript/spacewalk-essentials.js:466
 msgid ""
 "The browser Internet Explorer is not supported. Try using Firefox, Chrome or "
 "Edge"
@@ -60,13 +56,10 @@ msgstr ""
 #: ../html/src/components/CoCoScansList.tsx:130
 #: ../html/src/manager/maintenance/edit/maintenance-windows-edit.tsx:41
 #: ../html/src/manager/maintenance/edit/maintenance-windows-edit.tsx:60
-#: ../html/src/manager/maintenance/ssm/schedule-picker.tsx:129
+#: ../html/src/manager/maintenance/ssm/schedule-picker.tsx:128
 #: ../html/src/manager/minion/ansible/schedule-playbook.tsx:99
 #: ../html/src/manager/recurring/recurring-actions-edit.tsx:208
 #: ../html/src/manager/systems/coco/ssm-schedule.tsx:94
-#: ../html/src/manager/virtualization/guests/properties/guest-properties-form.tsx:102
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:447
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:566
 msgid "Schedule"
 msgstr ""
 
@@ -175,11 +168,10 @@ msgstr ""
 #: ../html/src/manager/content-management/list-filters/templates/live-patching.tsx:121
 #: ../html/src/manager/maintenance/details/schedule-details.tsx:212
 #: ../html/src/manager/minion/packages/package-states.tsx:224
-#: ../html/src/manager/systems/all-list.tsx:68
+#: ../html/src/manager/systems/all-list.tsx:73
 #: ../html/src/manager/systems/list-filter.tsx:41
 #: ../html/src/manager/systems/ssm/ssm-subscribe-channels.tsx:81
 #: ../html/src/manager/systems/ssm/ssm-subscribe-channels.tsx:775
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:125
 msgid "System"
 msgstr "System"
 
@@ -190,7 +182,7 @@ msgid "Environment Type"
 msgstr "Umgebungstyp"
 
 #: ../html/src/components/coco-attestation/CoCoAttestationTable.tsx:83
-#: ../html/src/manager/notifications/notification-messages.tsx:508
+#: ../html/src/manager/notifications/notification-messages.tsx:512
 msgid "Created"
 msgstr "Erstellt"
 
@@ -199,10 +191,10 @@ msgid "Last modified"
 msgstr "Zuletzt geändert"
 
 #: ../html/src/components/coco-attestation/CoCoAttestationTable.tsx:97
-#: ../html/src/manager/admin/list-payg/list-payg.tsx:132
+#: ../html/src/manager/admin/list-payg/list-payg.tsx:80
 #: ../html/src/manager/admin/payg-shared/info/payg-info-view.tsx:18
 #: ../html/src/manager/admin/task-engine-status/taskotop.tsx:226
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:371
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:369
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:150
 #: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-view.tsx:61
 #: ../html/src/manager/images/image-view-runtime.tsx:130
@@ -216,7 +208,7 @@ msgid "Attestation time"
 msgstr ""
 
 #: ../html/src/components/coco-attestation/CoCoAttestationTable.tsx:110
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:408
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:406
 #: ../html/src/manager/images/image-profiles.tsx:190
 #: ../html/src/manager/images/image-stores.tsx:192
 #: ../html/src/manager/images/image-view.tsx:683
@@ -225,8 +217,6 @@ msgstr ""
 #: ../html/src/manager/recurring/recurring-actions-list.tsx:200
 #: ../html/src/manager/salt/keys/key-management.tsx:195
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-list.tsx:70
-#: ../html/src/manager/virtualization/ListTab.tsx:258
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:355
 msgid "Actions"
 msgstr "Aktionen"
 
@@ -257,7 +247,7 @@ msgid "Last modified on"
 msgstr "Zuletzt geändert am"
 
 #: ../html/src/components/coco-attestation/CoCoReport.tsx:84
-#: ../html/src/manager/notifications/notification-messages.tsx:513
+#: ../html/src/manager/notifications/notification-messages.tsx:517
 msgid "Action"
 msgstr "Aktion"
 
@@ -292,9 +282,10 @@ msgid "Process Output"
 msgstr ""
 
 #: ../html/src/components/coco-attestation/CoCoSettingsForm.tsx:82
-#: ../html/src/components/formula-selection.tsx:279
+#: ../html/src/components/formula-selection.tsx:293
 #: ../html/src/components/panels/CreatorPanel.tsx:125
-#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:196
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:144
+#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:199
 #: ../html/src/manager/minion/ansible/edit-ansible-path.tsx:17
 #: ../html/src/manager/minion/ansible/new-ansible-path.tsx:23
 #: ../html/src/manager/minion/packages/package-states.tsx:194
@@ -328,8 +319,6 @@ msgstr "Zeitplan auswählen"
 #: ../html/src/components/coco-attestation/Utils.tsx:49
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:98
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:104
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:161
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:168
 msgid "N/A"
 msgstr "N/V"
 
@@ -373,8 +362,9 @@ msgstr ""
 #: ../html/src/components/dialog/LegacyDangerDialog.tsx:53
 #: ../html/src/components/dialog/LegacyDangerDialog.tsx:54
 #: ../html/src/components/panels/CreatorPanel.tsx:114
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:56
 #: ../html/src/manager/appstreams/changes-confirm-appstreams.tsx:34
-#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:183
+#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:186
 #: ../html/src/manager/content-management/shared/components/panels/build/build.tsx:129
 #: ../html/src/manager/content-management/shared/components/panels/promote/promote.tsx:108
 #: ../html/src/manager/content-management/shared/components/panels/promote/promote.tsx:109
@@ -385,8 +375,6 @@ msgstr ""
 #: ../html/src/manager/minion/ansible/edit-ansible-path.tsx:20
 #: ../html/src/manager/systems/delete-system.tsx:80
 #: ../html/src/manager/systems/delete-system.tsx:81
-#: ../html/src/manager/virtualization/guests/console/MessagePopUp.tsx:62
-#: ../html/src/manager/virtualization/guests/console/MessagePopUp.tsx:63
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -395,7 +383,7 @@ msgstr "Abbrechen"
 #: ../html/src/components/table/Table.tsx:139
 #: ../html/src/manager/admin/payg/payg.tsx:73
 #: ../html/src/manager/admin/payg/payg.tsx:74
-#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:162
+#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:165
 #: ../html/src/manager/content-management/project/project.tsx:109
 #: ../html/src/manager/images/image-profiles.tsx:136
 #: ../html/src/manager/images/image-profiles.tsx:210
@@ -418,11 +406,6 @@ msgstr "Abbrechen"
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:132
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:134
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-list.tsx:92
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:65
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:37
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:115
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:270
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:308
 msgid "Delete"
 msgstr "Löschen"
 
@@ -458,8 +441,9 @@ msgid "This field is used as a 'key' identifier in the resulting pillar data."
 msgstr ""
 
 #: ../html/src/components/formulas/FormulaComponentGenerator.tsx:155
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:159
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:160
 #: ../html/src/manager/appstreams/actions-appstreams.tsx:8
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:54
 msgid "Reset"
 msgstr "Zurücksetzen"
 
@@ -489,7 +473,7 @@ msgstr "Sichtbarkeit des Abschnitts umschalten"
 msgid "Minimum 2 characters"
 msgstr "Mindestens 2 Zeichen"
 
-#: ../html/src/components/input/InputBase.tsx:276
+#: ../html/src/components/input/InputBase.tsx:278
 msgid "required"
 msgstr "notwendig"
 
@@ -507,8 +491,6 @@ msgstr "notwendig"
 #: ../html/src/components/input/range/Range.stories.tsx:24
 #: ../html/src/components/input/select/simple.stories.tsx:32
 #: ../html/src/components/input/text/Text.stories.tsx:38
-#: ../html/src/manager/virtualization/guests/console/MessagePopUp.tsx:24
-#: ../html/src/manager/virtualization/nets/network-properties.test.tsx:45
 msgid "Submit"
 msgstr "Einreichen"
 
@@ -537,14 +519,14 @@ msgid "Last Name"
 msgstr "Vorname"
 
 #: ../html/src/components/input/form-multi-input/single-field.stories.tsx:45
-#: ../html/src/manager/login/uyuni/login.tsx:76
+#: ../html/src/manager/login/uyuni/login.tsx:78
 msgid "Login"
 msgstr "Login"
 
 #. ref={nameInputRef}
 #: ../html/src/components/input/form/Form.stories.tsx:23
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:391
-#: ../html/src/manager/content-management/list-filters/list-filters.tsx:170
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:389
+#: ../html/src/manager/content-management/list-filters/list-filters.tsx:171
 #: ../html/src/manager/content-management/list-projects/list-projects.tsx:100
 #: ../html/src/manager/content-management/shared/business/filters.enum.ts:138
 #: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-form.tsx:28
@@ -554,25 +536,18 @@ msgstr "Login"
 #: ../html/src/manager/salt/keys/key-management.tsx:160
 #: ../html/src/manager/systems/details/mgr-server-info.tsx:83
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:78
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:129
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:69
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:223
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:220
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:95
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:336
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:244
 msgid "Name"
 msgstr ""
 
 #: ../html/src/components/input/password/Password.stories.tsx:23
 #: ../html/src/manager/admin/payg-shared/sshData/payg-ssh-data-form.tsx:77
 #: ../html/src/manager/admin/payg-shared/sshData/payg-ssh-data-view.tsx:27
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:74
 #: ../html/src/manager/images/image-store-edit.tsx:180
-#: ../html/src/manager/login/susemanager/login.tsx:93
-#: ../html/src/manager/login/uyuni/login.tsx:88
+#: ../html/src/manager/login/susemanager/login.tsx:99
+#: ../html/src/manager/login/uyuni/login.tsx:90
 #: ../html/src/manager/systems/bootstrap/bootstrap-minions.tsx:417
 #: ../html/src/manager/systems/bootstrap/bootstrap-minions.tsx:540
-#: ../html/src/manager/virtualization/guests/console/MessagePopUp.tsx:38
 msgid "Password"
 msgstr "Passwort"
 
@@ -648,9 +623,9 @@ msgid "Unable to perform action."
 msgstr ""
 
 #: ../html/src/components/package/PackageListActionScheduler.tsx:180
-#: ../html/src/components/states-picker.tsx:366
-#: ../html/src/components/states-picker.tsx:556
-#: ../html/src/manager/admin/setup/products/products.tsx:1128
+#: ../html/src/components/states-picker.tsx:369
+#: ../html/src/components/states-picker.tsx:559
+#: ../html/src/manager/admin/setup/products/products.tsx:1081
 #: ../html/src/manager/appstreams/changes-confirm-appstreams.tsx:38
 #: ../html/src/manager/maintenance/edit/calendar-edit.tsx:191
 #: ../html/src/manager/maintenance/shared/cancel-actions-dialog.tsx:16
@@ -807,6 +782,7 @@ msgid "Configuration Channel: {name}"
 msgstr "Konfigurationskanal: {name}"
 
 #: ../html/src/components/salt-state-popup.tsx:60
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:60
 #: ../html/src/manager/images/image-profiles.tsx:204
 #: ../html/src/manager/images/image-stores.tsx:198
 #: ../html/src/manager/images/image-view-overview.tsx:324
@@ -821,8 +797,6 @@ msgstr "Konfigurationskanal: {name}"
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:125
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:127
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-list.tsx:84
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:229
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:119
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -847,19 +821,19 @@ msgid ""
 "'Reboot system' and 'Reboot system if needed' states cannot be used together."
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:152
+#: ../html/src/components/states-picker.tsx:155
 msgid "State assignments have been saved."
 msgstr "State Zuweisungen wurden gespeichert."
 
-#: ../html/src/components/states-picker.tsx:170
+#: ../html/src/components/states-picker.tsx:173
 msgid "An error occurred on save."
 msgstr "Beim speichern ist ein Fehler aufgetreten."
 
-#: ../html/src/components/states-picker.tsx:305
+#: ../html/src/components/states-picker.tsx:308
 msgid "No states assigned. Use search to find and assign states."
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:364
+#: ../html/src/components/states-picker.tsx:367
 #: ../html/src/manager/images/image-view.tsx:817
 #: ../html/src/manager/images/image-view.tsx:819
 #: ../html/src/manager/maintenance/details/maintenance-windows-details.tsx:29
@@ -875,25 +849,25 @@ msgstr ""
 msgid "Back"
 msgstr "Zurück"
 
-#: ../html/src/components/states-picker.tsx:374
+#: ../html/src/components/states-picker.tsx:377
 #: ../html/src/manager/maintenance/details/schedule-details.tsx:185
 #: ../html/src/manager/maintenance/details/schedule-details.tsx:193
 msgid "Save Changes"
 msgstr "Änderungen speichern"
 
-#: ../html/src/components/states-picker.tsx:389
+#: ../html/src/components/states-picker.tsx:392
 msgid "Reorder"
 msgstr "Umsortieren"
 
-#: ../html/src/components/states-picker.tsx:415
+#: ../html/src/components/states-picker.tsx:418
 msgid "Search in states"
 msgstr "In Zuständen suchen"
 
-#: ../html/src/components/states-picker.tsx:415
+#: ../html/src/components/states-picker.tsx:418
 msgid "Search in configuration channels"
 msgstr "In Konfigurationskanälen suchen"
 
-#: ../html/src/components/states-picker.tsx:421
+#: ../html/src/components/states-picker.tsx:424
 #: ../html/src/manager/header/search/search.tsx:77
 #: ../html/src/manager/header/search/search.tsx:86
 #: ../html/src/manager/minion/packages/package-states.tsx:214
@@ -901,47 +875,47 @@ msgstr "In Konfigurationskanälen suchen"
 msgid "Search"
 msgstr "Suchen"
 
-#: ../html/src/components/states-picker.tsx:431
+#: ../html/src/components/states-picker.tsx:434
 msgid "Edit State Ranks"
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:431
+#: ../html/src/components/states-picker.tsx:434
 msgid "Edit Channel Ranks"
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:434
+#: ../html/src/components/states-picker.tsx:437
 msgid "Edit the ranking of the states by dragging them."
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:435
+#: ../html/src/components/states-picker.tsx:438
 msgid "Edit the ranking of the configuration channels by dragging them."
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:440
+#: ../html/src/components/states-picker.tsx:443
 msgid "There are no states assigned."
 msgstr "Es sind keine States zugewiesen."
 
-#: ../html/src/components/states-picker.tsx:448
+#: ../html/src/components/states-picker.tsx:451
 #: ../html/src/manager/recurring/recurring-actions-details.tsx:251
 msgid "State Name"
 msgstr "Zustandsname"
 
-#: ../html/src/components/states-picker.tsx:448
+#: ../html/src/components/states-picker.tsx:451
 msgid "Channel Name"
 msgstr "Kanalname"
 
-#: ../html/src/components/states-picker.tsx:449
+#: ../html/src/components/states-picker.tsx:452
 #: ../html/src/manager/recurring/recurring-actions-details.tsx:264
 msgid "State Label"
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:449
+#: ../html/src/components/states-picker.tsx:452
 msgid "Channel Label"
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:450
+#: ../html/src/components/states-picker.tsx:453
 #: ../html/src/manager/admin/create-payg/create-payg.tsx:73
-#: ../html/src/manager/admin/list-payg/list-payg.tsx:126
+#: ../html/src/manager/admin/list-payg/list-payg.tsx:74
 #: ../html/src/manager/admin/payg-shared/info/payg-info-form.tsx:23
 #: ../html/src/manager/admin/payg-shared/info/payg-info-view.tsx:14
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:370
@@ -955,29 +929,29 @@ msgstr ""
 msgid "Description"
 msgstr "Beschreibung"
 
-#: ../html/src/components/states-picker.tsx:451
+#: ../html/src/components/states-picker.tsx:454
 msgid "Assign"
 msgstr "Zuweisen"
 
-#: ../html/src/components/states-picker.tsx:510
+#: ../html/src/components/states-picker.tsx:513
 msgid ""
 "Select the systems to schedule for immediate state execution and confirm."
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:520
+#: ../html/src/components/states-picker.tsx:523
 msgid "This table is empty"
 msgstr "Diese Tabelle ist leer"
 
-#: ../html/src/components/states-picker.tsx:527
-#: ../html/src/components/states-picker.tsx:569
+#: ../html/src/components/states-picker.tsx:530
+#: ../html/src/components/states-picker.tsx:572
 msgid "System Name"
 msgstr "Systemname"
 
-#: ../html/src/components/states-picker.tsx:547
+#: ../html/src/components/states-picker.tsx:550
 msgid "Execute States"
 msgstr ""
 
-#: ../html/src/components/states-picker.tsx:552
+#: ../html/src/components/states-picker.tsx:555
 msgid "Select Sytems"
 msgstr "Systeme auswählen"
 
@@ -1070,7 +1044,7 @@ msgid "({selectedCount} selected)"
 msgstr "({selectedCount} ausgewählt)"
 
 #: ../html/src/components/table/SearchPanel.tsx:66
-#: ../html/src/manager/admin/setup/products/products.tsx:376
+#: ../html/src/manager/admin/setup/products/products.tsx:329
 msgid "Clear"
 msgstr "Leeren"
 
@@ -1111,17 +1085,13 @@ msgstr ""
 msgid "Help"
 msgstr "Hilfe"
 
-#: ../html/src/components/utils/loading/Loading.tsx:16
+#: ../html/src/components/utils/loading/Loading.tsx:20
 #: ../html/src/manager/appstreams/appstream-packages.tsx:32
 #: ../html/src/manager/minion/ansible/ansible-path-content.tsx:70
 #: ../html/src/manager/minion/ptf/ptf-overview.renderer.tsx:56
 #: ../html/src/manager/systems/activation-key/activation-key-channels.tsx:99
 #: ../html/src/manager/systems/subscribe-channels/subscribe-channels.tsx:634
 #: ../html/src/manager/systems/subscribe-channels/subscribe-channels.tsx:635
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:327
-#: ../html/src/manager/virtualization/guests/edit/guests-edit.tsx:95
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:468
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:587
 msgid "Loading..."
 msgstr "Laden..."
 
@@ -1319,10 +1289,6 @@ msgid "Setup your SUSE Manager server monitoring."
 msgstr ""
 
 #: ../html/src/manager/admin/config/monitoring-admin.tsx:352
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:125
-#: ../html/src/manager/virtualization/guests/properties/guest-properties-traditional.tsx:53
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:219
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:240
 msgid "General"
 msgstr "Allgemein"
 
@@ -1335,7 +1301,6 @@ msgid "Organizations"
 msgstr "Organisationen"
 
 #: ../html/src/manager/admin/config/monitoring-admin.tsx:367
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:49
 msgid "Restart"
 msgstr "Neustart"
 
@@ -1344,16 +1309,22 @@ msgid "Cobbler"
 msgstr "Cobbler"
 
 #: ../html/src/manager/admin/config/monitoring-admin.tsx:376
-#: ../html/src/manager/admin/config/monitoring-admin.tsx:382
-#: ../html/src/manager/admin/config/monitoring-admin.tsx:394
+#: ../html/src/manager/admin/config/monitoring-admin.tsx:385
+#: ../html/src/manager/admin/config/monitoring-admin.tsx:397
 msgid "Monitoring"
 msgstr ""
 
-#: ../html/src/manager/admin/config/monitoring-admin.tsx:405
+#: ../html/src/manager/admin/config/monitoring-admin.tsx:379
+#, fuzzy
+#| msgid "Password"
+msgid "Password Policy"
+msgstr "Passwort"
+
+#: ../html/src/manager/admin/config/monitoring-admin.tsx:408
 msgid "Restarting"
 msgstr ""
 
-#: ../html/src/manager/admin/config/monitoring-admin.tsx:406
+#: ../html/src/manager/admin/config/monitoring-admin.tsx:409
 msgid ""
 " Tomcat and Taskomatic is needed for the configuration changes to take "
 "effect."
@@ -1370,19 +1341,16 @@ msgstr ""
 #: ../html/src/manager/admin/create-payg/create-payg.tsx:49
 #: ../html/src/manager/content-management/create-project/top-panel-buttons.tsx:16
 #: ../html/src/manager/images/image-profile-edit.tsx:503
-#: ../html/src/manager/images/image-profiles.tsx:146
 #: ../html/src/manager/images/image-profiles.tsx:147
+#: ../html/src/manager/images/image-profiles.tsx:148
 #: ../html/src/manager/images/image-store-edit.tsx:225
-#: ../html/src/manager/images/image-stores.tsx:146
 #: ../html/src/manager/images/image-stores.tsx:147
+#: ../html/src/manager/images/image-stores.tsx:148
 #: ../html/src/manager/maintenance/edit/maintenance-windows-edit.tsx:41
 #: ../html/src/manager/maintenance/list/maintenance-windows-list.tsx:29
 #: ../html/src/manager/recurring/recurring-actions-list.tsx:104
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-edit.tsx:207
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager.tsx:166
-#: ../html/src/manager/virtualization/guests/create/guests-create.tsx:86
-#: ../html/src/manager/virtualization/nets/create/nets-create.tsx:31
-#: ../html/src/manager/virtualization/pools/create/pools-create.tsx:29
 msgid "Create"
 msgstr ""
 
@@ -1398,44 +1366,100 @@ msgstr ""
 msgid "Bastion SSH connection data"
 msgstr ""
 
-#: ../html/src/manager/admin/list-payg/list-payg.tsx:84
-#: ../html/src/manager/admin/setup/products/products.tsx:307
-msgid "Setup Wizard"
-msgstr ""
-
-#: ../html/src/manager/admin/list-payg/list-payg.tsx:111
+#: ../html/src/manager/admin/list-payg/list-payg.tsx:59
 #: ../html/src/manager/content-management/list-projects/list-projects.tsx:95
 msgid "Filter by any value"
 msgstr ""
 
-#: ../html/src/manager/admin/list-payg/list-payg.tsx:116
+#: ../html/src/manager/admin/list-payg/list-payg.tsx:64
 #: ../html/src/manager/admin/payg-shared/sshData/payg-ssh-data-form.tsx:52
 #: ../html/src/manager/admin/payg-shared/sshData/payg-ssh-data-view.tsx:15
 #: ../html/src/manager/systems/bootstrap/bootstrap-minions.tsx:476
 msgid "Host"
 msgstr ""
 
-#: ../html/src/manager/admin/list-payg/list-payg.tsx:140
+#: ../html/src/manager/admin/list-payg/list-payg.tsx:88
 msgid "Last Update Status"
 msgstr ""
 
-#: ../html/src/manager/admin/list-payg/list-payg.tsx:141
+#: ../html/src/manager/admin/list-payg/list-payg.tsx:89
 #: ../html/src/manager/content-management/list-projects/list-projects.tsx:117
 msgid "never"
 msgstr ""
 
-#: ../html/src/manager/admin/list-payg/list-payg.tsx:160
+#: ../html/src/manager/admin/list-payg/list-payg.tsx:107
 msgid "Add PAYG Connection"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:47
+msgid "Server Configuration - Password Policy"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:50
+msgid "Set up your server local users password policy."
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:53
+msgid "Password Policy Settings"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:58
+msgid "Min Password Length"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:65
+msgid "Max Password Length"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:72
+msgid "Require Digits"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:79
+msgid "Require Lowercase Characters"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:86
+msgid "Require Uppercase Characters"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:93
+msgid "Restrict Consecutive Characters"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:100
+#, fuzzy
+#| msgid "Required channels"
+msgid "Require Special Characters"
+msgstr "Erforderliche Kanäle"
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:107
+msgid "Allowed Special Characters"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:119
+msgid "Restrict Characters Occurrences"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:126
+msgid "Max Characters Occurrences"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:143
+msgid "Save Password Policy"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:149
+msgid "Password Policy Changed"
+msgstr ""
+
+#: ../html/src/manager/admin/password-policy/password-policy.tsx:166
+msgid "Password Policy reset to defaults"
 msgstr ""
 
 #: ../html/src/manager/admin/payg-shared/api/payg-actions-api.ts:66
 #: ../html/src/manager/content-management/shared/api/use-lifecycle-actions-api.ts:75
 #: ../html/src/manager/login/use-login-api.ts:60
-#: ../html/src/manager/virtualization/ActionApi.tsx:53
-#: ../html/src/manager/virtualization/guests/virtualization-domains-caps-api.ts:43
-#: ../html/src/manager/virtualization/guests/virtualization-guest-definition-api.ts:39
-#: ../html/src/manager/virtualization/nets/virtualization-network-definition-api.tsx:33
-#: ../html/src/manager/virtualization/pools/virtualization-pool-definition-api.tsx:33
 msgid ""
 "Request interrupted or invalid response received from the server. Please try "
 "again."
@@ -1521,11 +1545,10 @@ msgid "Refresh the product catalog from SUSE Customer Center"
 msgstr ""
 
 #: ../html/src/manager/admin/setup/products/products-scc-dialog.tsx:180
-#: ../html/src/manager/images/image-profiles.tsx:151
-#: ../html/src/manager/images/image-stores.tsx:151
+#: ../html/src/manager/images/image-profiles.tsx:141
+#: ../html/src/manager/images/image-stores.tsx:141
 #: ../html/src/manager/images/image-view.tsx:375
-#: ../html/src/manager/notifications/notification-messages.tsx:435
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:241
+#: ../html/src/manager/notifications/notification-messages.tsx:439
 msgid "Refresh"
 msgstr ""
 
@@ -1542,128 +1565,127 @@ msgstr ""
 msgid "Operation not successful: Empty reply from the server"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:154
+#: ../html/src/manager/admin/setup/products/products.tsx:132
 msgid ""
 "No SUSE Manager Server Subscription available. Products requiring Client "
 "Tools Channel will not be shown."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:201
+#: ../html/src/manager/admin/setup/products/products.tsx:179
 msgid "The product catalog refresh is running..."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:227
+#: ../html/src/manager/admin/setup/products/products.tsx:205
 msgid "The following product installations failed. Please check log files."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:272
+#: ../html/src/manager/admin/setup/products/products.tsx:250
 msgid "Selected channels were scheduled successfully for syncing."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:332
+#: ../html/src/manager/admin/setup/products/products.tsx:284
 msgid ""
 "A refresh of the product data is currently running in the background. Please "
 "try again later."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:337
+#: ../html/src/manager/admin/setup/products/products.tsx:289
 msgid "The product catalog is still refreshing, please wait."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:339
+#: ../html/src/manager/admin/setup/products/products.tsx:291
 msgid "Select some product first."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:348
-#: ../html/src/manager/admin/setup/products/products.tsx:356
+#: ../html/src/manager/admin/setup/products/products.tsx:300
+#: ../html/src/manager/admin/setup/products/products.tsx:309
 msgid "Add products"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:375
+#: ../html/src/manager/admin/setup/products/products.tsx:328
 msgid "Clear products selection"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:418
+#: ../html/src/manager/admin/setup/products/products.tsx:372
 msgid "Why aren't all products displayed in the list?"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:421
+#: ../html/src/manager/admin/setup/products/products.tsx:375
 msgid ""
 "The products displayed on this list are directly linked to your Organization "
 "credentials (Mirror credentials) as well as your SUSE subscriptions."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:426
+#: ../html/src/manager/admin/setup/products/products.tsx:380
 msgid ""
 "If you believe there are products missing, make sure you have added the "
 "correct Organization credentials in the previous wizard step."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:436
+#: ../html/src/manager/admin/setup/products/products.tsx:390
 msgid ""
 "This server is configured as an Inter-Server Synchronisation (ISS) slave. "
 "Products can only be managed on the ISS master."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:534
+#: ../html/src/manager/admin/setup/products/products.tsx:487
 msgid "Filter by architecture"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:552
+#: ../html/src/manager/admin/setup/products/products.tsx:505
 msgid "Filter by product Description"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:628
+#: ../html/src/manager/admin/setup/products/products.tsx:581
 msgid "Product Description"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:634
-#: ../html/src/manager/admin/setup/products/products.tsx:1015
+#: ../html/src/manager/admin/setup/products/products.tsx:587
+#: ../html/src/manager/admin/setup/products/products.tsx:968
 #: ../html/src/manager/content-management/list-filters/filter-form.tsx:159
 #: ../html/src/manager/images/image-view-packages.tsx:50
 #: ../html/src/manager/minion/ptf/ptf-column-definition.tsx:32
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:184
 msgid "Architecture"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:636
+#: ../html/src/manager/admin/setup/products/products.tsx:589
 msgid "Arch"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:643
+#: ../html/src/manager/admin/setup/products/products.tsx:596
 #: ../html/src/manager/packages/list.tsx:158
 msgid "Channels"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:650
+#: ../html/src/manager/admin/setup/products/products.tsx:603
 msgid "Recommended"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:821
+#: ../html/src/manager/admin/setup/products/products.tsx:774
 msgid " channels sync failed"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:829
+#: ../html/src/manager/admin/setup/products/products.tsx:782
 msgid " channels sync in progress"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:837
+#: ../html/src/manager/admin/setup/products/products.tsx:790
 msgid " channels synced"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:862
+#: ../html/src/manager/admin/setup/products/products.tsx:815
 msgid "To enable this product, the parent product should be selected first"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:863
+#: ../html/src/manager/admin/setup/products/products.tsx:816
 msgid "Select this product"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:875
+#: ../html/src/manager/admin/setup/products/products.tsx:828
 msgid "This product is mirrored."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:904
+#: ../html/src/manager/admin/setup/products/products.tsx:857
 #: ../html/src/manager/content-management/shared/components/panels/sources/channels/child-channel.tsx:71
 #: ../html/src/manager/systems/activation-key/child-channels.tsx:144
 #: ../html/src/manager/systems/ssm/ssm-subscribe-channels.tsx:497
@@ -1671,56 +1693,134 @@ msgstr ""
 msgid "recommended"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:960
+#: ../html/src/manager/admin/setup/products/products.tsx:913
 msgid "SCC product catalog refresh in progress"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:963
+#: ../html/src/manager/admin/setup/products/products.tsx:916
 msgid "Scheduling channels product resync"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:966
+#: ../html/src/manager/admin/setup/products/products.tsx:919
 msgid "Channels product resync scheduled"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:969
+#: ../html/src/manager/admin/setup/products/products.tsx:922
 msgid "Schedule channels product resync"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:1029
+#: ../html/src/manager/admin/setup/products/products.tsx:982
 msgid "Show product's channels"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:1101
+#: ../html/src/manager/admin/setup/products/products.tsx:1054
 msgid "Product Channels - "
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:1106
+#: ../html/src/manager/admin/setup/products/products.tsx:1059
 msgid "Select the optional channels you wish to add and confirm."
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:1110
+#: ../html/src/manager/admin/setup/products/products.tsx:1063
 msgid "Mandatory Channels"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:1112
+#: ../html/src/manager/admin/setup/products/products.tsx:1065
 msgid "Optional Channels"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:1148
+#: ../html/src/manager/admin/setup/products/products.tsx:1101
 msgid "not synced"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:1151
+#: ../html/src/manager/admin/setup/products/products.tsx:1104
 msgid "sync in progress"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:1154
+#: ../html/src/manager/admin/setup/products/products.tsx:1107
 msgid "synced"
 msgstr ""
 
-#: ../html/src/manager/admin/setup/products/products.tsx:1157
+#: ../html/src/manager/admin/setup/products/products.tsx:1110
 msgid "sync failed"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:67
+msgid "Save and Verify"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:86
+msgid "HTTP Proxy Hostname"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:87
+msgid "hostname:port"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:88
+msgid ""
+"For example: <code>example.com:8080</code> or <code>192.0.2.0:8080</code>"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:105
+msgid "HTTP Proxy Username"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:106
+#: ../html/src/manager/images/image-store-edit.tsx:171
+#: ../html/src/manager/login/susemanager/login.tsx:88
+#: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:170
+msgid "Username"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:114
+msgid "HTTP Proxy Password"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:125
+msgid "Illustration of a proxy server"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:126
+#: ../html/src/manager/admin/setup/setup-header.tsx:7
+msgid "HTTP Proxy"
+msgstr "HTTP-Proxy"
+
+#: ../html/src/manager/admin/setup/proxy/proxy.tsx:129
+msgid ""
+"If this server uses an HTTP proxy to access the outside network, you can use "
+"this form to configure it. If that is not the case, move on to "
+"<link>Organization Credentials</link>."
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/verification.tsx:59
+msgid "Verifying proxy settings"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/verification.tsx:62
+msgid "Successfully verified proxy settings"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/proxy/verification.tsx:65
+msgid "Proxy settings are not valid"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/setup-header.tsx:12
+#, fuzzy
+msgid "Organization Credentials"
+msgstr "Organisation"
+
+#: ../html/src/manager/admin/setup/setup-header.tsx:17
+#: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:296
+msgid "Products"
+msgstr ""
+
+#: ../html/src/manager/admin/setup/setup-header.tsx:22
+msgid "PAYG Connections"
+msgstr "PAYG-Verbindungen"
+
+#: ../html/src/manager/admin/setup/setup-header.tsx:31
+msgid "Setup Wizard"
 msgstr ""
 
 #: ../html/src/manager/admin/task-engine-status/taskotop.tsx:97
@@ -1774,10 +1874,9 @@ msgid " seconds"
 msgstr ""
 
 #: ../html/src/manager/admin/task-engine-status/taskotop.tsx:196
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:365
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:363
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:280
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-unmatched-products.tsx:140
-#: ../html/src/manager/virtualization/ListTab.tsx:235
 msgid "Filter by name"
 msgstr ""
 
@@ -1812,13 +1911,13 @@ msgstr ""
 
 #: ../html/src/manager/admin/task-engine-status/taskotop.tsx:261
 #: ../html/src/manager/audit/subscription-matching/subscription-matching.tsx:110
-#: ../html/src/manager/notifications/notification-messages.tsx:555
+#: ../html/src/manager/notifications/notification-messages.tsx:559
 msgid "Session expired, please reload the page to see up-to-date data."
 msgstr ""
 
 #: ../html/src/manager/admin/task-engine-status/taskotop.tsx:263
 #: ../html/src/manager/audit/subscription-matching/subscription-matching.tsx:112
-#: ../html/src/manager/notifications/notification-messages.tsx:557
+#: ../html/src/manager/notifications/notification-messages.tsx:561
 #: ../html/src/utils/network.ts:103
 msgid "Server error, please check log files."
 msgstr ""
@@ -1981,52 +2080,52 @@ msgstr ""
 msgid "Audit Images"
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:341
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:340
 msgid "MITRE CVE link"
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:353
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:351
 msgid "SUSE Security CVE link"
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:419
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:487
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:417
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:485
 #, fuzzy
 msgid "No action required"
 msgstr "notwendig"
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:425
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:423
 msgid "Install a new patch on this system."
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:442
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:440
 msgid "Patch available, but system needs to be migrated to a newer Product."
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:454
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:452
 msgid "Patch available, but needs to be cloned into Channel."
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:466
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:464
 msgid "Install a new partial patch on this system."
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:479
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:510
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:513
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:477
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:508
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:511
 msgid "If you see this report a bug."
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:494
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:492
 #: ../html/src/manager/images/image-view-overview.tsx:641
 msgid "Rebuild"
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:502
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:500
 msgid "Patch available but needs to be cloned into Channel."
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:505
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:503
 #: ../html/src/manager/content-management/list-filters/appstreams/select-input.tsx:34
 #: ../html/src/manager/content-management/list-filters/templates/app-streams.tsx:43
 #: ../html/src/manager/content-management/shared/components/panels/sources/sources.tsx:41
@@ -2034,11 +2133,11 @@ msgstr ""
 msgid "Channel"
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:506
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:504
 msgid "Errata"
 msgstr ""
 
-#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:532
+#: ../html/src/manager/audit/cveaudit/cveaudit.tsx:531
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-util.tsx:9
 msgid "Download CSV"
 msgstr ""
@@ -2085,7 +2184,7 @@ msgstr ""
 msgid "). "
 msgstr ""
 
-#: ../html/src/manager/audit/subscription-matching/subscription-matching-matcher-run-panel.tsx:153
+#: ../html/src/manager/audit/subscription-matching/subscription-matching-matcher-run-panel.tsx:152
 msgid "Refresh matching data"
 msgstr ""
 
@@ -2239,10 +2338,6 @@ msgstr ""
 
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:291
 msgid "Socket/IFL count"
-msgstr ""
-
-#: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:296
-msgid "Products"
 msgstr ""
 
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:306
@@ -2404,27 +2499,27 @@ msgstr ""
 msgid "Updating the filter..."
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:86
+#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:87
 msgid "Check the required fields below"
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:95
+#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:96
 msgid "Filter updated successfully"
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:110
+#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:111
 msgid "Filter created successfully"
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:122
+#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:123
 msgid "Filter Details"
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:122
+#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:123
 msgid "Create a new filter"
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:168
+#: ../html/src/manager/content-management/list-filters/filter-edit.tsx:171
 msgid "Filter deleted successfully"
 msgstr ""
 
@@ -2565,26 +2660,26 @@ msgid ""
 "Some of the selected filters are used in projects and can not be deleted."
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/list-filters.tsx:137
+#: ../html/src/manager/content-management/list-filters/list-filters.tsx:138
 msgid "Select unused"
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/list-filters.tsx:144
+#: ../html/src/manager/content-management/list-filters/list-filters.tsx:145
 #: ../html/src/manager/images/image-profiles.tsx:137
 #: ../html/src/manager/images/image-stores.tsx:137
 #: ../html/src/manager/images/image-view.tsx:352
 msgid "Delete selected"
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/list-filters.tsx:150
+#: ../html/src/manager/content-management/list-filters/list-filters.tsx:151
 msgid "Content Lifecycle Filters"
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/list-filters.tsx:159
+#: ../html/src/manager/content-management/list-filters/list-filters.tsx:160
 msgid "Filter by name or project"
 msgstr ""
 
-#: ../html/src/manager/content-management/list-filters/list-filters.tsx:175
+#: ../html/src/manager/content-management/list-filters/list-filters.tsx:176
 msgid "Projects in use"
 msgstr ""
 
@@ -2601,7 +2696,6 @@ msgid "AppStream modules with defaults"
 msgstr ""
 
 #: ../html/src/manager/content-management/list-filters/templates/index.tsx:47
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:277
 msgid "Template"
 msgstr ""
 
@@ -3109,9 +3203,8 @@ msgstr ""
 #: ../html/src/manager/images/image-view-patches.tsx:79
 #: ../html/src/manager/images/image-view.tsx:642
 #: ../html/src/manager/maintenance/edit/schedule-edit.tsx:105
-#: ../html/src/manager/notifications/notification-messages.tsx:496
+#: ../html/src/manager/notifications/notification-messages.tsx:500
 #: ../html/src/manager/state/highstate-summary.tsx:73
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:300
 msgid "Type"
 msgstr ""
 
@@ -3199,7 +3292,7 @@ msgstr ""
 #: ../html/src/manager/header/search/search.tsx:14
 #: ../html/src/manager/images/image-view.tsx:667
 #: ../html/src/manager/images/image-view.tsx:791
-#: ../html/src/manager/systems/all-list.tsx:98
+#: ../html/src/manager/systems/all-list.tsx:103
 #: ../html/src/manager/systems/list-filter.tsx:45
 msgid "Packages"
 msgstr ""
@@ -3207,7 +3300,7 @@ msgstr ""
 #: ../html/src/manager/header/search/search.tsx:18
 #: ../html/src/manager/images/image-view.tsx:654
 #: ../html/src/manager/images/image-view.tsx:790
-#: ../html/src/manager/systems/all-list.tsx:85
+#: ../html/src/manager/systems/all-list.tsx:90
 #: ../html/src/manager/systems/list-filter.tsx:44
 msgid "Patches"
 msgstr ""
@@ -3270,7 +3363,6 @@ msgid "Image Store"
 msgstr ""
 
 #: ../html/src/manager/images/image-build.tsx:270
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:530
 msgid "Path"
 msgstr ""
 
@@ -3381,9 +3473,6 @@ msgstr ""
 #: ../html/src/manager/images/image-store-edit.tsx:214
 #: ../html/src/manager/maintenance/edit/maintenance-windows-edit.tsx:41
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-edit.tsx:197
-#: ../html/src/manager/virtualization/guests/edit/guests-edit.tsx:111
-#: ../html/src/manager/virtualization/nets/edit/nets-edit.tsx:40
-#: ../html/src/manager/virtualization/pools/edit/pools-edit.tsx:38
 msgid "Update"
 msgstr ""
 
@@ -3455,13 +3544,6 @@ msgstr "Sind sie sicher, dass sie das Projekt löschen wollen "
 
 #: ../html/src/manager/images/image-store-edit.tsx:165
 msgid "Use credentials"
-msgstr ""
-
-#: ../html/src/manager/images/image-store-edit.tsx:171
-#: ../html/src/manager/login/susemanager/login.tsx:82
-#: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:170
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:511
-msgid "Username"
 msgstr ""
 
 #: ../html/src/manager/images/image-store-edit.tsx:237
@@ -3827,8 +3909,6 @@ msgid "Building"
 msgstr ""
 
 #: ../html/src/manager/images/image-view.tsx:511
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:231
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:299
 msgid "Unknown"
 msgstr ""
 
@@ -3850,10 +3930,9 @@ msgid "(obsolete)"
 msgstr ""
 
 #: ../html/src/manager/images/image-view.tsx:651
-#: ../html/src/manager/systems/all-list.tsx:74
+#: ../html/src/manager/systems/all-list.tsx:79
 #: ../html/src/manager/systems/list-filter.tsx:43
 #: ../html/src/manager/systems/virtual-list.tsx:88
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:141
 msgid "Updates"
 msgstr ""
 
@@ -3918,21 +3997,30 @@ msgid "Signing in ..."
 msgstr ""
 
 #: ../html/src/manager/login/susemanager/login.tsx:41
-#: ../html/src/manager/login/uyuni/login.tsx:38
+#: ../html/src/manager/login/uyuni/login.tsx:40
 msgid ""
 "Discover a new way of managing your servers, packages, patches and more via "
 "one interface."
 msgstr ""
 
 #: ../html/src/manager/login/susemanager/login.tsx:44
-msgid "<link>Learn more</link> about {product}."
+msgid "<link>Learn more</link> about {productName}."
 msgstr ""
 
-#: ../html/src/manager/login/susemanager/login.tsx:81
-#: ../html/src/manager/login/susemanager/login.tsx:107
-#: ../html/src/manager/login/uyuni/login.tsx:50
-#: ../html/src/manager/login/uyuni/login.tsx:96
+#: ../html/src/manager/login/susemanager/login.tsx:87
+#: ../html/src/manager/login/susemanager/login.tsx:113
+#: ../html/src/manager/login/uyuni/login.tsx:52
+#: ../html/src/manager/login/uyuni/login.tsx:98
 msgid "Sign In"
+msgstr ""
+
+#: ../html/src/manager/login/susemanager/login.tsx:119
+#: ../html/src/manager/login/uyuni/login.tsx:117
+msgid "Copyright Notice"
+msgstr ""
+
+#: ../html/src/manager/login/susemanager/login.tsx:121
+msgid "{productName} release {versionNumber}"
 msgstr ""
 
 #: ../html/src/manager/login/use-login-api.ts:14
@@ -3951,9 +4039,17 @@ msgstr ""
 msgid "Are you sure you want to close this page while login is in progress?"
 msgstr ""
 
-#: ../html/src/manager/login/uyuni/login.tsx:41
-msgid "Learn more about"
+#: ../html/src/manager/login/uyuni/login.tsx:42
+msgid "Learn more about {productName}:"
 msgstr ""
+
+#: ../html/src/manager/login/uyuni/login.tsx:46
+msgid "View website"
+msgstr ""
+
+#: ../html/src/manager/login/uyuni/login.tsx:114
+msgid "About"
+msgstr "Über"
 
 #: ../html/src/manager/maintenance/calendar/web-calendar.tsx:76
 msgid "Skip to the last maintenance window"
@@ -4073,7 +4169,7 @@ msgstr ""
 #: ../html/src/manager/maintenance/edit/calendar-edit.tsx:133
 #: ../html/src/manager/maintenance/edit/schedule-edit.tsx:116
 #: ../html/src/manager/maintenance/shared/cancel-actions-dialog.tsx:14
-#: ../html/src/manager/maintenance/ssm/schedule-picker.tsx:139
+#: ../html/src/manager/maintenance/ssm/schedule-picker.tsx:138
 msgid "Cancel affected actions"
 msgstr ""
 
@@ -4223,7 +4319,7 @@ msgstr ""
 msgid "fa-edit"
 msgstr ""
 
-#: ../html/src/manager/maintenance/ssm/schedule-picker.tsx:124
+#: ../html/src/manager/maintenance/ssm/schedule-picker.tsx:123
 msgid "None - clear schedule"
 msgstr ""
 
@@ -4427,9 +4523,6 @@ msgstr ""
 #: ../html/src/manager/minion/packages/package-states.tsx:344
 #: ../html/src/manager/proxy/container-config.tsx:322
 #: ../html/src/manager/salt/keys/key-management.tsx:188
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:152
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:75
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:339
 msgid "State"
 msgstr "Bundesland"
 
@@ -4442,7 +4535,7 @@ msgid "Applying the packages states has been "
 msgstr ""
 
 #: ../html/src/manager/minion/ptf/ptf-column-definition.tsx:22
-#: ../html/src/manager/notifications/notification-messages.tsx:502
+#: ../html/src/manager/notifications/notification-messages.tsx:506
 msgid "Summary"
 msgstr ""
 
@@ -4547,99 +4640,101 @@ msgstr ""
 msgid "PAYG instance is not compliant"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:241
-#: ../html/src/manager/notifications/notification-messages.tsx:242
+#: ../html/src/manager/notifications/notification-messages.tsx:64
+msgid "SCC Data Sync Disabled"
+msgstr ""
+
+#: ../html/src/manager/notifications/notification-messages.tsx:245
+#: ../html/src/manager/notifications/notification-messages.tsx:246
 msgid "Info"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:249
-#: ../html/src/manager/notifications/notification-messages.tsx:250
+#: ../html/src/manager/notifications/notification-messages.tsx:253
+#: ../html/src/manager/notifications/notification-messages.tsx:254
 msgid "Warning"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:257
-#: ../html/src/manager/notifications/notification-messages.tsx:258
+#: ../html/src/manager/notifications/notification-messages.tsx:261
+#: ../html/src/manager/notifications/notification-messages.tsx:262
 msgid "Error"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:320
+#: ../html/src/manager/notifications/notification-messages.tsx:324
 msgid "show details"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:369
+#: ../html/src/manager/notifications/notification-messages.tsx:373
 msgid "Retry onboarding"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:379
+#: ../html/src/manager/notifications/notification-messages.tsx:383
 msgid "Retry repo sync"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:402
+#: ../html/src/manager/notifications/notification-messages.tsx:406
 msgid "Unread Messages"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:407
+#: ../html/src/manager/notifications/notification-messages.tsx:411
 msgid "All Messages"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:420
+#: ../html/src/manager/notifications/notification-messages.tsx:424
 msgid "Filter by type"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:439
-#: ../html/src/manager/notifications/notification-messages.tsx:440
+#: ../html/src/manager/notifications/notification-messages.tsx:443
+#: ../html/src/manager/notifications/notification-messages.tsx:444
 msgid "Delete selected messages"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:447
-#: ../html/src/manager/notifications/notification-messages.tsx:448
+#: ../html/src/manager/notifications/notification-messages.tsx:451
+#: ../html/src/manager/notifications/notification-messages.tsx:452
 msgid "Mark selected as read"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:465
-#: ../html/src/manager/notifications/notification-messages.tsx:543
+#: ../html/src/manager/notifications/notification-messages.tsx:469
+#: ../html/src/manager/notifications/notification-messages.tsx:547
 msgid "Notification Messages"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:470
+#: ../html/src/manager/notifications/notification-messages.tsx:474
 msgid "The server has collected the following notification messages."
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:484
+#: ../html/src/manager/notifications/notification-messages.tsx:488
 msgid "Filter by summary"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:490
+#: ../html/src/manager/notifications/notification-messages.tsx:494
 msgid "Severity"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:519
+#: ../html/src/manager/notifications/notification-messages.tsx:523
 msgid "Read|Delete"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:525
+#: ../html/src/manager/notifications/notification-messages.tsx:529
 msgid "Flag as Unread"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:525
+#: ../html/src/manager/notifications/notification-messages.tsx:529
 msgid "Flag as Read"
 msgstr ""
 
-#: ../html/src/manager/notifications/notification-messages.tsx:531
+#: ../html/src/manager/notifications/notification-messages.tsx:535
 msgid "Delete Notification"
 msgstr ""
 
 #: ../html/src/manager/notifications/notifications.tsx:42
 #: ../html/src/manager/salt/cmd/remote-commands.tsx:339
 #: ../html/src/manager/shared/websocket/useWebSocket.ts:29
-#: ../html/src/manager/virtualization/useVirtNotification.ts:48
 msgid "Websocket connection closed. Refresh the page to try again."
 msgstr ""
 
 #: ../html/src/manager/notifications/notifications.tsx:55
 #: ../html/src/manager/salt/cmd/remote-commands.tsx:359
 #: ../html/src/manager/shared/websocket/useWebSocket.ts:35
-#: ../html/src/manager/virtualization/useVirtNotification.ts:54
 msgid "Error connecting to server. Refresh the page to try again."
 msgstr ""
 
@@ -5309,39 +5404,44 @@ msgstr ""
 msgid "Activation key has been modified."
 msgstr ""
 
-#: ../html/src/manager/systems/all-list.tsx:37
+#: ../html/src/manager/systems/all-list.tsx:38
 #, fuzzy
 msgid " Systems "
 msgstr "System"
 
-#: ../html/src/manager/systems/all-list.tsx:49
+#: ../html/src/manager/systems/all-list.tsx:52
 #, fuzzy
-msgid "Add System"
+msgid "Add a system"
 msgstr "System"
 
-#: ../html/src/manager/systems/all-list.tsx:63
+#: ../html/src/manager/systems/all-list.tsx:53
+#, fuzzy
+msgid "Add system"
+msgstr "System"
+
+#: ../html/src/manager/systems/all-list.tsx:68
 #, fuzzy
 msgid "No Systems."
 msgstr "System"
 
-#: ../html/src/manager/systems/all-list.tsx:112
+#: ../html/src/manager/systems/all-list.tsx:117
 #: ../html/src/manager/systems/list-filter.tsx:46
 msgid "Extra Packages"
 msgstr ""
 
-#: ../html/src/manager/systems/all-list.tsx:126
+#: ../html/src/manager/systems/all-list.tsx:131
 #: ../html/src/manager/systems/list-filter.tsx:47
 msgid "Config Diffs"
 msgstr ""
 
-#: ../html/src/manager/systems/all-list.tsx:141
+#: ../html/src/manager/systems/all-list.tsx:146
 #: ../html/src/manager/systems/list-filter.tsx:48
 #: ../html/src/manager/systems/ssm/ssm-subscribe-channels.tsx:146
 #: ../html/src/manager/systems/subscribe-channels/subscribe-channels.tsx:579
 msgid "Base Channel"
 msgstr ""
 
-#: ../html/src/manager/systems/all-list.tsx:152
+#: ../html/src/manager/systems/all-list.tsx:157
 #: ../html/src/manager/systems/list-filter.tsx:51
 #, fuzzy
 msgid "System Type"
@@ -5477,14 +5577,12 @@ msgstr ""
 #: ../html/src/manager/systems/coco/ssm-schedule.tsx:115
 #: ../html/src/manager/systems/coco/ssm-settings.tsx:74
 #: ../html/src/manager/systems/list-filter.tsx:36
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:187
 msgid "Yes"
 msgstr ""
 
 #: ../html/src/manager/systems/coco/ssm-schedule.tsx:115
 #: ../html/src/manager/systems/coco/ssm-settings.tsx:74
 #: ../html/src/manager/systems/list-filter.tsx:37
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:188
 msgid "No"
 msgstr ""
 
@@ -5772,7 +5870,6 @@ msgid "system(s) to subscribe"
 msgstr ""
 
 #: ../html/src/manager/systems/ssm/ssm-subscribe-channels.tsx:464
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:177
 msgid "(none)"
 msgstr ""
 
@@ -5893,7 +5990,6 @@ msgid "No Virtual Systems."
 msgstr ""
 
 #: ../html/src/manager/systems/virtual-list.tsx:99
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:174
 msgid "Base Software Channel"
 msgstr ""
 
@@ -6000,824 +6096,6 @@ msgstr ""
 msgid "Add a virtual host manager"
 msgstr ""
 
-#: ../html/src/manager/virtualization/HypervisorCheck.tsx:18
-msgid "Please install libvirt python module."
-msgstr ""
-
-#: ../html/src/manager/virtualization/HypervisorCheck.tsx:24
-msgid ""
-"Neither KVM nor Xen is running. Ensure they are installed and the kernel "
-"modules are loaded."
-msgstr ""
-
-#: ../html/src/manager/virtualization/ListTab.tsx:161
-#, fuzzy
-msgid "{name} selected"
-msgstr "({0} ausgewählt)"
-
-#: ../html/src/manager/virtualization/ListTab.tsx:240
-msgid "Action Status"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:131
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:225
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:246
-msgid "Can not contain the following characters: /\\"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:141
-msgid "Hypervisor"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:152
-msgid "Virtual Machine Type"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:164
-#: ../html/src/manager/virtualization/guests/properties/guest-properties-traditional.tsx:56
-msgid "Maximum Memory (MiB)"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:166
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:175
-#: ../html/src/manager/virtualization/guests/properties/guest-properties-traditional.tsx:58
-#: ../html/src/manager/virtualization/guests/properties/guest-properties-traditional.tsx:67
-msgid "A positive integer is required"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:173
-#: ../html/src/manager/virtualization/guests/properties/guest-properties-traditional.tsx:65
-msgid "Virtual CPU Count"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:195
-msgid "Enable UEFI"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:202
-msgid "UEFI firmware path"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:209
-msgid "NVRAM template path"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:221
-msgid "Auto-installation Profile"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:237
-msgid "Kernel options"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:250
-msgid "Cluster support is disabled since VirtualDomain resource agent "
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:258
-msgid "Define as a cluster resource"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:264
-msgid "Path to the cluster shared folder for VM definitions"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/GuestProperties.tsx:296
-msgid "Graphics"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/console/MessagePopUp.tsx:27
-msgid "Retry"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/console/MessagePopUp.tsx:33
-msgid "Connecting..."
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/console/guests-console.tsx:183
-msgid "Disconnected"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/console/guests-console.tsx:183
-msgid "Failed to connect"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/console/guests-console.tsx:344
-msgid "Toggle full size"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/console/guests-console.tsx:364
-msgid "Guest is not running"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/console/guests-console.tsx:366
-msgid "Unknown guest"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/console/vnc-client.ts:14
-msgid "Something went wrong, connection is closed"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/create/guests-create.tsx:83
-msgid "Create Virtual Machine"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/MigrateDialog.tsx:42
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:221
-msgid "Migrate"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/MigrateDialog.tsx:60
-msgid "Select where to migrate the virtual guest to."
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/MigrateDialog.tsx:63
-msgid "Target Host"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:33
-msgid "Start / Resume"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:40
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:30
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:257
-msgid "Stop"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:45
-msgid "Force off"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:58
-msgid "Suspend"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:78
-msgid "Synchronize Guests List"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:79
-msgid "Synchronize"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:102
-msgid "Hosted Virtual Systems"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:103
-msgid ""
-"This is a list of virtual guests which are configured to run on this host."
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:118
-msgid "Guest"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:128
-msgid "Unregistered System"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:160
-msgid "Current Memory"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:167
-msgid "vCPUs"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:198
-msgid "paused"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/list/guests-list.tsx:211
-msgid "Graphical Console"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskFields.tsx:55
-msgid "Device type"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskFields.tsx:62
-msgid "Disk"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskFields.tsx:63
-msgid "CDROM"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskFields.tsx:64
-msgid "Floppy"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskFields.tsx:75
-msgid "Bus"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskFileFields.tsx:26
-msgid "File"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskFileFields.tsx:35
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskVolumeFields.tsx:113
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:500
-msgid "Format"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskVolumeFields.tsx:70
-msgid "Source storage pool"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskVolumeFields.tsx:82
-msgid "Source Volume"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskVolumeFields.tsx:95
-msgid "Disk size (GiB)"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDiskVolumeFields.tsx:103
-msgid "Source template image URL"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/GuestDisksPanel.tsx:81
-msgid "Disks"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/guest-nics-panel.tsx:40
-msgid "Network"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/guest-nics-panel.tsx:52
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:90
-msgid "MAC address"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/guest-nics-panel.tsx:53
-msgid "Leave blank to generate a MAC address"
-msgstr ""
-
-#: ../html/src/manager/virtualization/guests/properties/guest-nics-panel.tsx:86
-msgid "Networks"
-msgstr "Netzwerke"
-
-#: ../html/src/manager/virtualization/guests/properties/guest-properties-form.tsx:121
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:461
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:580
-msgid "Clear Fields"
-msgstr "Felder leeren"
-
-#: ../html/src/manager/virtualization/guests/properties/templates.ts:2
-msgid "Single virtual machine using almost all the host resources"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/create/nets-create.tsx:28
-msgid "Create Virtual Network"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:23
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:111
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:249
-msgid "Start"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:50
-msgid "Virtual Networks"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:51
-msgid ""
-"This is a list of virtual networks which are configured to run on this host."
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:59
-msgid ""
-"The Salt version on this system does not support virtual network creating "
-"and editing"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:82
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:342
-msgid "Autostart"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:92
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:345
-msgid "Persistent"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/list/nets-list.tsx:101
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:264
-msgid "Bridge"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:216
-msgid "network properties"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:233
-msgid "Network type"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:245
-msgid "Macvtap mode"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:254
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:266
-msgid "Start during virtual host boot"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:260
-msgid "Connectivity"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:273
-msgid "Maximum Transmission Unit (MTU)"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:277
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:179
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:188
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:197
-msgid "The value has to be a positive integer"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:285
-msgid "Virtual Port Type"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:301
-msgid "Select interfaces"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:307
-msgid "By physical function"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:310
-msgid "By virtual functions"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:311
-msgid "By interfaces"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:322
-msgid "Interfaces"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:342
-msgid "Physical Function"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:357
-msgid "Virtual Functions"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:379
-msgid "VLAN tag"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:383
-#: ../html/src/manager/virtualization/nets/properties/Vlans.tsx:57
-msgid "Integer between 0 and 4095"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:390
-msgid "VLAN tags trunking"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:400
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:401
-msgid "NAT IPv4 range"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:412
-msgid "Both values has to be IPv4 addresses"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:416
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:417
-msgid "NAT port range"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:430
-msgid "Both values has to be positive integers"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:438
-msgid "Addressing"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:440
-msgid "Enable IPv6"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/network-properties.tsx:442
-msgid "Domain name"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:19
-msgid "DNS"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:24
-msgid "Forwarders"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:37
-msgid "Domain"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:38
-msgid "DNS server address"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:51
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:165
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:240
-msgid "Has to be a valid qualified host name"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:59
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:100
-msgid "Has to be an IP address"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:66
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:282
-msgid "Hosts"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:80
-msgid "Address"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:84
-msgid "hostnames (comma-separated)"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:112
-msgid "Has to be a comma-separated list of host names"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:119
-msgid "SRV records"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:139
-msgid "Service name"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:147
-msgid "Protocol"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:159
-msgid "Service domain name"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:168
-msgid "Target hostname"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:175
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:222
-msgid "Port"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:184
-msgid "Target priority"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:193
-msgid "Target weight"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:206
-msgid "TXT records"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/DnsConfig.tsx:224
-msgid "Value"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:30
-msgid "Network address"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:41
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:56
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:72
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:105
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:135
-msgid "v6"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:85
-msgid "IP address"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:94
-msgid "DHCP Unique Identifier (DUID)"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:119
-msgid "Needs to be a MAC address"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:144
-msgid "BOOTP image file"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:145
-msgid "BOOTP server"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/IpConfig.tsx:146
-msgid "TFTP root path"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:23
-msgid "Parameters"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:29
-msgid "By profile id"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:30
-msgid "Virtual Station Interface (VSI) parameters"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:38
-msgid "Profile id"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:48
-msgid "Interface id"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:56
-msgid "VSI manager id"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:57
-msgid "VSI type id"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:60
-msgid "VSI type id version"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:66
-msgid "VSI instance id"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/VirtualPortFields.tsx:70
-msgid "Value needs to be a valid UUID"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/Vlans.tsx:19
-msgid "VLANs"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/Vlans.tsx:40
-msgid "Tag"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/Vlans.tsx:43
-msgid "Native mode"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/Vlans.tsx:63
-msgid "Tagged"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/Vlans.tsx:64
-msgid "Untagged"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/fields-data.ts:6
-msgid ""
-"Use an existing and configured bridge device. No iptables rule, IP address "
-"or DHCP/DNS service are added"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/fields-data.ts:14
-msgid "Virtual network using the host IP routing stack and NAT"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/fields-data.ts:19
-msgid "Virtual network using the host IP routing stack, without NAT"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/fields-data.ts:24
-msgid ""
-"Virtual network using the host IP routing stack, without firewall rules and "
-"NAT"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/fields-data.ts:29
-msgid "Virtual network with no connection to other networks"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/fields-data.ts:35
-msgid "Network based on macvtap driver to use a pool of physical interfaces. "
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/fields-data.ts:46
-msgid "SR-IOV pool"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/properties/fields-data.ts:47
-msgid "Pass through one device of a pool of SR-IOV Virtual Functions"
-msgstr ""
-
-#: ../html/src/manager/virtualization/nets/virtualization-network-devs-api.ts:27
-msgid "Could not get network devices from the server. Please try again."
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/create/pools-create.tsx:26
-msgid "Create Virtual Storage Pool"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:116
-msgid "Virtual Storage Pool"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:116
-msgid "Virtual Storage Volume"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:142
-msgid "Delete the pool, including the contained volumes. "
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:143
-msgid "Cannot be undone"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:263
-msgid "Edit Pool"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:348
-msgid "Location"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:351
-msgid "Usage"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:364
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:365
-msgid "Create Pool"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:371
-msgid "Virtual Storage Pools and Volumes"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:372
-msgid ""
-"This is the list of storage pools defined on this host containing virtual "
-"guests disks."
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/list/pools-list.tsx:384
-msgid "Filter by pool or volume name"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:182
-msgid "Partition separator"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:213
-msgid "Host name"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:255
-msgid "Pool Type"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:272
-msgid "Source"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:314
-msgid "Devices"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:355
-msgid "Initiator IQN"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:365
-msgid "Adapter type"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:389
-msgid "Adapter name"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:398
-msgid "Adapter parent PCI address"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:402
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:415
-msgid "PCI address formatted like 0000:00:00.0"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:411
-msgid "Adapter parent address unique ID"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:422
-msgid "Adapter parent name"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:430
-msgid "Adapter parent wwnn"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:433
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:443
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:453
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:464
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:475
-msgid "16 characters long hexadecimal value. Example: 500277a4100c4e21"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:440
-msgid "Adapter parent wwpn"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:450
-msgid "Adapter parent fabric wwn"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:460
-msgid "Adapter wwnn"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:471
-msgid "Adapter wwpn"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:482
-msgid "Manage vHBA deletion"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:491
-msgid "Source name"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:517
-msgid "Passphrase"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:527
-msgid "Target"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:538
-msgid "Owner UID"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:542
-msgid "UID is a numeric value"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:546
-msgid "Group ID"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:550
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:559
-msgid "GID is a numeric value"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:554
-msgid "Permission mode"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:555
-msgid "target directory permissions in octal form, like 0775"
-msgstr ""
-
-#. TODO Add Link to the UI Reference
-#: ../html/src/manager/virtualization/pools/pool-properties.tsx:562
-msgid "SELinux label"
-msgstr ""
-
-#: ../html/src/manager/virtualization/pools/virtualization-pools-capabilities-api.ts:27
-msgid ""
-"Could not get storage pool capabilities from the server. Please try again."
-msgstr ""
-
 #: ../html/src/utils/network.ts:97
 msgid "Session expired, please reload the page."
 msgstr ""
@@ -6834,6 +6112,16 @@ msgstr ""
 #: ../html/src/utils/network.ts:105
 msgid "HTTP Error code "
 msgstr ""
+
+#, fuzzy
+#~ msgid "{name} selected"
+#~ msgstr "({0} ausgewählt)"
+
+#~ msgid "Networks"
+#~ msgstr "Netzwerke"
+
+#~ msgid "Clear Fields"
+#~ msgstr "Felder leeren"
 
 #, fuzzy
 #~ msgid "Select an Action Type"

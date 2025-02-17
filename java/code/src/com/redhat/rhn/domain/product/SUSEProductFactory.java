@@ -26,14 +26,11 @@ import com.redhat.rhn.domain.rhnpackage.PackageFactory;
 import com.redhat.rhn.domain.scc.SCCRepository;
 import com.redhat.rhn.domain.server.InstalledProduct;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
+import org.hibernate.type.StandardBasicTypes;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -46,9 +43,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.NoResultException;
 
 /**
  * SUSEProductFactory - the class used to fetch and store
@@ -90,19 +85,18 @@ public class SUSEProductFactory extends HibernateFactory {
     }
 
     /**
-     * Save a {@link SUSEProductSCCRepository}
+     * Save a {@link ChannelTemplate}
      * @param productRepo the productrepo
      */
-    public static void save(SUSEProductSCCRepository productRepo) {
+    public static void save(ChannelTemplate productRepo) {
         singleton.saveObject(productRepo);
     }
 
     /**
-     * @return a list of all {@link SUSEProductSCCRepository}
+     * @return a list of all {@link ChannelTemplate}
      */
-    public static List<SUSEProductSCCRepository> allProductRepos() {
-        Criteria c = getSession().createCriteria(SUSEProductSCCRepository.class);
-        return c.list();
+    public static List<ChannelTemplate> allChannelTemplates() {
+        return getSession().createQuery("FROM ChannelTemplate ct", ChannelTemplate.class).getResultList();
     }
 
     /**
@@ -114,10 +108,10 @@ public class SUSEProductFactory extends HibernateFactory {
     }
 
     /**
-     * @return map of all {@link SUSEProductSCCRepository} by ID triple
+     * @return map of all {@link ChannelTemplate} by ID triple
      */
-    public static Map<Tuple3<Long, Long, Long>, SUSEProductSCCRepository> allProductReposByIds() {
-        return allProductRepos().stream().collect(
+    public static Map<Tuple3<Long, Long, Long>, ChannelTemplate> allChannelTemplatesByIds() {
+        return allChannelTemplates().stream().collect(
                 Collectors.toMap(
                         e -> new Tuple3<>(
                                 e.getRootProduct().getProductId(),
@@ -130,36 +124,19 @@ public class SUSEProductFactory extends HibernateFactory {
     }
 
     /**
-     * Return all {@link SUSEProductSCCRepository} with the given channel label.
+     * Return all {@link ChannelTemplate} with the given channel label.
      * In most cases the label is unique, but there are exceptions like SLES11 SP1/SP2 base channel
      * and products with rolling releases like CaaSP 1 and 2
      * @param channelLabel the channel label
-     * @return list of {@link SUSEProductSCCRepository}
+     * @return list of {@link ChannelTemplate}
      */
-    public static List<SUSEProductSCCRepository> lookupPSRByChannelLabel(String channelLabel) {
-        Session session = getSession();
-        Criteria c = session.createCriteria(SUSEProductSCCRepository.class);
-        c.add(Restrictions.eq("channelLabel", channelLabel));
-        return ((List<SUSEProductSCCRepository>) c.list()).stream()
+    public static List<ChannelTemplate> lookupChannelTemplateByChannelLabel(String channelLabel) {
+        return getSession().createNamedQuery("ChannelTemplate.lookupByLabel", ChannelTemplate.class)
+                .setParameter("label", channelLabel)
+                .stream()
                 .sorted((a, b) ->
                         RPM_VERSION_COMPARATOR.compare(b.getProduct().getVersion(), a.getProduct().getVersion()))
                 .toList();
-    }
-
-    /**
-     * lookup {@link SUSEProductSCCRepository} by given ID triple
-     * @param rootId root product id
-     * @param productId product id
-     * @param repoId repository id
-     * @return the product/repository item
-     */
-    public static Optional<SUSEProductSCCRepository> lookupProductRepoByIds(long rootId, long productId, long repoId) {
-        Session session = getSession();
-        Criteria c = session.createCriteria(SUSEProductSCCRepository.class);
-        c.add(Restrictions.eq("rootProduct.productId", rootId));
-        c.add(Restrictions.eq("product.productId", productId));
-        c.add(Restrictions.eq("repository.sccId", repoId));
-        return Optional.ofNullable((SUSEProductSCCRepository) c.uniqueResult());
     }
 
     /**
@@ -185,12 +162,16 @@ public class SUSEProductFactory extends HibernateFactory {
     @SuppressWarnings("unchecked")
     public static void removeAllExcept(Collection<SUSEProduct> products) {
         if (!products.isEmpty()) {
-            Collection<Long> ids = products.stream().map(SUSEProduct::getId).toList();
+            List<Long> ids = products.stream().map(SUSEProduct::getId).toList();
 
-            Criteria c = getSession().createCriteria(SUSEProduct.class);
-            c.add(Restrictions.not(Restrictions.in("id", ids)));
+            List<SUSEProduct> productIds =  getSession().createNativeQuery("""
+                                      SELECT * from suseProducts
+                                      WHERE id NOT IN (:ids)
+                                      """, SUSEProduct.class)
+                    .setParameterList("ids", ids, StandardBasicTypes.LONG)
+                    .getResultList();
 
-            for (SUSEProduct product : (List<SUSEProduct>) c.list()) {
+            for (SUSEProduct product : productIds) {
                 remove(product);
             }
         }
@@ -209,51 +190,32 @@ public class SUSEProductFactory extends HibernateFactory {
     }
 
     /**
-     * Lookup SUSEProductChannels by channel label
-     * @param channelLabel the label
-     * @return list of SUSEProductChannels
-     */
-    public static List<SUSEProductSCCRepository> lookupByChannelLabel(String channelLabel) {
-        Session session = HibernateFactory.getSession();
-        return session.getNamedQuery("SUSEProductSCCRepository.lookupByLabel")
-                .setParameter("label", channelLabel).list();
-    }
-
-    /**
      * Lookup SUSE Product Channels by channel name
      * @param name the channel name
      * @return list of found matches
      */
-    public static List<SUSEProductSCCRepository> lookupByChannelName(String name) {
-        CriteriaBuilder builder = getSession().getCriteriaBuilder();
-        CriteriaQuery<SUSEProductSCCRepository> criteria = builder.createQuery(SUSEProductSCCRepository.class);
-        Root<SUSEProductSCCRepository> root = criteria.from(SUSEProductSCCRepository.class);
-        criteria.where(builder.equal(root.get("channelName"), name));
-        return getSession().createQuery(criteria).getResultList();
+    public static List<ChannelTemplate> lookupByChannelName(String name) {
+        return getSession().createQuery("FROM ChannelTemplate ct WHERE ct.channelName = :name", ChannelTemplate.class)
+                .setParameter("name", name)
+                .getResultList();
     }
 
     /**
-     * Finds a SUSEProductSCCRepository entry by channel label.
+     * Finds a ChannelTemplate entry by channel label.
      * Note: this returns the entry with the newest product to make the result predictable.
      * @param channelLabel channel label
-     * @return SUSEProductSCCRepository entry with the newest product
+     * @return ChannelTemplate entry with the newest product
      */
-    public static Optional<SUSEProductSCCRepository> lookupByChannelLabelFirst(String channelLabel) {
-        return  lookupByChannelLabel(channelLabel)
-                .stream()
-                // sort so we always choose the latest version
-                .sorted((a, b) ->  RPM_VERSION_COMPARATOR.compare(b.getProduct().getVersion(),
-                        a.getProduct().getVersion()))
-
-                // We take the first item since there can be more than one entry.
-                // This only happens for sles11 sp1/2  and rolling release attempts like caasp 1/2
-                .findFirst();
+    public static Optional<ChannelTemplate> lookupByChannelLabelFirst(String channelLabel) {
+        // We take the first item since there can be more than one entry.
+        // This only happens for sles11 sp1/2  and rolling release attempts like caasp 1/2
+        return  lookupChannelTemplateByChannelLabel(channelLabel).stream().findFirst();
     }
 
 
     private static Stream<SUSEProductChannel> findSyncedMandatoryChannels(SUSEProduct product, SUSEProduct base,
                                                                       String baseChannelLabel) {
-        Stream<SUSEProductChannel> concat = Stream.concat(
+        return Stream.concat(
                 product.getSuseProductChannels().stream().filter(
                         pc -> Optional.ofNullable(pc.getChannel().getParentChannel())
                                 .map(c -> c.getLabel().equals(baseChannelLabel))
@@ -263,7 +225,6 @@ public class SUSEProductFactory extends HibernateFactory {
                         p -> findSyncedMandatoryChannels(p, base, baseChannelLabel)
                 )
         );
-        return concat;
     }
 
     private static Optional<SUSEProductChannel> findSyncProductChannelByLabel(String channelLabel) {
@@ -349,13 +310,13 @@ public class SUSEProductFactory extends HibernateFactory {
      * @param product product for which we want the channels
      * @param root root product under which the product sits (this is for disambiguation since a product by itself
      *             can have different channels depending in what root product it sits)
-     * @return a stream of SUSEProductSCCRepository since only synced channels have a channel instance
+     * @return a stream of ChannelTemplate since only synced channels have a channel instance
      */
-    public static Stream<SUSEProductSCCRepository> findAllMandatoryChannels(SUSEProduct product, SUSEProduct root) {
+    public static Stream<ChannelTemplate> findAllMandatoryChannels(SUSEProduct product, SUSEProduct root) {
         return Stream.concat(
-                product.getRepositories()
+                product.getChannelTemplates()
                         .stream()
-                        .filter(SUSEProductSCCRepository::isMandatory)
+                        .filter(ChannelTemplate::isMandatory)
                         .filter(p -> p.getRootProduct().equals(root)),
                 SUSEProductFactory.findAllBaseProductsOf(product, root).stream()
                 .flatMap(p -> findAllMandatoryChannels(p, root))
@@ -370,7 +331,7 @@ public class SUSEProductFactory extends HibernateFactory {
      */
     public static Optional<SUSEProduct> findProductByChannelLabel(String channelLabel) {
         return lookupByChannelLabelFirst(channelLabel)
-                .map(SUSEProductSCCRepository::getProduct);
+                .map(ChannelTemplate::getProduct);
     }
 
     /**
@@ -379,7 +340,7 @@ public class SUSEProductFactory extends HibernateFactory {
      * @param channelLabel channel label
      * @return a stream of suse product channels which are required by the channel
      */
-    public static Stream<SUSEProductSCCRepository> findAllMandatoryChannels(String channelLabel) {
+    public static Stream<ChannelTemplate> findAllMandatoryChannels(String channelLabel) {
         return lookupByChannelLabelFirst(channelLabel).map(spsr -> findAllMandatoryChannels(
                 spsr.getProduct(),
                 spsr.getRootProduct()
@@ -389,12 +350,12 @@ public class SUSEProductFactory extends HibernateFactory {
     /**
      * Find not synced mandatory channels for a given channel label and return them as stream
      * @param channelLabel channel label
-     * @return stream of required {@link SUSEProductSCCRepository} representing channels
+     * @return stream of required {@link ChannelTemplate} representing channels
      */
-    public static Stream<SUSEProductSCCRepository> findNotSyncedMandatoryChannels(String channelLabel) {
+    public static Stream<ChannelTemplate> findNotSyncedMandatoryChannels(String channelLabel) {
         return findAllMandatoryChannels(channelLabel).
                 filter(spsr -> Objects.nonNull(ChannelFactory.lookupByLabel(spsr.getChannelLabel())))
-                .sorted(Comparator.comparing(SUSEProductSCCRepository::getParentChannelLabel,
+                .sorted(Comparator.comparing(ChannelTemplate::getParentChannelLabel,
                         Comparator.nullsFirst(Comparator.naturalOrder())));
     }
 
@@ -441,10 +402,10 @@ public class SUSEProductFactory extends HibernateFactory {
     }
 
     /**
-     * Delete a {@link SUSEProductSCCRepository} from the database.
+     * Delete a {@link ChannelTemplate} from the database.
      * @param productRepo product repository to be deleted.
      */
-    public static void remove(SUSEProductSCCRepository productRepo) {
+    public static void remove(ChannelTemplate productRepo) {
         singleton.removeObject(productRepo);
     }
 
@@ -462,41 +423,56 @@ public class SUSEProductFactory extends HibernateFactory {
     public static SUSEProduct findSUSEProduct(String name, String version, String release,
             String arch, boolean imprecise) {
 
-        Criteria c = getSession().createCriteria(SUSEProduct.class);
-        c.add(Restrictions.eq("name", name.toLowerCase()));
+        StringBuilder sqlQuery = new StringBuilder("SELECT * FROM suseProducts WHERE LOWER(name) = :name");
 
-        Disjunction versionCriterion = Restrictions.disjunction();
-        if (imprecise || version == null) {
-            versionCriterion.add(Restrictions.isNull("version"));
+        if (version == null) {
+            sqlQuery.append(" AND version is NULL");
         }
+        else if (imprecise) {
+            sqlQuery.append(" AND (version IS NULL OR LOWER(version) = :version)");
+        }
+        else { // (!imprecise)
+            sqlQuery.append(" AND LOWER(version) = :version");
+        }
+
+        if (release == null) {
+            sqlQuery.append(" AND release is NULL");
+        }
+        else if (imprecise) {
+            sqlQuery.append(" AND (release IS NULL OR LOWER(release) = :release)");
+        }
+        else { // (!imprecise)
+            sqlQuery.append(" AND LOWER(release) = :release");
+        }
+
+        PackageArch parch = PackageFactory.lookupPackageArchByLabel(arch);
+        Long archTypeId = (long) -1;
+        if (parch != null) {
+            archTypeId = parch.getId();
+        }
+        if (imprecise || archTypeId == -1) {
+            sqlQuery.append(" AND (arch_type_id IS NULL OR arch_type_id = :arch)");
+        }
+        else {
+            sqlQuery.append(" AND arch_type_id = :arch");
+        }
+
+        // Add ordering
+        sqlQuery.append(" ORDER BY name ASC, version ASC, release ASC, arch_type_id ASC");
+
+        // Execute the query
+        Query<SUSEProduct> query = getSession().createNativeQuery(sqlQuery.toString(), SUSEProduct.class)
+                .setParameter("name", name.toLowerCase(), StandardBasicTypes.STRING)
+                .setParameter("arch", archTypeId, StandardBasicTypes.LONG);
         if (version != null) {
-            versionCriterion.add(Restrictions.eq("version", version.toLowerCase()));
-        }
-        c.add(versionCriterion);
-
-        Disjunction releaseCriterion = Restrictions.disjunction();
-        if (imprecise || release == null) {
-            releaseCriterion.add(Restrictions.isNull("release"));
+            query.setParameter("version", version.toLowerCase(), StandardBasicTypes.STRING);
         }
         if (release != null) {
-            releaseCriterion.add(Restrictions.eq("release", release.toLowerCase()));
+            query.setParameter("release", release.toLowerCase(), StandardBasicTypes.STRING);
         }
-        c.add(releaseCriterion);
 
-        Disjunction archCriterion = Restrictions.disjunction();
-        if (imprecise || arch == null) {
-            archCriterion.add(Restrictions.isNull("arch"));
-        }
-        if (arch != null) {
-            archCriterion.add(Restrictions.eq("arch",
-                    PackageFactory.lookupPackageArchByLabel(arch)));
-        }
-        c.add(archCriterion);
 
-        c.addOrder(Order.asc("name")).addOrder(Order.asc("version"))
-                .addOrder(Order.asc("release")).addOrder(Order.asc("arch"));
-
-        List<SUSEProduct> result = c.list();
+        List<SUSEProduct> result = query.getResultList();
         return result.isEmpty() ? null : result.get(0);
     }
 
@@ -517,10 +493,17 @@ public class SUSEProductFactory extends HibernateFactory {
      * @return SUSE product for given productId
      */
     public static SUSEProduct lookupByProductId(long productId) {
-        Session session = getSession();
-        Criteria c = session.createCriteria(SUSEProduct.class);
-        c.add(Restrictions.eq("productId", productId));
-        return (SUSEProduct) c.uniqueResult();
+        try {
+            return getSession().createNativeQuery("""
+                                      SELECT * from suseProducts
+                                      WHERE product_id = :product
+                                      """, SUSEProduct.class)
+                    .setParameter("product", productId, StandardBasicTypes.LONG)
+                    .getSingleResult();
+        }
+        catch (NoResultException e) {
+            return null;
+        }
     }
 
     /**
@@ -528,8 +511,8 @@ public class SUSEProductFactory extends HibernateFactory {
      * @return map of SUSE products with productId as key
      */
     public static Map<Long, SUSEProduct> productsByProductIds() {
-        Session session = getSession();
-        return session.createQuery("from com.redhat.rhn.domain.product.SUSEProduct", SUSEProduct.class)
+        return getSession().createNativeQuery("SELECT * from suseProducts ", SUSEProduct.class)
+                .getResultList()
                 .stream()
                 .collect(Collectors.toMap(SUSEProduct::getProductId, p -> p));
     }
@@ -539,11 +522,26 @@ public class SUSEProductFactory extends HibernateFactory {
      * @return SUSEProductExtensions which are recommended
      */
     public static List<SUSEProductExtension> allRecommendedExtensions() {
-        CriteriaBuilder builder = getSession().getCriteriaBuilder();
-        CriteriaQuery<SUSEProductExtension> criteria = builder.createQuery(SUSEProductExtension.class);
-        Root<SUSEProductExtension> root = criteria.from(SUSEProductExtension.class);
-        criteria.where(builder.equal(root.get("recommended"), true));
-        return getSession().createQuery(criteria).getResultList();
+        return getSession().createNativeQuery("""
+                                      SELECT * from suseProductExtension
+                                      WHERE recommended = 'Y'
+                                      """, SUSEProductExtension.class)
+                .getResultList();
+    }
+
+    /**
+     * Return all {@link SUSEProductExtension} of the given root product which are recommended
+     * @param root the root product
+     * @return SUSEProductExtensions which are recommended for the given root product
+     */
+    public static List<SUSEProductExtension> allRecommendedExtensionsOfRoot(SUSEProduct root) {
+        return getSession().createQuery("""
+                FROM SUSEProductExtension
+               WHERE recommended = true
+                 AND rootProduct = :root
+               """, SUSEProductExtension.class)
+                .setParameter("root", root)
+                .list();
     }
 
     /**
@@ -552,9 +550,8 @@ public class SUSEProductFactory extends HibernateFactory {
      */
     @SuppressWarnings("unchecked")
     public static List<SUSEProductChannel> findAllSUSEProductChannels() {
-        Session session = getSession();
-        Criteria c = session.createCriteria(SUSEProductChannel.class);
-        return c.list();
+        return getSession().createNativeQuery("SELECT * from SUSEProductChannel", SUSEProductChannel.class)
+                .getResultList();
     }
 
     /**
@@ -567,18 +564,20 @@ public class SUSEProductFactory extends HibernateFactory {
     public static Optional<SUSEProductExtension> findSUSEProductExtension(SUSEProduct root,
                                                            SUSEProduct base,
                                                            SUSEProduct ext) {
-        Session session = getSession();
-
-        Criteria c = session.createCriteria(SUSEProductExtension.class)
-                .add(Restrictions.eq("rootProduct", root))
-                .add(Restrictions.eq("baseProduct", base))
-                .add(Restrictions.eq("extensionProduct", ext));
-        SUSEProductExtension result = (SUSEProductExtension) c.uniqueResult();
-        if (result == null) {
-            return Optional.empty();
+        try {
+            return Optional.ofNullable(getSession().createNativeQuery("""
+                                      SELECT * from suseProductExtension
+                                      WHERE base_pdid = :baseid
+                                      AND ext_pdid = :extid
+                                      AND root_pdid = :rootid
+                                      """, SUSEProductExtension.class)
+                    .setParameter("baseid", base.getId(), StandardBasicTypes.LONG)
+                    .setParameter("extid", ext.getId(), StandardBasicTypes.LONG)
+                    .setParameter("rootid", root.getId(), StandardBasicTypes.LONG)
+                    .getSingleResult());
         }
-        else {
-            return Optional.of(result);
+        catch (NoResultException e) {
+            return Optional.empty();
         }
     }
 
@@ -586,11 +585,9 @@ public class SUSEProductFactory extends HibernateFactory {
      * Find all {@link SUSEProductExtension}.
      * @return list of product extension
      */
-    @SuppressWarnings("unchecked")
     public static List<SUSEProductExtension> findAllSUSEProductExtensions() {
-        Session session = getSession();
-        Criteria c = session.createCriteria(SUSEProductExtension.class);
-        return c.list();
+        return getSession().createNativeQuery("SELECT * from suseProductExtension", SUSEProductExtension.class)
+                .getResultList();
     }
 
     /**
@@ -603,7 +600,8 @@ public class SUSEProductFactory extends HibernateFactory {
         Map<String, Object> params = new HashMap<>();
         params.put("baseId", base.getId());
         params.put("rootId", root.getId());
-        return singleton.listObjectsByNamedQuery("SUSEProductExtension.findAllExtensionProductsForRootOf", params);
+        return singleton.listObjectsByNamedQuery(
+                "SUSEProductExtension.findAllExtensionProductsForRootOf", params);
     }
 
     /**
@@ -614,12 +612,14 @@ public class SUSEProductFactory extends HibernateFactory {
      */
     @SuppressWarnings("unchecked")
     public static List<SUSEProductExtension> findAllProductExtensionsOf(SUSEProduct product, SUSEProduct root) {
-        Session session = getSession();
-
-        Criteria c = session.createCriteria(SUSEProductExtension.class)
-                .add(Restrictions.eq("rootProduct", root))
-                .add(Restrictions.eq("baseProduct", product));
-        return c.list();
+        return getSession().createNativeQuery("""
+                                      SELECT * from suseProductExtension
+                                      WHERE base_pdid = :baseid
+                                      AND root_pdid = :rootid
+                                      """, SUSEProductExtension.class)
+                    .setParameter("baseid", product.getId(), StandardBasicTypes.LONG)
+                    .setParameter("rootid", root.getId(), StandardBasicTypes.LONG)
+                    .getResultList();
     }
 
     /**
@@ -661,7 +661,10 @@ public class SUSEProductFactory extends HibernateFactory {
      */
     @SuppressWarnings("unchecked")
     public static List<SUSEProduct> findAllSUSEProducts() {
-        return getSession().createCriteria(SUSEProduct.class).list();
+        return getSession().createNativeQuery("""
+                                      SELECT * from suseProducts
+                                      """, SUSEProduct.class)
+                .getResultList();
     }
 
     /**
@@ -691,21 +694,53 @@ public class SUSEProductFactory extends HibernateFactory {
     public static Optional<InstalledProduct> findInstalledProduct(String name,
             String version, String release, PackageArch arch, boolean isBaseProduct) {
 
-        Criteria c = getSession().createCriteria(InstalledProduct.class);
-        c.add(Restrictions.eq("name", name));
-        c.add(Restrictions.eq("version", version));
-        if (StringUtils.isEmpty(release)) {
-            c.add(Restrictions.isNull("release"));
+
+        StringBuilder sqlQuery = new StringBuilder("SELECT * FROM suseInstalledProduct WHERE LOWER(name) = :name");
+
+        if (version == null) {
+            sqlQuery.append(" AND (version IS NULL OR LOWER(version) = :version");
+            version = "";
         }
         else {
-            c.add(Restrictions.eq("release", release));
+            sqlQuery.append(" AND LOWER(version) = :version");
         }
-        c.add(Restrictions.eq("arch", arch));
-        c.add(Restrictions.eq("baseproduct", isBaseProduct));
-        c.addOrder(Order.asc("name")).addOrder(Order.asc("version"))
-                .addOrder(Order.asc("release")).addOrder(Order.asc("arch"));
 
-        return c.list().stream().findFirst();
+
+        if (release == null) {
+            sqlQuery.append(" AND (release IS NULL OR LOWER(release) = :release)");
+            release = "";
+        }
+        else {
+            sqlQuery.append(" AND LOWER(release) = :release");
+        }
+
+        Long archTypeId = (long) -1;
+        if (arch != null) {
+            archTypeId = arch.getId();
+        }
+        sqlQuery.append(" AND arch_type_id = :arch");
+
+        if (isBaseProduct) {
+            sqlQuery.append(" AND is_baseproduct = 'Y'");
+        }
+        else {
+            sqlQuery.append(" AND is_baseproduct = 'N'");
+        }
+
+
+        // Add ordering
+        sqlQuery.append(" ORDER BY name ASC, version ASC, release ASC, arch_type_id ASC");
+
+        // Execute the query
+        Query<InstalledProduct> query = getSession().createNativeQuery(sqlQuery.toString(), InstalledProduct.class)
+                .setParameter("name", name.toLowerCase(), StandardBasicTypes.STRING)
+                .setParameter("version", version.toLowerCase(), StandardBasicTypes.STRING)
+                .setParameter("release", release.toLowerCase(), StandardBasicTypes.STRING)
+                .setParameter("arch", archTypeId, StandardBasicTypes.LONG);
+
+        List<InstalledProduct> result = query.getResultList();
+
+        return result.stream().findFirst();
     }
 
     /**
@@ -752,7 +787,7 @@ public class SUSEProductFactory extends HibernateFactory {
                 "JOIN SUSEProduct ext ON x.extensionProduct = ext " +
                 "JOIN SUSEProductChannel pc ON pc.product = ext " +
                 "JOIN pc.channel.packages pkg " +
-                "WHERE pkg.packageName.name LIKE 'kernel-default%' " +
+                "WHERE pkg.packageName.name = 'kernel-default' " +
                 "AND x.rootProduct = :product", PackageEvr.class)
                 .setParameter("product", product)
                 .getResultStream();

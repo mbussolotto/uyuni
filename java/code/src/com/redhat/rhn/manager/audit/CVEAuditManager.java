@@ -24,6 +24,7 @@ import com.redhat.rhn.common.hibernate.HibernateFactory;
 import com.redhat.rhn.domain.channel.Channel;
 import com.redhat.rhn.domain.channel.ChannelArch;
 import com.redhat.rhn.domain.channel.ChannelFactory;
+import com.redhat.rhn.domain.channel.ClonedChannel;
 import com.redhat.rhn.domain.image.ImageInfo;
 import com.redhat.rhn.domain.image.ImageInfoFactory;
 import com.redhat.rhn.domain.product.CachingSUSEProductFactory;
@@ -369,7 +370,7 @@ public class CVEAuditManager {
                 int i = 0;
                 Channel original = c;
                 while (original.isCloned()) {
-                    original = original.getOriginal();
+                    original = original.asCloned().map(ClonedChannel::getOriginal).orElseThrow();
                     // Revert the index if no channel has actually been added
                     i = relevantChannels.add(
                             new RankedChannel(original.getId(), ++i)) ? i : --i;
@@ -445,7 +446,7 @@ public class CVEAuditManager {
         targetProductCache.clear();
 
         // Get a list of *all* servers
-        List<Server> servers = ServerFactory.list(false, false);
+        List<Server> servers = ServerFactory.list();
         if (log.isDebugEnabled()) {
             log.debug("Number of servers found: {}", servers.size());
         }
@@ -867,8 +868,7 @@ public class CVEAuditManager {
             throw new UnknownCVEIdentifierException();
         }
 
-        List<CVEPatchStatus> results = listSystemsByPatchStatus(user, cveIdentifier)
-                .toList();
+        Stream<CVEPatchStatus> results = listSystemsByPatchStatus(user, cveIdentifier);
 
         return listSystemsByPatchStatus(results, patchStatuses)
                 .stream()
@@ -879,7 +879,7 @@ public class CVEAuditManager {
                         system.getChannels(),
                         system.getErratas(),
                         Set.of(ScanDataSource.CHANNELS)
-                )).toList();
+                )).collect(Collectors.toList());
     }
 
     /**
@@ -898,8 +898,7 @@ public class CVEAuditManager {
             throw new UnknownCVEIdentifierException();
         }
 
-        List<CVEPatchStatus> results = listImagesByPatchStatus(user, cveIdentifier)
-                .toList();
+        Stream<CVEPatchStatus> results = listImagesByPatchStatus(user, cveIdentifier);
 
         return listSystemsByPatchStatus(results, patchStatuses)
                 .stream()
@@ -933,14 +932,14 @@ public class CVEAuditManager {
      * @param patchStatuses the patch statuses
      * @return list of system records with patch status
      */
-    private static List<CVEAuditSystemBuilder> listSystemsByPatchStatus(List<CVEPatchStatus> results,
+    private static List<CVEAuditSystemBuilder> listSystemsByPatchStatus(Stream<CVEPatchStatus> results,
             EnumSet<PatchStatus> patchStatuses) {
 
         List<CVEAuditSystemBuilder> ret = new LinkedList<>();
 
         // Group the results by system
         Map<Long, List<CVEPatchStatus>> resultsBySystem =
-                results.stream().collect(Collectors.groupingBy(CVEPatchStatus::getSystemId));
+                results.collect(Collectors.groupingBy(CVEPatchStatus::getSystemId));
 
         // Loop for each system, calculating the patch status individually
         for (Map.Entry<Long, List<CVEPatchStatus>> systemResultMap : resultsBySystem.entrySet()) {
@@ -1084,8 +1083,9 @@ public class CVEAuditManager {
             // same channel, or the original channel if this is a clone.
             Optional<CVEPatchStatus> newerPatch = packageResults.stream()
                     .filter(r -> instChannel.getId().equals(r.getChannelId().get()) || (instChannel.isCloned() &&
-                            instChannel.getOriginal() != null && instChannel.getOriginal().getId()
-                            .equals(r.getChannelId().get())))
+                            instChannel.asCloned().map(ClonedChannel::getOriginal)
+                                    .map(Channel::getId)
+                                    .stream().anyMatch(id -> id.equals(r.getChannelId().get()))))
                     .filter(r -> li.getPackageEvr().get().compareTo(r.getPackageEvr().get()) < 0)
                     .max(evrComparator);
 

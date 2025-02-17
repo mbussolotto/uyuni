@@ -1543,13 +1543,6 @@
           <context context-type="paramnotes">Passwords must be no shorter than 5 characters.</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="error.invalidpasswordcharacters" xml:space="preserve">
-        <source>Password contains tab or newline characters.</source>
-        <target>La contrasenya conté caràcters de tabulació o de línia nova.</target>
-        <context-group name="ctx">
-          <context context-type="sourcefile">/rhn/users/CreateUser</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="error.maxpassword" xml:space="preserve">
         <source>Passwords cannot be more than {0} characters.</source>
         <target>Les contrasenyes no poden tenir més de {0} caràcters.</target>
@@ -5990,8 +5983,8 @@ usuari abans d'intentar desactivar el seu compte.</target>
         </context-group>
       </trans-unit>
       <trans-unit id="message.firstusercreated" xml:space="preserve">
-        <source>You have just created your first @@PRODUCT_NAME@@ user. To finalize your installation please use the &lt;a href="/rhn/admin/setup/ProxySettings.do"&gt;Setup Wizard&lt;/a&gt;.</source>
-        <target state="translated">Acabeu de crear el primer usuari del PRODUCTNAMEPRODUCTNAME.. Per a finalitzar la instal·lació, utilitzeu lt;a href."/rhn/admin/setup/ProxySettings.do"gt;Auxiliar d'instal·laciólt;/agt;.</target>
+        <source>You have just created your first @@PRODUCT_NAME@@ user. To finalize your installation please use the &lt;a href="/rhn/manager/admin/setup/proxy"&gt;Setup Wizard&lt;/a&gt;.</source>
+        <target state="translated">Acabeu de crear el primer usuari del producte @@PRODUCT_NAME@@. Per acabar la instal·lació, useu l'&lt;a href="/rhn/manager/admin/setup/proxy"&gt;Auxiliar d'instal·lació&lt;/a&gt;.</target>
         <context-group name="ctx">
           <context context-type="sourcefile">Navigation Menu</context>
         </context-group>
@@ -10296,11 +10289,11 @@ lt;stronggt;Note:lt;/stronggt; La documentació addicional sobre l'ús de l'ISO 
         <target state="translated">Atès que vas afegir un tipus de sistema de virtualització al sistema, també vam realitzar alguns passos addicionals per assegurar que el teu sistema serà capaç de gestionar millor els convidats virtuals. Vegeu lt;a href."/docs/administration/virtualization.html"gt;herelt;/agt; per a més informació.</target>
       </trans-unit>
       <trans-unit id="system.entitle.added.monitoring_entitled" xml:space="preserve">
-        <source>&lt;strong&gt;Monitoring&lt;/strong&gt; type has been applied.&lt;br/&gt;&lt;strong&gt;Note:&lt;/strong&gt; Since you added the Monitoring system type we automatically assigned the Prometheus Exporters formula to the system. Please apply the &lt;a href="/rhn/manager/systems/details/highstate?sid={0}"&gt;Highstate&lt;/a&gt; in order to install and enable the Prometheus metrics exporters.&lt;br/&gt;&lt;strong&gt;Note:&lt;/strong&gt; Please make sure to open the &lt;a href="/docs/{1}/installation-and-upgrade/ports.html#_external_client_ports" target="_blank"&gt;required network ports&lt;/a&gt; for all installed exporters.</source>
+        <source>&lt;strong&gt;Monitor this Host&lt;/strong&gt; type has been applied.&lt;br/&gt;&lt;strong&gt;Note:&lt;/strong&gt; Since you added the Monitoring system type we automatically assigned the Prometheus Exporters formula to the system. Please apply the &lt;a href="/rhn/manager/systems/details/highstate?sid={0}"&gt;Highstate&lt;/a&gt; in order to install and enable the Prometheus metrics exporters.&lt;br/&gt;&lt;strong&gt;Note:&lt;/strong&gt; Please make sure to open the &lt;a href="/docs/{1}/installation-and-upgrade/ports.html#_external_client_ports" target="_blank"&gt;required network ports&lt;/a&gt; for all installed exporters.</source>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/systems/details/Overview.do</context>
         </context-group>
-        <target state="translated">S'ha aplicat el tipus lt;stronggt;Monitoringlt;/stronggt;.lt;br/gt;lt;stronggt;Nota:lt;/stronggt; Des que heu afegit el tipus de sistema de monitoratge, assignem automàticament la fórmula dels exportadors de Prometheus al sistema. Apliqueu lt;a href."/rhn/manager/systems/details/highstate?sid{0}{0}"gt;Highstatelt;/agt; per instal·lar i habilitar els exportadors de mètriques Prometheus.lt;br/gt;lt;stronggt;Note:lt;/stronggt; Assegureu-vos d'obrir lt;a href."/docs/{1}/installation-and-upgrade/ports.html.externalclientports" target."blank"gt; ports de xarxa necessarislt;/agt; per a tots els exportadors instal·lats.</target>
+        <target state="translated">S'ha aplicat el tipus&lt;strong&gt;Superviseu aquest amfitrió&lt;/strong&gt;.&lt;br/&gt;&lt;strong&gt;Nota:&lt;/strong&gt; Com que heu afegit el tipus de sistema de monitorització, hem assignat automàticament la fórmula dels exportadors de Prometheus al sistema. Apliqueu el &lt;a href="/rhn/manager/systems/details/highstate?sid={0}"&gt;Highstate&lt;/a&gt; per instal·lar i habilitar els exportadors de mètriques de Prometheus.&lt;br/&gt;&lt;strong&gt;Nota:&lt;/strong&gt; Assegureu-vos d'obrir els &lt;a href="/docs/{1}/installation-and-upgrade/ports.html#_external_client_ports" target="_blank"&gt;ports de xarxa necessaris&lt;/a&gt; per a tots els exportadors instal·lats.</target>
       </trans-unit>
       <trans-unit id="system.entitle.formula_error" xml:space="preserve">
         <source>There was a problem assigning the Prometheus Exporters formula.</source>
@@ -11503,6 +11496,110 @@ Per a esmenar aquesta situació, afegiu credencials SCC lt;a href""/rhn/admin/se
         <source>Generate OVAL data required to increase the accuracy of CVE audit queries</source>
         <target state="translated">Generar dades OVAL necessàries per augmentar la precisió de les consultes d'auditoria CVE</target>
       </trans-unit>
-    </body>
+      <trans-unit id="scc-data-forwarding.enabled" xml:space="preserve">
+        <source>SCC Data Forwarding enabled successfully.</source>
+        <target state="translated">El reenviament de dades SCC s'ha activat correctament.</target>
+      </trans-unit>
+      <trans-unit id="scc-data-forwarding.not-changed" xml:space="preserve">
+        <source>SCC Data Forwarding is already enabled.</source>
+        <target state="translated">El reenviament de dades SCC ja està habilitat.</target>
+      </trans-unit>
+      <trans-unit id="notification.sccoptoutwarning.summary" xml:space="preserve">
+        <source>Data is not being synchronized with SCC</source>
+        <target state="translated">Les dades no s'estan sincronitzant amb SCC</target>
+      </trans-unit>
+      <trans-unit id="notification.sccoptoutwarning.detail" xml:space="preserve">
+        <source>
+          &lt;p&gt;Disabling data synchronizing with SCC will lead to reduced visibility of your managed clients between RMT, SMT, @@PRODUCT_NAME@@ and SCC-directly registered clients.
+          By synchronizing data, you ensure a uniform view of all registered clients. &lt;a href="/rhn/manager/admin/enable-scc-data-forwarding"&gt;Click here to enable data forwarding&lt;/a&gt;.&lt;/p&gt;
+          &lt;a href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_0ooNnrY0rYuQScS" target="_blank"&gt;Help us improve our services by sharing your reason for opting out&lt;/a&gt;
+        </source>
+        <target state="translated">
+          &lt;p&gt;La desactivació de la sincronització de dades amb SCC reduirà la visibilitat dels clients gestionats entre RMT, SMT, @@PRODUCT_NAME@@ i els clients registrats directament a SCC.
+          En sincronitzar les dades, assegureu una visió uniforme de tots els clients registrats. &lt;a href="/rhn/manager/admin/enable-scc-data-forwarding"&gt;Feu clic aquí per activar el reenviament de dades&lt;/a&gt;.&lt;/p&gt;
+          &lt;a href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_0ooNnrY0rYuQScS" target="_blank"&gt;Ajudeu-nos a millorar els serveis compartint el motiu pel qual us heu desactivat&lt;/a&gt;
+        </target>
+      </trans-unit>
+    <trans-unit id="Password Policy" xml:space="preserve">
+        <source>Password Policy</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">Navigation Menu</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.field_equal_or_less_than_zero" xml:space="preserve">
+        <source>Field {0} can't be equal or less than zero.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+          <context context-type="paramnotes">Field Field Name can't be equal or less than zero.</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.illegal_min_max_fields" xml:space="preserve">
+        <source>Field {0} can't be can't be greater or equal than field {1}.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+          <context context-type="paramnotes">Field One can't be can't be greater or equal than Field Two.</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.illegal_max_occurrences" xml:space="preserve">
+        <source>Password maximum allowed character occurrences can't be less or equal than 0.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+          <context context-type="paramnotes">Passwords maximum allowed character occurrences can't be less or equal than 0.</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.spacesinpassword" xml:space="preserve">
+        <source>Password contains tab or newline characters.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.consecutivecharactersinpassword" xml:space="preserve">
+        <source>Password contains consecutive characters.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.nodigitspassword" xml:space="preserve">
+        <source>Passwords must contain at least one digit.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.nouppercasepassword" xml:space="preserve">
+        <source>Passwords must contain at least one upper case character.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.nolowercasepassword" xml:space="preserve">
+        <source>Passwords must contain at least one lower case character.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.nospecialcharacterspassword" xml:space="preserve">
+        <source>Passwords must contain at least one special character, allowed special characters are: {0}.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="error.occurrencecharacterspassword" xml:space="preserve">
+        <source>Password characters occurrences exceeded maximum allowed {0}.</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/common/UserPasswordUtils</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      </body>
   </file>
 </xliff>

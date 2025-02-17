@@ -17,7 +17,7 @@
 
 
 Name:           supportutils-plugin-susemanager-client
-Version:        5.1.1
+Version:        5.1.2
 Release:        0
 Summary:        Supportconfig Plugin for SUSE Manager Client
 License:        GPL-2.0-only
@@ -26,8 +26,7 @@ Group:          Documentation/SuSE
 Source:         %{name}-%{version}.tar.gz
 URL:            https://github.com/uyuni-project/uyuni
 BuildRequires:  supportutils
-Requires:       supportconfig-plugin-resource
-Requires:       supportconfig-plugin-tag
+Requires:       supportutils
 Supplements:    packageand(salt-minion:supportutils)
 Supplements:    packageand(spacewalk-check:supportutils)
 BuildArch:      noarch

@@ -1,8 +1,11 @@
 # Copyright (c) 2016-2023 SUSE LLC
 # Licensed under the terms of the MIT license.
 
-@buildhost
+@build_host
 Feature: Bootstrap a build host via the GUI
+
+  Scenario: Clean up sumaform leftovers on build host
+    When I perform a full salt minion cleanup on "build_host"
 
   Scenario: Log in as admin user
     Given I am authorized for the "Admin" section

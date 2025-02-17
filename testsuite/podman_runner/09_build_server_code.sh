@@ -30,7 +30,7 @@ sudo -i podman exec server bash -c "[ -d /usr/share/susemanager/www/tomcat/webap
 # to try again and hope it succeeds.
 
 sudo -i podman exec server bash -c "cd /java && ant -f manager-build.xml ivy || ant -f manager-build.xml ivy || ant -f manager-build.xml ivy"
-sudo -i podman exec server bash -c "cd /java && ant -f manager-build.xml refresh-branding-jar deploy-local"
+sudo -i podman exec server bash -c "cd /java && ant -f manager-build.xml -Ddeploy.mode=local refresh-branding-jar deploy"
 sudo -i podman exec server bash -c "set -xe;cd /web/html/src;[ -d dist ] || mkdir dist;yarn install --force --ignore-optional --production=true --frozen-lockfile;yarn autoclean --force;yarn build:novalidate; rsync -a dist/ /usr/share/susemanager/www/htdocs/"
 sudo -i podman exec server bash -c "rctomcat restart"
 sudo -i podman exec server bash -c "rctaskomatic restart"
@@ -39,5 +39,5 @@ sudo -i podman exec server bash -c "rctaskomatic restart"
 sudo -i podman exec server bash -c "cp /client/tools/mgr-push/*.py /usr/lib/python3.6/site-packages/rhnpush/"
 sudo -i podman exec server bash -c "cp /client/tools/mgr-push/rhnpushrc /etc/sysconfig/rhn/rhnpushrc"
 
-sudo -i podman exec server bash -c "cd /susemanager-utils/susemanager-sls/; cp -R modules/* /usr/share/susemanager/modules; cp -R salt/* /usr/share/susemanager/salt; cp -R salt-ssh/* /usr/share/susemanager/salt-ssh"
+sudo -i podman exec server bash -c "cd /susemanager-utils/susemanager-sls/; cp -R modules/* /usr/share/susemanager/modules; cp -R salt/* /usr/share/susemanager/salt; cp -R src/modules/* /usr/share/susemanager/salt/_modules; cp -R src/grains/* /usr/share/susemanager/salt/_grains; cp -R src/states/* /usr/share/susemanager/salt/_states; cp -R src/beacons/* /usr/share/susemanager/salt/_beacons; cp -R salt-ssh/* /usr/share/susemanager/salt-ssh"
 sudo -i podman exec server bash -c "cd /susemanager/; cp src/mgr-salt-ssh /usr/bin/; chmod a+x /usr/bin/mgr-salt-ssh"

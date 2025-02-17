@@ -315,7 +315,7 @@ const MonitoringAdmin = (props: MonitoringAdminProps) => {
       <React.Fragment>
         <AsyncButton
           id="enable-monitoring-btn"
-          defaultType="btn-success"
+          defaultType="btn-default"
           icon="fa-play"
           text={t("Enable")}
           className={styles.gap_right}
@@ -374,6 +374,9 @@ const MonitoringAdmin = (props: MonitoringAdminProps) => {
           </li>
           <li className="active js-spa">
             <a href="/rhn/manager/admin/config/monitoring?">{t("Monitoring")}</a>
+          </li>
+          <li className="js-spa">
+            <a href="/rhn/manager/admin/config/password-policy?">{t("Password Policy")}</a>
           </li>
         </ul>
       </div>

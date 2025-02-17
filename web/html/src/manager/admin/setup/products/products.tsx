@@ -16,11 +16,11 @@ import { SectionToolbar } from "components/section-toolbar/section-toolbar";
 import { CustomDataHandler } from "components/table/CustomDataHandler";
 import { SearchField } from "components/table/SearchField";
 import { Toggler } from "components/toggler";
-import { HelpLink } from "components/utils/HelpLink";
 
 import { DEPRECATED_unsafeEquals } from "utils/legacy";
 import Network from "utils/network";
 
+import { SetupHeader } from "../setup-header";
 import { searchCriteriaInExtension } from "./products.utils";
 import { SCCDialog } from "./products-scc-dialog";
 
@@ -40,33 +40,6 @@ const messageMap = {
 };
 
 const _DATA_ROOT_ID = "baseProducts";
-
-const _SETUP_WIZARD_STEPS = [
-  {
-    id: "wizard-step-proxy",
-    label: "HTTP Proxy",
-    url: "/rhn/admin/setup/ProxySettings.do",
-    active: false,
-  },
-  {
-    id: "wizard-step-credentials",
-    label: "Organization Credentials",
-    url: "/rhn/admin/setup/MirrorCredentials.do",
-    active: false,
-  },
-  {
-    id: "wizard-step-suse-products",
-    label: "Products",
-    url: window.location.href.split(/\?|#/)[0],
-    active: true,
-  },
-  {
-    id: "wizard-step-suse-payg",
-    label: "PAYG Connections",
-    url: "/rhn/manager/admin/setup/payg",
-    active: false,
-  },
-];
 
 const _PRODUCT_STATUS = {
   installed: "INSTALLED",
@@ -147,7 +120,12 @@ class ProductsPageWrapper extends React.Component {
           noToolsChannelSubscription: metadata.noToolsChannelSubscription,
         });
 
-        if (currentObject.state.noToolsChannelSubscription && currentObject.state.issMaster) {
+        if (
+          currentObject.state.noToolsChannelSubscription &&
+          currentObject.state.issMaster &&
+          !currentObject.state.refreshNeeded &&
+          !currentObject.state.refreshRunning
+        ) {
           currentObject.setState({
             errors: MessagesUtils.warning(
               t(
@@ -299,32 +277,6 @@ class ProductsPageWrapper extends React.Component {
   };
 
   render() {
-    const title = (
-      <div className="spacewalk-toolbar-h1">
-        <h1>
-          <i className="fa fa-cogs"></i>
-          &nbsp;
-          {t("Setup Wizard")}
-          &nbsp;
-          <HelpLink url="reference/admin/setup-wizard.html" />
-        </h1>
-      </div>
-    );
-
-    const tabs = (
-      <div className="spacewalk-content-nav">
-        <ul className="nav nav-tabs">
-          {_SETUP_WIZARD_STEPS.map((step) => (
-            <li key={step.id} className={step.active ? "active" : ""}>
-              <a className="js-spa" href={step.url}>
-                {t(step.label)}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-
     let pageContent;
     if (this.state.refreshRunning) {
       pageContent = (
@@ -343,15 +295,16 @@ class ProductsPageWrapper extends React.Component {
           <Button
             id="addProducts"
             icon={this.state.addingProducts ? "fa-plus-circle fa-spin" : "fa-plus"}
-            className="btn-default text-muted"
+            className="btn btn-primary"
             title={submitButtonTitle}
             text={t("Add products")}
+            disabled
           />
         ) : (
           <Button
             id="addProducts"
             icon="fa-plus"
-            className={"btn-success"}
+            className={"btn btn-primary"}
             text={
               t("Add products") +
               (this.state.selectedItems.length > 0 ? " (" + this.state.selectedItems.length + ")" : "")
@@ -371,10 +324,11 @@ class ProductsPageWrapper extends React.Component {
                     <Button
                       id="clearSelection"
                       icon="fa-eraser"
-                      className={"btn-default " + (this.state.selectedItems.length === 0 ? "text-muted" : "")}
+                      className={"btn-default"}
                       title={t("Clear products selection")}
                       text={t("Clear")}
                       handler={this.clearSelection}
+                      disabled={this.state.selectedItems.length === 0}
                     />
                     {addProductButton}
                   </div>
@@ -441,8 +395,7 @@ class ProductsPageWrapper extends React.Component {
 
     return (
       <div className="responsive-wizard">
-        {title}
-        {tabs}
+        <SetupHeader />
         {pageContent}
       </div>
     );
@@ -1127,7 +1080,7 @@ const ChannelsPopUp = (props) => {
       content={contentPopup}
       submitText={t("Confirm")}
       submitIcon="fa-check"
-      btnClass="btn-success"
+      btnClass="btn-primary"
       onConfirm={showConfirm() ? () => addOptionalChannels() : undefined}
     />
   ) : (

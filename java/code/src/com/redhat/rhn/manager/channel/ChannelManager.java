@@ -14,6 +14,7 @@
  */
 package com.redhat.rhn.manager.channel;
 
+import static java.util.Comparator.comparing;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
@@ -1687,9 +1688,9 @@ public class ChannelManager extends BaseManager {
      *
      * @param usr requesting list
      * @param s Server to check against
-     * @return Set of Channel objects that match
+     * @return List of Channel objects that match
      */
-    public static Set<EssentialChannelDto> listBaseChannelsForSystem(User usr, Server s) {
+    public static List<EssentialChannelDto> listBaseChannelsForSystem(User usr, Server s) {
 
         Set<EssentialChannelDto> channelDtos = new HashSet<>();
         PackageEvr releaseEvr = PackageManager.lookupReleasePackageEvrFor(s);
@@ -1726,7 +1727,7 @@ public class ChannelManager extends BaseManager {
             channelDtos.add(new EssentialChannelDto(dcm.getChannel()));
         }
 
-        return channelDtos;
+        return channelDtos.stream().sorted(comparing(EssentialChannelDto::getName)).toList();
     }
 
     /**
@@ -1800,9 +1801,10 @@ public class ChannelManager extends BaseManager {
      *
      * @param u      User of interest
      * @param inChan Base-channel of interest
-     * @return Set of channels that a system subscribed to "c" could be re-subscribed to
+     * @return List of channels that a system subscribed to "c" could be re-subscribed to
      */
-    public static Set<EssentialChannelDto> listCompatibleBaseChannelsForChannel(User u, Channel inChan) {
+    public static List<EssentialChannelDto> listCompatibleBaseChannelsForChannel(User u, Channel inChan) {
+
         // Get all the custom-channels owned by this org and add them
         Set<EssentialChannelDto> retval = ChannelFactory.listCustomBaseChannelsForSSM(u, inChan)
                 .stream()
@@ -1843,7 +1845,7 @@ public class ChannelManager extends BaseManager {
             }
         }
 
-       return retval;
+       return retval.stream().sorted(comparing(EssentialChannelDto::getName)).toList();
     }
 
     /**
@@ -2099,7 +2101,7 @@ public class ChannelManager extends BaseManager {
     */
    public static Channel getOriginalChannel(Channel channel) {
        while (channel.isCloned()) {
-           channel = channel.getOriginal();
+           channel = channel.asCloned().map(ClonedChannel::getOriginal).orElse(channel);
        }
        return channel;
     }
@@ -2432,7 +2434,7 @@ public class ChannelManager extends BaseManager {
         if (c.isCloned()) {
             Map<String, Long> params = new HashMap<>();
             params.put("cid", c.getId());
-            params.put("ocid", c.getOriginal().getId());
+            params.put("ocid", c.asCloned().map(ClonedChannel::getOriginal).orElseThrow().getId());
             SelectMode m = ModeFactory.getMode(ERRATA_QUERIES,
                                         "list_errata_needing_sync");
             return m.execute(params);
@@ -2454,7 +2456,7 @@ public class ChannelManager extends BaseManager {
         if (c.isCloned()) {
             Map<String, Long> params = new HashMap<>();
             params.put("cid", c.getId());
-            params.put("ocid", c.getOriginal().getId());
+            params.put("ocid", c.asCloned().map(ClonedChannel::getOriginal).orElseThrow().getId());
             SelectMode m = ModeFactory.getMode(ERRATA_QUERIES,
                     "list_packages_needing_sync");
             return m.execute(params);
@@ -2479,7 +2481,7 @@ public class ChannelManager extends BaseManager {
             Map<String, Object> params = new HashMap<>();
             params.put("cid", c.getId());
             params.put("set_label", setLabel);
-            params.put("ocid", c.getOriginal().getId());
+            params.put("ocid", c.asCloned().map(ClonedChannel::getOriginal).orElseThrow().getId());
             SelectMode m = ModeFactory.getMode(ERRATA_QUERIES, "list_packages_needing_sync_from_set");
             return m.execute(params);
         }

@@ -50,6 +50,7 @@ import com.redhat.rhn.domain.action.server.test.ServerActionTest;
 import com.redhat.rhn.domain.action.test.ActionFactoryTest;
 import com.redhat.rhn.domain.channel.Channel;
 import com.redhat.rhn.domain.channel.ChannelArch;
+import com.redhat.rhn.domain.channel.ProductName;
 import com.redhat.rhn.domain.channel.test.ChannelFactoryTest;
 import com.redhat.rhn.domain.dto.SystemGroupID;
 import com.redhat.rhn.domain.dto.SystemGroupsDTO;
@@ -104,7 +105,9 @@ import com.redhat.rhn.frontend.dto.SystemEventDto;
 import com.redhat.rhn.frontend.dto.SystemOverview;
 import com.redhat.rhn.frontend.dto.VirtualSystemOverview;
 import com.redhat.rhn.frontend.listview.PageControl;
+import com.redhat.rhn.frontend.xmlrpc.ChannelSubscriptionException;
 import com.redhat.rhn.manager.action.ActionManager;
+import com.redhat.rhn.manager.content.MgrSyncUtils;
 import com.redhat.rhn.manager.entitlement.EntitlementManager;
 import com.redhat.rhn.manager.errata.cache.ErrataCacheManager;
 import com.redhat.rhn.manager.formula.FormulaMonitoringManager;
@@ -133,11 +136,9 @@ import com.redhat.rhn.testing.UserTestUtils;
 import com.suse.manager.metrics.SystemsCollector;
 import com.suse.manager.ssl.SSLCertManager;
 import com.suse.manager.ssl.SSLCertPair;
-import com.suse.manager.virtualization.test.TestVirtManager;
 import com.suse.manager.webui.controllers.utils.ContactMethodUtil;
 import com.suse.manager.webui.services.iface.MonitoringManager;
 import com.suse.manager.webui.services.iface.SaltApi;
-import com.suse.manager.webui.services.iface.VirtManager;
 import com.suse.manager.webui.services.impl.SaltSSHService;
 import com.suse.manager.webui.services.impl.SaltService;
 import com.suse.manager.webui.services.impl.runner.MgrUtilRunner;
@@ -153,10 +154,11 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
 import org.cobbler.test.MockConnection;
 import org.hibernate.Session;
-import org.hibernate.type.IntegerType;
+import org.hibernate.type.StandardBasicTypes;
 import org.jmock.Expectations;
 import org.jmock.imposters.ByteBuddyClassImposteriser;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -217,12 +219,11 @@ public class SystemManagerTest extends JMockBaseTestCaseWithUser {
             }
         });
         SaltApi saltApi = new TestSaltApi();
-        VirtManager virtManager = new TestVirtManager();
         MonitoringManager monitoringManager = new FormulaMonitoringManager(saltApi);
         ServerGroupManager serverGroupManager = new ServerGroupManager(saltApi);
         systemEntitlementManager = new SystemEntitlementManager(
-                new SystemUnentitler(virtManager, monitoringManager, serverGroupManager),
-                new SystemEntitler(saltApi, virtManager, monitoringManager, serverGroupManager)
+                new SystemUnentitler(monitoringManager, serverGroupManager),
+                new SystemEntitler(saltApi, monitoringManager, serverGroupManager)
         );
         this.systemManager = new SystemManager(ServerFactory.SINGLETON, ServerGroupFactory.SINGLETON, saltServiceMock);
         createMetadataFiles();
@@ -284,7 +285,7 @@ public class SystemManagerTest extends JMockBaseTestCaseWithUser {
         return (Integer) session.createSQLQuery("Select count(*) as cnt " +
                                                          "  from rhnSnapshot " +
                                                          " where server_id = " + sid)
-                                         .addScalar("cnt", IntegerType.INSTANCE)
+                                         .addScalar("cnt", StandardBasicTypes.INTEGER)
                                          .uniqueResult();
     }
 
@@ -1367,8 +1368,14 @@ public class SystemManagerTest extends JMockBaseTestCaseWithUser {
                 this.getClass().getSimpleName());
         Server server = ServerFactoryTest.createTestServer(user, true);
 
+        ProductName pnbase = MgrSyncUtils.findOrCreateProductName("Product Name Base");
+        ProductName pnch1 = MgrSyncUtils.findOrCreateProductName("Product Name Child 1");
+        ProductName pnch2 = MgrSyncUtils.findOrCreateProductName("Product Name Child 2");
+
         Channel base1 = ChannelFactoryTest.createBaseChannel(user);
+        base1.setProductName(pnbase);
         Channel ch11 = ChannelFactoryTest.createTestChannel(user.getOrg());
+        ch11.setProductName(pnch1);
 
         ch11.setParentChannel(base1);
 
@@ -1376,8 +1383,11 @@ public class SystemManagerTest extends JMockBaseTestCaseWithUser {
         server.addChannel(ch11);
 
         Channel base2 = ChannelFactoryTest.createBaseChannel(user);
+        base2.setProductName(pnbase);
         Channel ch21 = ChannelFactoryTest.createTestChannel(user.getOrg());
+        ch21.setProductName(pnch1);
         Channel ch22 = ChannelFactoryTest.createTestChannel(user.getOrg());
+        ch22.setProductName(pnch2);
         ch21.setParentChannel(base2);
         ch22.setParentChannel(base2);
 
@@ -1386,7 +1396,8 @@ public class SystemManagerTest extends JMockBaseTestCaseWithUser {
         systemManager.updateServerChannels(user, server, of(base2), Collections.emptyList());
 
         assertEquals(base2.getId(), server.getBaseChannel().getId());
-        assertEquals(0, server.getChildChannels().size());
+        assertEquals(1, server.getChildChannels().size());
+        assertEquals(ch21, server.getChildChannels().iterator().next());
     }
 
     @Test
@@ -1411,7 +1422,10 @@ public class SystemManagerTest extends JMockBaseTestCaseWithUser {
 
         HibernateFactory.getSession().flush();
 
-        systemManager.updateServerChannels(user, server, empty(), Arrays.asList(ch21, ch22));
+        Assertions.assertThrows(ChannelSubscriptionException.class,
+                () -> systemManager.updateServerChannels(user, server, empty(), Arrays.asList(ch21, ch22)));
+
+        systemManager.updateServerChannels(user, server, empty(), Collections.emptyList());
 
         assertNull(server.getBaseChannel());
         assertEquals(0, server.getChildChannels().size());

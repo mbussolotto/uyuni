@@ -1,7 +1,6 @@
 # Copyright (c) 2020-2024 SUSE LLC
 # Licensed under the terms of the MIT license.
 
-@skip_if_github_validation
 @scope_recurring_actions
 Feature: Recurring Actions
 
@@ -34,7 +33,6 @@ Feature: Recurring Actions
     And I click on "Save Changes"
     And I wait until I see "Edit State Ranks" text
     And I click on "Confirm"
-    And I wait until I see "State assignments have been saved." text
     And I click on "Create Schedule"
     Then I wait until I see "Schedule successfully created" text
     And I should see a "IP forwarding custom state recurring action" text
@@ -56,7 +54,6 @@ Feature: Recurring Actions
     And I click on "Save Changes"
     And I wait until I see "Edit State Ranks" text
     And I click on "Confirm"
-    And I wait until I see "State assignments have been saved" text
     And I click on "Update Schedule"
     Then I wait until I see "Schedule successfully updated" text
     And I should see a "custom_state_schedule_name_changed" text
@@ -67,6 +64,8 @@ Feature: Recurring Actions
     And I follow the event "Apply recurring states [util.syncstates] scheduled" completed during last minute
     And I should see a "SLS: util.syncstates" text
 
+# This fails in github actions...
+@skip_if_github_validation
   Scenario: Cleanup: Disable IP forwarding
     When I follow the left menu "Salt > Remote Commands"
     Then I should see a "Remote Commands" text in the content area
@@ -231,11 +230,6 @@ Feature: Recurring Actions
     And I wait until I do not see "Loading..." text
     And I check default base channel radio button of this "sle_minion"
     And I wait for child channels to appear
-    And I check "openSUSE 15.5 non oss (x86_64)"
-    And I check "openSUSE Leap 15.5 non oss Updates (x86_64)"
-    And I check "openSUSE Leap 15.5 Updates (x86_64)"
-    And I check "Update repository of openSUSE Leap 15.5 Backports (x86_64)"
-    And I check "Update repository with updates from SUSE Linux Enterprise 15 for openSUSE Leap 15.5 (x86_64)"
     And I check "Uyuni Client Tools for openSUSE Leap 15.5 (x86_64) (Development)"
     And I check "Fake-RPM-SUSE-Channel"
     And I click on "Next"

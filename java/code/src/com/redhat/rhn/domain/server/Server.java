@@ -23,7 +23,8 @@ import com.redhat.rhn.domain.Identifiable;
 import com.redhat.rhn.domain.channel.Channel;
 import com.redhat.rhn.domain.channel.ChannelFamily;
 import com.redhat.rhn.domain.common.ProvisionState;
-import com.redhat.rhn.domain.common.SatConfigFactory;
+import com.redhat.rhn.domain.common.RhnConfiguration;
+import com.redhat.rhn.domain.common.RhnConfigurationFactory;
 import com.redhat.rhn.domain.config.ConfigChannel;
 import com.redhat.rhn.domain.config.ConfigChannelListProcessor;
 import com.redhat.rhn.domain.config.ConfigChannelType;
@@ -144,6 +145,8 @@ public class Server extends BaseDomainHelper implements Identifiable {
     private MaintenanceSchedule maintenanceSchedule;
     private Boolean hasConfigFeature;
     private Set<ServerAppStream> appStreams = new HashSet<>();
+
+    private Set<SAPWorkload> sapWorkloads = new HashSet<>();
 
     private String cpe;
 
@@ -1877,7 +1880,8 @@ public class Server extends BaseDomainHelper implements Identifiable {
     public boolean isInactive() {
         Date lastCheckin = this.getLastCheckin();
         long millisInDay = (1000 * 60 * 60 * 24);
-        long threshold = SatConfigFactory.getSatConfigLongValue(SatConfigFactory.SYSTEM_CHECKIN_THRESHOLD, 1L);
+        RhnConfigurationFactory factory = RhnConfigurationFactory.getSingleton();
+        long threshold = factory.getLongConfiguration(RhnConfiguration.KEYS.SYSTEM_CHECKIN_THRESHOLD).getValue();
         Date yesterday = new Timestamp(System.currentTimeMillis() -
                 (millisInDay * threshold));
         return lastCheckin.before(yesterday);
@@ -2566,19 +2570,23 @@ public class Server extends BaseDomainHelper implements Identifiable {
      * This is supposed to cover all RedHat flavors (incl. RHEL, RES and CentOS Linux)
      */
     boolean isRedHat6() {
-        return ServerConstants.REDHAT.equals(getOsFamily()) && getRelease().equals("6");
+        return ServerConstants.REDHAT.equals(getOsFamily()) &&
+                (getRelease().equals("6") || getRelease().startsWith("6."));
     }
 
     boolean isRedHat7() {
-        return ServerConstants.REDHAT.equals(getOsFamily()) && getRelease().equals("7");
+        return ServerConstants.REDHAT.equals(getOsFamily()) &&
+                (getRelease().equals("7") || getRelease().startsWith("7."));
     }
 
     boolean isRedHat8() {
-        return ServerConstants.REDHAT.equals(getOsFamily()) && getRelease().equals("8");
+        return ServerConstants.REDHAT.equals(getOsFamily()) &&
+                (getRelease().equals("8") || getRelease().startsWith("8."));
     }
 
     boolean isRedHat9() {
-        return ServerConstants.REDHAT.equals(getOsFamily()) && getRelease().equals("9");
+        return ServerConstants.REDHAT.equals(getOsFamily()) &&
+                (getRelease().equals("9") || getRelease().startsWith("9."));
     }
 
     public boolean isRedHat() {
@@ -2590,19 +2598,13 @@ public class Server extends BaseDomainHelper implements Identifiable {
     }
 
     boolean isAmazon2() {
-        return ServerConstants.AMAZON.equals(getOsFamily()) && getRelease().equals("2");
+        return ServerConstants.AMAZON.equals(getOsFamily()) &&
+                (getRelease().equals("2") || getRelease().startsWith("2."));
     }
 
     boolean isAmazon2023() {
-        return ServerConstants.AMAZON.equals(getOsFamily()) && getRelease().equals("2023");
-    }
-
-    boolean isRocky8() {
-        return ServerConstants.ROCKY.equals(getOs()) && getRelease().startsWith("8.");
-    }
-
-    boolean isRocky9() {
-        return ServerConstants.ROCKY.equals(getOs()) && getRelease().startsWith("9.");
+        return ServerConstants.AMAZON.equals(getOsFamily()) &&
+                (getRelease().equals("2023") || getRelease().startsWith("2023."));
     }
 
     /**
@@ -2668,5 +2670,23 @@ public class Server extends BaseDomainHelper implements Identifiable {
      */
     public boolean hasAppStreamModuleEnabled(String module, String stream) {
         return getAppStreams().stream().anyMatch(it -> it.getName().equals(module) && it.getStream().equals(stream));
+    }
+
+    /**
+     * Getter for SAPWorkloads
+     *
+     * @return Set of SAPWorkload
+     */
+    public Set<SAPWorkload> getSapWorkloads() {
+        return sapWorkloads;
+    }
+
+    /**
+     * Setter for SAPWorkloads
+     *
+     * @param sapWorkloadsIn to set
+     */
+    public void setSapWorkloads(Set<SAPWorkload> sapWorkloadsIn) {
+        sapWorkloads = sapWorkloadsIn;
     }
 }

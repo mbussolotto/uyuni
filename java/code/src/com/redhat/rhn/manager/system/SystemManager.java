@@ -42,7 +42,8 @@ import com.redhat.rhn.common.validator.ValidatorWarning;
 import com.redhat.rhn.domain.channel.AccessTokenFactory;
 import com.redhat.rhn.domain.channel.Channel;
 import com.redhat.rhn.domain.channel.ChannelFamily;
-import com.redhat.rhn.domain.common.SatConfigFactory;
+import com.redhat.rhn.domain.common.RhnConfiguration;
+import com.redhat.rhn.domain.common.RhnConfigurationFactory;
 import com.redhat.rhn.domain.credentials.CredentialsFactory;
 import com.redhat.rhn.domain.credentials.ReportDBCredentials;
 import com.redhat.rhn.domain.dto.SystemGroupID;
@@ -130,13 +131,11 @@ import com.suse.manager.ssl.SSLCertGenerationException;
 import com.suse.manager.ssl.SSLCertManager;
 import com.suse.manager.ssl.SSLCertPair;
 import com.suse.manager.utils.PagedSqlQueryBuilder;
-import com.suse.manager.virtualization.VirtManagerSalt;
 import com.suse.manager.webui.controllers.StatesAPI;
 import com.suse.manager.webui.services.SaltStateGeneratorService;
 import com.suse.manager.webui.services.StateRevisionService;
 import com.suse.manager.webui.services.iface.MonitoringManager;
 import com.suse.manager.webui.services.iface.SaltApi;
-import com.suse.manager.webui.services.iface.VirtManager;
 import com.suse.manager.xmlrpc.dto.SystemEventDetailsDto;
 import com.suse.utils.Opt;
 
@@ -207,11 +206,10 @@ public class SystemManager extends BaseManager {
         this.serverGroupFactory = serverGroupFactoryIn;
         this.saltApi = saltApiIn;
         ServerGroupManager serverGroupManager = new ServerGroupManager(saltApiIn);
-        VirtManager virtManager = new VirtManagerSalt(saltApi);
         MonitoringManager monitoringManager = new FormulaMonitoringManager(saltApi);
         systemEntitlementManager = new SystemEntitlementManager(
-                new SystemUnentitler(virtManager, monitoringManager, serverGroupManager),
-                new SystemEntitler(saltApiIn, virtManager, monitoringManager, serverGroupManager)
+                new SystemUnentitler(monitoringManager, serverGroupManager),
+                new SystemEntitler(saltApiIn, monitoringManager, serverGroupManager)
         );
     }
 
@@ -941,8 +939,9 @@ public class SystemManager extends BaseManager {
      */
     public static DataResult<ShortSystemInfo> systemListShortInactive(User user,
             PageControl pc) {
+        RhnConfigurationFactory factory = RhnConfigurationFactory.getSingleton();
         return systemListShortInactive(user,
-                SatConfigFactory.getSatConfigLongValue(SatConfigFactory.SYSTEM_CHECKIN_THRESHOLD, 1L), pc);
+                factory.getLongConfiguration(RhnConfiguration.KEYS.SYSTEM_CHECKIN_THRESHOLD).getValue(), pc);
     }
 
     /**
@@ -3629,6 +3628,13 @@ public class SystemManager extends BaseManager {
      * the {@link UpdateBaseChannelCommand} and {@link UpdateChildChannelsCommand}.
      * This method regenerate the Tokens and Pillar Data synchronous, but does not
      * trigger a 'state.apply' for channels.
+     * <br/>
+     * To unsubscribe from all channels, set baseChannel to empty and provide an empty list of child channels
+     * To switch the base channel and let it find compatible child channels to the currently subscribed child channels,
+     * just provide the new base channel and provide an empty list for the child channels
+     * If no base channel is provided, the list of child channels should have the currently assigned base channel as
+     * parent.
+     * If both, base and child channels are provided, the system will be changed to use the defined channels
      *
      * @param user the user changing the channels
      * @param server the server for which to change channels
@@ -3640,30 +3646,29 @@ public class SystemManager extends BaseManager {
                                             Server server,
                                             Optional<Channel> baseChannel,
                                             Collection<Channel> childChannels) {
-        long baseChannelId =
-                baseChannel.map(Channel::getId).orElse(-1L);
 
-        // if there's no base channel present the there are no child channels to set
-        List<Long> childChannelIds = baseChannel.isPresent() ?
-                childChannels.stream().map(Channel::getId).collect(Collectors.toList()) :
-                emptyList();
+        long baseChannelId = baseChannel.map(Channel::getId).orElse(-1L);
+        List<Long> childChannelIds = childChannels.stream().map(Channel::getId).collect(Collectors.toList());
 
-        UpdateBaseChannelCommand baseChannelCommand =
-                new UpdateBaseChannelCommand(
-                        user,
-                        server,
-                        baseChannelId);
+        if (baseChannel.isPresent() || childChannels.isEmpty()) {
+            UpdateBaseChannelCommand baseChannelCommand = new UpdateBaseChannelCommand(
+                    user,
+                    server,
+                    baseChannelId);
 
-        UpdateChildChannelsCommand childChannelsCommand =
-                new UpdateChildChannelsCommand(
-                        user,
-                        server,
-                        childChannelIds);
+            baseChannelCommand.skipChannelChangedEvent(true);
+            baseChannelCommand.store();
+        }
 
-        baseChannelCommand.skipChannelChangedEvent(true);
-        baseChannelCommand.store();
-        childChannelsCommand.skipChannelChangedEvent(true);
-        childChannelsCommand.store();
+        if (!childChannels.isEmpty()) {
+            UpdateChildChannelsCommand childChannelsCommand = new UpdateChildChannelsCommand(
+                    user,
+                    server,
+                    childChannelIds);
+
+            childChannelsCommand.skipChannelChangedEvent(true);
+            childChannelsCommand.store();
+        }
 
         // Calling this asynchronous block execution util main thread close the Hibernate Session
         // as we require the result, we must call this synchronous

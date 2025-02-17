@@ -47,7 +47,7 @@
 %endif
 
 Name:           spacewalk-backend
-Version:        5.1.1
+Version:        5.1.4
 Release:        0
 Summary:        Common programs needed to be installed on the Spacewalk servers/proxies
 License:        GPL-2.0-only
@@ -192,6 +192,10 @@ Requires:       %{name}-app = %{version}-%{release}
 Requires:       %{name}-xmlrpc = %{version}-%{release}
 Requires:       systemd
 BuildRequires:  systemd
+%if 0%{?is_opensuse} || 0%{?sle_version} >= 150000
+# bsc#1234304
+Requires:       libzypp >= 17.35.16
+%endif
 %if 0%{?rhel}
 Requires:       python3-dnf
 BuildRequires:  systemd-rpm-macros
@@ -415,6 +419,7 @@ fi
 %{python3rhnroot}/server/apacheRequest.py*
 %{python3rhnroot}/server/apacheServer.py*
 %{python3rhnroot}/server/apacheUploadServer.py*
+%{python3rhnroot}/server/db_config.py*
 %{python3rhnroot}/server/rhnAction.py*
 %{python3rhnroot}/server/rhnAuthPAM.py*
 %{python3rhnroot}/server/rhnCapability.py*

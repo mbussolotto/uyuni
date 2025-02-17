@@ -174,8 +174,7 @@ When(/^I select "([^"]*)" from "([^"]*)"$/) do |option, field|
 end
 
 When(/^I select the parent channel for the "([^"]*)" from "([^"]*)"$/) do |client, from|
-  product_key = $is_gh_validation && !$build_validation ? 'Fake' : product
-  select(BASE_CHANNEL_BY_CLIENT[product_key][client], from: from, exact: false)
+  select(BASE_CHANNEL_BY_CLIENT[product][client], from: from, exact: false)
 end
 
 When(/^I select "([^"]*)" from drop-down in table line with "([^"]*)"$/) do |value, line|
@@ -804,10 +803,16 @@ Then(/^I should see a "([^"]*)" button in "([^"]*)" form$/) do |arg1, arg2|
 end
 
 Then(/^I should only see success signs in the product list$/) do
-  raise ScriptError, 'No product synchronized' if page.has_no_xpath?('//*[contains(@class, \'fa-check-circle\')]')
-  raise ScriptError, 'At least one product is not fully synchronized' if page.has_xpath?('//*[contains(@class, \'fa-spinner\')]')
-  raise ScriptError, 'Warning detected' if page.has_xpath?('//*[contains(@class, \'fa-exclamation-triangle\')]')
-  raise ScriptError, 'Error detected' if page.has_xpath?('//*[contains(@class, \'fa-exclamation-circle\')]')
+  begin
+    raise ScriptError, 'No product synchronized' if page.has_no_xpath?('//*[contains(@class, \'fa-check-circle\')]')
+    raise ScriptError, 'At least one product is not fully synchronized' if page.has_xpath?('//*[contains(@class, \'fa-spinner\')]')
+    raise ScriptError, 'Warning detected' if page.has_xpath?('//*[contains(@class, \'fa-exclamation-triangle\')]')
+    raise ScriptError, 'Error detected' if page.has_xpath?('//*[contains(@class, \'fa-exclamation-circle\')]')
+  rescue ScriptError
+    get_target('server').run('echo -e "admin\nadmin\n" | mgr-sync list channels', verbose: true, check_errors: false, buffer_size: 1_000_000)
+    get_target('server').run('pgrep -af spacewalk-repo-sync', verbose: true, check_errors: false, buffer_size: 1_000_000)
+    raise
+  end
 end
 
 Then(/^I select the "([^"]*)" repo$/) do |repo|
@@ -877,7 +882,7 @@ end
 When(/^I enter "([^"]*)" as the filtered latest package$/) do |input|
   raise ArgumentError, 'Package name is not set' if input.empty?
 
-  find('input[placeholder=\'Filter by Latest Package: \']').set(input)
+  find('input[placeholder=\'Filter by Package Name: \']').set(input)
 end
 
 When(/^I enter "([^"]*)" as the filtered synopsis$/) do |input|

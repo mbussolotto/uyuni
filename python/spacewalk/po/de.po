@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spacewalk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-26 14:34+0200\n"
-"PO-Revision-Date: 2024-07-06 12:47+0000\n"
+"POT-Creation-Date: 2025-02-14 14:16+0100\n"
+"PO-Revision-Date: 2024-12-07 15:48+0000\n"
 "Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
 "Language-Team: German <https://l10n.opensuse.org/projects/uyuni/backend/de/"
 ">\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.8.4\n"
 
 #: ../server/apacheAuth.py:72
 #, python-format
@@ -260,62 +260,62 @@ msgstr "Kickstart-Sitzung stimmt nicht überein"
 msgid "Stacking of re-registration tokens is not supported"
 msgstr ""
 
-#: ../server/rhnUser.py:326 ../server/rhnUser.py:329
+#: ../server/rhnUser.py:327 ../server/rhnUser.py:330
 msgid "Invalid username/password combination"
 msgstr "Ungültige Kombination von Benutzername und Passwort"
 
 #. nope, not reserved either
-#: ../server/rhnUser.py:526
+#: ../server/rhnUser.py:527
 #, python-format
 msgid "Username `%s' has not been reserved"
 msgstr "der Benutzername '%s' wurde nicht reserviert"
 
 #. New accounts have to specify an e-mail address
-#: ../server/rhnUser.py:532
+#: ../server/rhnUser.py:533
 msgid "E-mail address not specified"
 msgstr "die Emailadresse wurde nicht angegeben"
 
-#: ../server/rhnUser.py:574
+#: ../server/rhnUser.py:575
 #, python-format
 msgid "username should be at least %d characters"
 msgstr "der Benutzername muss mindestens %d Zeichen lang sein"
 
-#: ../server/rhnUser.py:578
+#: ../server/rhnUser.py:579
 #, python-format
 msgid "username should be less than %d characters"
 msgstr "der Benutzername darf höchstens %d Zeichen lang sein"
 
-#: ../server/rhnUser.py:592
+#: ../server/rhnUser.py:593
 #, python-format
 msgid "username = `%s', invalid character `%s'"
 msgstr "Benutzername = '%s', ungültiges Zeichen '%s'"
 
-#: ../server/rhnUser.py:613
+#: ../server/rhnUser.py:614
 #, python-format
 msgid "Please limit your e-mail address to %s chars"
 msgstr "Bitte beschränken Sie Ihre Emailadresse auf %s Zeichen"
 
-#: ../server/rhnUser.py:701
+#: ../server/rhnUser.py:704
 #, python-format
 msgid "password must be at least %d characters"
 msgstr "das Passwort muss mindestens %d Zeichen lang sein"
 
-#: ../server/rhnUser.py:705
+#: ../server/rhnUser.py:708
 #, python-format
 msgid "Password must be shorter than %d characters"
 msgstr "Das Passwort darf höchstens %d Zeichen lang sein"
 
-#: ../server/rhnUser.py:721
+#: ../server/rhnUser.py:724
 #, python-format
 msgid "password contains character `%s'"
 msgstr "das Passwort enthält das Zeichen `%s'"
 
-#: ../server/rhnUser.py:730
+#: ../server/rhnUser.py:733
 #, python-format
 msgid "username should be at least %d characters long"
 msgstr "der Benutzername muss mindestens %d Zeichen lang sein"
 
-#: ../server/rhnUser.py:741
+#: ../server/rhnUser.py:744
 #, python-format
 msgid "Cannot register usernames ending with %s"
 msgstr "Benutzernamen, die auf %s enden können nicht registriert werden"
@@ -1260,7 +1260,7 @@ msgstr ""
 
 #: ../satellite_tools/satsync.py:817
 msgid "Retrieving / parsing channel data"
-msgstr ""
+msgstr "Kanaldaten werden abgerufen / geparst"
 
 #: ../satellite_tools/satsync.py:892
 msgid "Channel data complete"
@@ -1272,9 +1272,9 @@ msgid "%10s import from %s"
 msgstr "%10s importieren von %s"
 
 #: ../satellite_tools/satsync.py:913
-#, fuzzy, python-format
+#, python-format
 msgid "%10s import from %s - %s"
-msgstr "%10s importieren von %s - %s"
+msgstr "%10s von %s importieren - %s"
 
 #: ../satellite_tools/satsync.py:919
 #, python-format
@@ -1383,7 +1383,7 @@ msgstr ""
 
 #: ../satellite_tools/satsync.py:1346
 msgid "Downloading rpm packages"
-msgstr ""
+msgstr "rpm-Pakete werden heruntergeladen"
 
 #: ../satellite_tools/satsync.py:1355
 #, python-format
@@ -1400,11 +1400,11 @@ msgstr ""
 
 #: ../satellite_tools/satsync.py:1396
 msgid "Downloading package metadata"
-msgstr ""
+msgstr "Paketmetadaten werden heruntergeladen"
 
 #: ../satellite_tools/satsync.py:1430
 msgid "Downloading srpm packages"
-msgstr ""
+msgstr "srpm-Pakete werden heruntergeladen"
 
 #: ../satellite_tools/satsync.py:1440
 #, python-format
@@ -1418,12 +1418,12 @@ msgstr ""
 
 #: ../satellite_tools/satsync.py:1569
 msgid "Downloading source package metadata"
-msgstr ""
+msgstr "Quellpaketmetadaten werden heruntergeladen"
 
 #: ../satellite_tools/satsync.py:1655 ../satellite_tools/satsync.py:2477
 #, python-format
 msgid "Unable to save file %s: %s"
-msgstr ""
+msgstr "Datei %s konnte nicht gespeichert werden: %s"
 
 #. for
 #. Retried a number of times and it still failed; log the
@@ -1431,7 +1431,7 @@ msgstr ""
 #: ../satellite_tools/satsync.py:1661
 #, python-format
 msgid "Failed to fetch file %s"
-msgstr ""
+msgstr "Datei %s konnte nicht abgerufen werden"
 
 #: ../satellite_tools/satsync.py:1666
 msgid "Downloading kickstartable trees metadata"
@@ -1448,7 +1448,7 @@ msgstr ""
 
 #: ../satellite_tools/satsync.py:1895
 msgid "Downloading patch data"
-msgstr ""
+msgstr "Patchdaten werden heruntergeladen"
 
 #: ../satellite_tools/satsync.py:1897
 msgid "Forcing download of all patch data for requested channels."
@@ -1460,19 +1460,19 @@ msgstr ""
 
 #: ../satellite_tools/satsync.py:1924 ../satellite_tools/satsync.py:1955
 msgid "Downloading:"
-msgstr ""
+msgstr "Herunterladen:"
 
 #: ../satellite_tools/satsync.py:1930
 msgid " - complete"
-msgstr ""
+msgstr " - abgeschlossen"
 
 #: ../satellite_tools/satsync.py:1984
 msgid "Importing source package metadata"
-msgstr ""
+msgstr "Quellpaketmetadaten werden importiert"
 
 #: ../satellite_tools/satsync.py:1987
 msgid "Importing package metadata"
-msgstr ""
+msgstr "Paketmetadaten werden importiert"
 
 #: ../satellite_tools/satsync.py:1999
 msgid "Importing:  "
@@ -1828,11 +1828,11 @@ msgstr ""
 
 #: ../satellite_tools/satsync.py:3115
 msgid "  25 - no such directory"
-msgstr ""
+msgstr "  25 - kein solches Verzeichnis"
 
 #: ../satellite_tools/satsync.py:3116
 msgid "  26 - mount_point does not exist"
-msgstr ""
+msgstr "  26 - Einhängepunkt existiert nicht"
 
 #: ../satellite_tools/satsync.py:3117
 msgid "  27 - No such org"
