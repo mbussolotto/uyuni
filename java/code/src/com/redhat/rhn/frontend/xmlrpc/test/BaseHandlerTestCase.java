@@ -25,6 +25,7 @@ import com.redhat.rhn.domain.role.Role;
 import com.redhat.rhn.domain.role.RoleFactory;
 import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.domain.user.UserFactory;
+import com.redhat.rhn.domain.user.legacy.UserImpl;
 import com.redhat.rhn.testing.RhnBaseTestCase;
 import com.redhat.rhn.testing.UserTestUtils;
 
@@ -43,7 +44,7 @@ public class BaseHandlerTestCase extends RhnBaseTestCase {
      * adminKey/regularKey - session keys for respective users
      */
 
-    protected User admin;
+    protected UserImpl admin;
     protected User regular;
     protected User satAdmin;
     protected String adminKey;

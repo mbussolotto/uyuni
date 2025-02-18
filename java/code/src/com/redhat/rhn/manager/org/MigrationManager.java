@@ -34,6 +34,7 @@ import com.redhat.rhn.domain.token.Token;
 import com.redhat.rhn.domain.token.TokenFactory;
 import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.domain.user.UserFactory;
+import com.redhat.rhn.domain.user.legacy.UserImpl;
 import com.redhat.rhn.manager.BaseManager;
 import com.redhat.rhn.manager.errata.cache.ErrataCacheManager;
 import com.redhat.rhn.manager.system.ServerGroupManager;
@@ -95,8 +96,8 @@ public class MigrationManager extends BaseManager {
             ServerFactory.save(server);
             server.asMinionServer().ifPresent(minion ->
                     SaltStateGeneratorService.INSTANCE.migrateServer(minion, user));
-            if (user.getOrg().equals(toOrg)) {
-                server.setCreator(user);
+            if (user.getOrg().equals(toOrg) && user instanceof UserImpl) {
+                server.setCreator((UserImpl) user);
             }
             else {
                 server.setCreator(UserFactory.findRandomOrgAdmin(toOrg));

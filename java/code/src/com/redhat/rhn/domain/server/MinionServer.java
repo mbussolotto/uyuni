@@ -34,18 +34,41 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+
 /**
  * MinionServer
  */
+@Entity
+@Table(name = "suseMinionInfo")
+@PrimaryKeyJoinColumn(name = "server_id", referencedColumnName = "id") // Maps to the superclass ID
 public class MinionServer extends Server implements SaltConfigurable {
-
+    @Column(name = "minion_id", length = 256, nullable = false, unique = true)
     private String minionId;
+    @Column(name = "kernel_live_version", length = 255)
     private String kernelLiveVersion;
+    @Column(name = "ssh_push_port")
     private Integer sshPushPort;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "minion", orphanRemoval = true)
     private Set<AccessToken> accessTokens = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "minion", orphanRemoval = true)
     private Set<Pillar> pillars = new HashSet<>();
+    @Column(name = "reboot_required_after", columnDefinition = "timestamp")
     private Date rebootRequiredAfter;
+    @Column(name = "os_family", length = 64)
+    private String osFamily;
+
+    @Column(name = "container_runtime")
     private String containerRuntime;
+    @Column(name = "uname")
     private String uname;
 
     /**
@@ -56,13 +79,33 @@ public class MinionServer extends Server implements SaltConfigurable {
     }
 
     /**
+     * Constructs a MinionServer instance for result map
+     * @param serverId id
+     * @param minionIdIn minionIdIn
+     * @param osFamilyIn osFamilyIn
+     * @param kernelLiveVersionIn kernelLiveVersionIn
+     * @param sshPushPortIn sshPushPortIn
+     * @param rebootRequiredAfterIn rebootRequiredAfterIn
+     */
+    public MinionServer(Long serverId, String minionIdIn, String osFamilyIn, String kernelLiveVersionIn,
+                        Integer sshPushPortIn, Date rebootRequiredAfterIn) {
+        super();
+        this.setId(serverId);
+        this.setOsFamily(osFamilyIn);
+        this.minionId = minionIdIn;
+        this.kernelLiveVersion = kernelLiveVersionIn;
+        this.sshPushPort = sshPushPortIn;
+        this.rebootRequiredAfter = rebootRequiredAfterIn;
+    }
+
+    /**
      * Minimal constructor used to avoid loading all properties in SSM config channel subscription
      *
-     * @param idIn the server id
+     * @param serverIdIn the server id
      * @param machineIdIn the machine id
      */
-    public MinionServer(long idIn, String machineIdIn) {
-        super(idIn, machineIdIn);
+    public MinionServer(long serverIdIn, String machineIdIn) {
+        super(serverIdIn, machineIdIn);
     }
 
     /**
@@ -78,6 +121,22 @@ public class MinionServer extends Server implements SaltConfigurable {
      */
     public void setMinionId(String minionIdIn) {
         this.minionId = minionIdIn;
+    }
+
+    /**
+     * @return the os family
+     */
+    @Override
+    public String getOsFamily() {
+        return osFamily;
+    }
+
+    /**
+     * @param osFamilyIn the os family id to set
+     */
+    @Override
+    public void setOsFamily(String osFamilyIn) {
+        osFamily = osFamilyIn;
     }
 
     /**
@@ -319,26 +378,26 @@ public class MinionServer extends Server implements SaltConfigurable {
         boolean changed = false;
 
         if (proxy.isPresent()) {
-                // the system is connected to a proxy
-                // check if serverPath already exists
-                Optional<ServerPath> path = ServerFactory.findServerPath(this, proxy.get());
-                if (!path.isPresent() || path.get().getPosition() != 0) {
-                    // proxy path does not exist -> create it
-                    Set<ServerPath> proxyPaths = ServerFactory.createServerPaths(this, proxy.get(),
-                                                 hostname.orElse(proxy.get().getHostname()));
-                    getServerPaths().clear();
-                    getServerPaths().addAll(proxyPaths);
+            // the system is connected to a proxy
+            // check if serverPath already exists
+            Optional<ServerPath> path = ServerFactory.findServerPath(this, proxy.get());
+            if (!path.isPresent() || path.get().getPosition() != 0) {
+                // proxy path does not exist -> create it
+                Set<ServerPath> proxyPaths = ServerFactory.createServerPaths(this, proxy.get(),
+                        hostname.orElse(proxy.get().getHostname()));
+                getServerPaths().clear();
+                getServerPaths().addAll(proxyPaths);
 
-                    changed = true;
-                }
-         }
-         else {
-                if (!getServerPaths().isEmpty()) {
-                    // reconnecting from proxy to master
-                    getServerPaths().clear();
+                changed = true;
+            }
+        }
+        else {
+            if (!getServerPaths().isEmpty()) {
+                // reconnecting from proxy to master
+                getServerPaths().clear();
 
-                    changed = true;
-                }
+                changed = true;
+            }
         }
         return changed;
     }

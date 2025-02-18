@@ -83,6 +83,7 @@ import com.redhat.rhn.domain.server.SnapshotTagName;
 import com.redhat.rhn.domain.server.UndefinedCustomDataKeyException;
 import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.domain.user.UserFactory;
+import com.redhat.rhn.domain.user.legacy.UserImpl;
 import com.redhat.rhn.frontend.xmlrpc.ServerNotInGroupException;
 import com.redhat.rhn.manager.entitlement.EntitlementManager;
 import com.redhat.rhn.manager.formula.FormulaMonitoringManager;
@@ -715,7 +716,9 @@ public class ServerFactoryTest extends BaseTestCaseWithUser {
     }
 
     private static void populateServer(Server s, User owner, int type) {
-        s.setCreator(owner);
+        if (owner instanceof UserImpl) {
+            s.setCreator((UserImpl) owner);
+        }
         s.setOrg(owner.getOrg());
         s.setDigitalServerId("ID-" + TestUtils.randomString());
         s.setOs("Red Hat Linux");

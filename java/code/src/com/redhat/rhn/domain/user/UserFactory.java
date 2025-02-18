@@ -123,7 +123,7 @@ public  class UserFactory extends HibernateFactory {
      * @param orgIn Org id
      * @return the user (first org admin) of the org.
      */
-    public static User findRandomOrgAdmin(Org orgIn) {
+    public static UserImpl findRandomOrgAdmin(Org orgIn) {
         Role r = RoleFactory.ORG_ADMIN;
         Session session = HibernateFactory.getSession();
         Iterator<Long> itr = session.getNamedQuery("User.findRandomOrgAdmin")

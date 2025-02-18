@@ -27,6 +27,7 @@ import com.redhat.rhn.domain.server.Server;
 import com.redhat.rhn.domain.server.ServerFQDN;
 import com.redhat.rhn.domain.server.ServerFactory;
 import com.redhat.rhn.domain.user.User;
+import com.redhat.rhn.domain.user.legacy.UserImpl;
 import com.redhat.rhn.manager.entitlement.EntitlementManager;
 import com.redhat.rhn.manager.system.SystemManager;
 import com.redhat.rhn.manager.system.SystemManagerUtils;
@@ -166,7 +167,9 @@ public class ProxyContainerConfigCreateAcquisitor implements ProxyContainerConfi
                 .filter(fqdn -> !fqdn.contains("*"))
                 .map(fqdn -> new ServerFQDN(server, fqdn)).collect(Collectors.toList()));
         server.setOrg(creator.getOrg());
-        server.setCreator(creator);
+        if (creator instanceof UserImpl) {
+            server.setCreator((UserImpl) creator);
+        }
 
         String uniqueId = SystemManagerUtils.createUniqueId(List.of(proxyName));
         server.setDigitalServerId(uniqueId);

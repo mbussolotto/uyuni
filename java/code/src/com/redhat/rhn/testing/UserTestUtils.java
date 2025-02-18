@@ -30,6 +30,7 @@ import com.redhat.rhn.domain.server.ServerConstants;
 import com.redhat.rhn.domain.user.Address;
 import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.domain.user.UserFactory;
+import com.redhat.rhn.domain.user.legacy.UserImpl;
 import com.redhat.rhn.manager.user.UserManager;
 
 /**
@@ -146,9 +147,9 @@ public class UserTestUtils  {
      * @param orgAdmin if you want the user to have the ORG_ADMIN role
      * @return User the newly created User.
      */
-    public static User findNewUser(String userName, String orgName, boolean orgAdmin) {
+    public static UserImpl findNewUser(String userName, String orgName, boolean orgAdmin) {
         Long id = createUser(userName, orgName);
-        User usr = UserFactory.lookupById(id);
+        UserImpl usr = UserFactory.lookupById(id);
         if (orgAdmin) {
             usr.addPermanentRole(RoleFactory.ORG_ADMIN);
             UserFactory.save(usr);

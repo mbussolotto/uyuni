@@ -18,23 +18,46 @@ import com.redhat.rhn.common.util.StringUtil;
 import com.redhat.rhn.domain.BaseDomainHelper;
 import com.redhat.rhn.domain.org.CustomDataKey;
 import com.redhat.rhn.domain.user.User;
+import com.redhat.rhn.domain.user.legacy.UserImpl;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.io.Serial;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * CustomDataValue
  */
+@Entity
+@Table(name = "rhnServerCustomDataValue")
 public class CustomDataValue extends BaseDomainHelper {
 
-    @Serial
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "server_id", insertable = false, updatable = false)
     private Server server;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "key_id", insertable = false, updatable = false)
     private CustomDataKey key;
+
+    @Column(name = "value", length = 4000)
     private String value;
+
+    @ManyToOne(targetEntity = UserImpl.class)
+    @JoinColumn(name = "created_by")
     private User creator;
+
+    @ManyToOne(targetEntity = UserImpl.class)
+    @JoinColumn(name = "last_modified_by")
     private User lastModifier;
 
     /**
@@ -107,7 +130,7 @@ public class CustomDataValue extends BaseDomainHelper {
             return false;
         }
         return new EqualsBuilder().append(key, castOther.getKey())
-                                  .append(server, castOther.getServer()).isEquals();
+                .append(server, castOther.getServer()).isEquals();
     }
 
     /**

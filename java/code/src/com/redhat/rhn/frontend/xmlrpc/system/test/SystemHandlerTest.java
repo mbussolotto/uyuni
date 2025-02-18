@@ -2606,6 +2606,7 @@ public class SystemHandlerTest extends BaseHandlerTestCase {
     @Test
     public void testWhoCreated() {
         Server srv1 = ServerFactoryTest.createTestServer(regular, true);
+
         srv1.setCreator(admin);
         assertEquals(admin, handler.whoRegistered(admin, srv1.getId().intValue()));
     }

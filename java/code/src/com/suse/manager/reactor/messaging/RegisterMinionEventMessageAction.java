@@ -45,6 +45,7 @@ import com.redhat.rhn.domain.state.StateFactory;
 import com.redhat.rhn.domain.token.ActivationKey;
 import com.redhat.rhn.domain.token.ActivationKeyFactory;
 import com.redhat.rhn.domain.user.User;
+import com.redhat.rhn.domain.user.legacy.UserImpl;
 import com.redhat.rhn.manager.action.ActionManager;
 import com.redhat.rhn.manager.entitlement.EntitlementManager;
 import com.redhat.rhn.manager.formula.FormulaMonitoringManager;
@@ -550,7 +551,7 @@ public class RegisterMinionEventMessageAction implements MessageAction {
             }
 
             // Set creator to the user who accepted the key if available
-            minion.setCreator(creator.orElse(null));
+            minion.setCreator((UserImpl) creator.orElse(null));
 
             String osfullname = grains.getValueAsString("osfullname");
             String osfamily = grains.getValueAsString("os_family");

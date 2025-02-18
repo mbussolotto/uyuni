@@ -83,6 +83,7 @@ import com.redhat.rhn.domain.state.StateFactory;
 import com.redhat.rhn.domain.state.VersionConstraints;
 import com.redhat.rhn.domain.task.TaskFactory;
 import com.redhat.rhn.domain.user.User;
+import com.redhat.rhn.domain.user.legacy.UserImpl;
 import com.redhat.rhn.frontend.dto.ActivationKeyDto;
 import com.redhat.rhn.frontend.dto.Capability;
 import com.redhat.rhn.frontend.dto.CustomDataKeyOverview;
@@ -513,7 +514,9 @@ public class SystemManager extends BaseManager {
         server.setOrg(creator.getOrg());
 
         // Set network device information to the server so we have something to match with
-        server.setCreator(creator);
+        if (creator instanceof UserImpl) {
+            server.setCreator((UserImpl) creator);
+        }
         hostname.ifPresent(server::setHostname);
         server.setDigitalServerId(uniqueId);
         server.setMachineId(uniqueId);
@@ -3737,7 +3740,9 @@ public class SystemManager extends BaseManager {
         server.setOrg(creator.getOrg());
 
         // Set network device information to the server so we have something to match with
-        server.setCreator(creator);
+        if (creator instanceof UserImpl) {
+            server.setCreator((UserImpl)creator);
+        }
         server.setHostname(fqdn);
         server.getFqdns().add(new ServerFQDN(server, fqdn));
         server.setDigitalServerId(uniqueId);
