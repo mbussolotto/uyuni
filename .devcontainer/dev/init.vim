@@ -15,6 +15,7 @@ set linebreak
 set wrap
 set tags=./tags
 
+
 filetype off
 call plug#begin()
 Plug 'fatih/vim-go'
