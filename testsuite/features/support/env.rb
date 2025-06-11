@@ -20,6 +20,7 @@ require_relative 'code_coverage'
 require_relative 'quality_intelligence'
 require_relative 'remote_nodes_env'
 require_relative 'commonlib'
+require_relative 'navigation_step_helper'
 
 $stdout.puts("Using Ruby version: #{RUBY_VERSION}")
 
@@ -292,6 +293,14 @@ Before('@proxy') do
   skip_this_scenario unless ENV.key? ENV_VAR_BY_HOST['proxy']
 end
 
+Before('@run_if_proxy_transactional_or_slmicro61_minion') do
+  skip_this_scenario unless suse_proxy_transactional? || ENV.key?(ENV_VAR_BY_HOST['slmicro61_minion'])
+end
+
+Before('@run_if_proxy_not_transactional_or_sles15sp7_minion') do
+  skip_this_scenario unless suse_proxy_non_transactional? || ENV.key?(ENV_VAR_BY_HOST['sle15sp7_minion'])
+end
+
 Before('@sle_minion') do
   skip_this_scenario unless ENV.key? ENV_VAR_BY_HOST['sle_minion']
 end
@@ -428,14 +437,6 @@ Before('@sle12sp5_ssh_minion') do
   skip_this_scenario unless ENV.key? ENV_VAR_BY_HOST['sle12sp5_ssh_minion']
 end
 
-Before('@sle15sp2_minion') do
-  skip_this_scenario unless ENV.key? ENV_VAR_BY_HOST['sle15sp2_minion']
-end
-
-Before('@sle15sp2_ssh_minion') do
-  skip_this_scenario unless ENV.key? ENV_VAR_BY_HOST['sle15sp2_ssh_minion']
-end
-
 Before('@sle15sp3_minion') do
   skip_this_scenario unless ENV.key? ENV_VAR_BY_HOST['sle15sp3_minion']
 end
@@ -466,6 +467,14 @@ end
 
 Before('@sle15sp6_ssh_minion') do
   skip_this_scenario unless ENV.key? ENV_VAR_BY_HOST['sle15sp6_ssh_minion']
+end
+
+Before('@sle15sp7_minion') do
+  skip_this_scenario unless ENV.key? ENV_VAR_BY_HOST['sle15sp7_minion']
+end
+
+Before('@sle15sp7_ssh_minion') do
+  skip_this_scenario unless ENV.key? ENV_VAR_BY_HOST['sle15sp7_ssh_minion']
 end
 
 Before('@opensuse156arm_minion') do

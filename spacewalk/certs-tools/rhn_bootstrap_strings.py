@@ -96,8 +96,9 @@ echo
 
 # can be edited, but probably correct (unless created during initial install):
 # NOTE: ACTIVATION_KEYS *must* be used to bootstrap a client machine.
-ACTIVATION_KEYS={activation_keys}
-ORG_GPG_KEY={org_gpg_key}
+# You can set ACTIVATION_KEYS and ORG_GPG_KEY as environment variables, or they will default to the templated values.
+ACTIVATION_KEYS=${{ACTIVATION_KEYS:-{activation_keys}}}
+ORG_GPG_KEY=${{ORG_GPG_KEY:-{org_gpg_key}}}
 
 # To reactivate single Salt client use following variable:
 # NOTE: Reactivation keys are removed valid only for single use.
@@ -106,7 +107,10 @@ REACTIVATION_KEY=${{REACTIVATION_KEY:-}}
 
 # can be edited, but probably correct:
 CLIENT_OVERRIDES={overrides}
-HOSTNAME={hostname}
+
+#If the environment variable MGR_SERVER_HOSTNAME is set, its value will be used.
+#Otherwise, or they will default to the templated value.
+HOSTNAME=${{MGR_SERVER_HOSTNAME:-{hostname}}}
 
 ORG_CA_CERT={orgCACert}
 

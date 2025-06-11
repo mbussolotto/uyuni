@@ -6,10 +6,12 @@ FROM $INIT_IMAGE
 
 ARG PRODUCT_PATTERN_PREFIX="patterns-uyuni"
 
+# Keep in sync with salt/salt.spec
+# For now Uyuni is still on python3-salt but the value can be overridden in the project config
+ARG USEPYTHON="python3"
+
 # Extra packages can be added via project configuration
 ARG EXTRAPACKAGES
-
-ADD --chown=root:root root.tar.gz /
 
 # Main packages
 RUN echo "rpm.install.excludedocs = yes" >>/etc/zypp/zypp.conf && \
@@ -58,7 +60,7 @@ RUN echo "rpm.install.excludedocs = yes" >>/etc/zypp/zypp.conf && \
         virtual-host-gatherer-Nutanix \
         virtual-host-gatherer-VMware \
         vim \
-        python3-pygit2 \
+        ${USEPYTHON}-pygit2 \
         ipmitool \
         sssd \
         sssd-dbus \
@@ -68,7 +70,16 @@ RUN echo "rpm.install.excludedocs = yes" >>/etc/zypp/zypp.conf && \
         sssd-krb5 \
         sssd-tools && \
     systemctl enable prometheus-node_exporter && \
-    systemctl enable sssd
+    systemctl enable sssd && \
+    rm /etc/krb5.conf.d/crypto-policies && \
+    ln -s /etc/crypto-policies/back-ends/krb5.config /etc/krb5.conf.d/crypto-policies && \
+    mv "/etc/krb5.conf.d" "/etc/rhn/krb5.conf.d" && \
+    ln -s "/etc/rhn/krb5.conf.d" "/etc/krb5.conf.d"
+
+RUN set -euo pipefail; zypper -n rr -a; \
+    rm -rf /var/log/{alternatives.log,lastlog,tallylog,zypper.log,zypp/history,YaST2}
+
+ADD --chown=root:root root.tar.gz /
 
 # Initialize environments to sync configuration and package files to persistent volumes
 RUN systemctl enable timezone_alignment && \
@@ -97,7 +108,7 @@ LABEL org.opencontainers.image.description="All-in-one ${PRODUCT} server image"
 LABEL org.opencontainers.image.created="%BUILDTIME%"
 LABEL org.opencontainers.image.vendor="${VENDOR}"
 LABEL org.opencontainers.image.url="${URL}"
-LABEL org.opencontainers.image.version=5.1.5
+LABEL org.opencontainers.image.version=5.1.6
 LABEL org.openbuildservice.disturl="%DISTURL%"
 LABEL org.opensuse.reference="${REFERENCE_PREFIX}/server:${PRODUCT_VERSION}.%RELEASE%"
 # endlabelprefix

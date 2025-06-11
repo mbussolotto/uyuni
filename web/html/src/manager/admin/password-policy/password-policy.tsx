@@ -1,5 +1,7 @@
 import { hot } from "react-hot-loader/root";
 
+import { useState } from "react";
+
 import { AsyncButton } from "components/buttons";
 import withPageWrapper from "components/general/with-page-wrapper";
 import { Check, Form, Text } from "components/input";
@@ -7,49 +9,22 @@ import { Panel } from "components/panels/Panel";
 import { TopPanel } from "components/panels/TopPanel";
 import { MessagesContainer, showErrorToastr, showSuccessToastr } from "components/toastr/toastr";
 
-import { PasswordPolicyProps } from "./password_policy_type";
+import Network from "utils/network";
 
-const updatePolicy = (policyData) => {
-  return fetch("/rhn/manager/api/admin/config/password-policy", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(policyData),
-  }).then((response) => {
-    if (!response.ok) {
-      return response.json().then((errorData) => {
-        throw errorData;
-      });
-    }
-    return response.json();
-  });
-};
-
-const defaultPolicy = () => {
-  return fetch("/rhn/manager/api/admin/config/password-policy/default", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.json().then((errorData) => {
-        throw errorData;
-      });
-    }
-    return response.json();
-  });
-};
+import { PasswordPolicyData, PasswordPolicyProps } from "./password_policy_type";
 
 const PasswordPolicy = (prop: PasswordPolicyProps) => {
+  const policy_endpoint = "/rhn/manager/api/admin/config/password-policy";
+  const [defaults, setDefaults] = useState(prop.defaults);
+  const [policy, setPolicy] = useState(prop.policy);
+
   return (
     <TopPanel title={t("Server Configuration - Password Policy")} icon="fa-info-circle">
       <div className="page-summary">
         <MessagesContainer />
         <p>{t("Set up your server local users password policy.")}</p>
       </div>
-      <Form model={prop.policy}>
+      <Form model={policy}>
         <Panel headingLevel="h2" title={t("Password Policy Settings")}>
           <div className="col-md-8">
             {/* Minimum Length */}
@@ -107,10 +82,10 @@ const PasswordPolicy = (prop: PasswordPolicyProps) => {
                 <label htmlFor="specialChars">{t("Allowed Special Characters")}</label>
               </div>
               <Text
-                disabled={!prop.policy.specialCharFlag}
+                disabled={!policy.specialCharFlag}
                 name="specialChars"
                 divClass="col-md-4"
-                defaultValue={prop.defaults.specialChars?.toLocaleString()}
+                defaultValue={defaults.specialChars?.toLocaleString()}
               />
             </div>
             {/* Restrict Character Occurrence */}
@@ -126,11 +101,11 @@ const PasswordPolicy = (prop: PasswordPolicyProps) => {
                 <label htmlFor="maxCharacterOccurrence">{t("Max Characters Occurrences")}</label>
               </div>
               <Text
-                disabled={!prop.policy.restrictedOccurrenceFlag}
+                disabled={!policy.restrictedOccurrenceFlag}
                 name="maxCharacterOccurrence"
                 divClass="col-md-2"
                 type="number"
-                defaultValue={prop.defaults.maxCharacterOccurrence.toLocaleString()}
+                defaultValue={defaults.maxCharacterOccurrence.toLocaleString()}
               />
             </div>
             <div className="row">
@@ -143,15 +118,15 @@ const PasswordPolicy = (prop: PasswordPolicyProps) => {
                     title={t("Save Password Policy")}
                     text={t("Save")}
                     icon="fa-save"
-                    action={() =>
-                      updatePolicy(prop.policy)
+                    action={() => {
+                      Network.post(policy_endpoint, policy)
                         .then(() => {
                           showSuccessToastr(t("Password Policy Changed"));
                         })
                         .catch((error) => {
-                          showErrorToastr(error, { autoHide: false });
-                        })
-                    }
+                          showErrorToastr(error);
+                        });
+                    }}
                   />
                   <AsyncButton
                     id="resetButton"
@@ -159,16 +134,21 @@ const PasswordPolicy = (prop: PasswordPolicyProps) => {
                     title={t("Reset")}
                     text={t("Reset")}
                     icon="fa-refresh"
-                    action={() =>
-                      defaultPolicy()
-                        .then((policy) => {
-                          prop.policy = policy;
-                          showSuccessToastr(t("Password Policy reset to defaults"));
+                    action={() => {
+                      const default_policy_endpoint = "/rhn/manager/api/admin/config/password-policy/default";
+                      Network.get(default_policy_endpoint)
+                        .then((resp) => {
+                          const defaults: PasswordPolicyData = JSON.parse(resp.data);
+                          Network.post(policy_endpoint, defaults)
+                            .then(() => showSuccessToastr(t("Password Policy Reset to Default")))
+                            .catch((error) => showErrorToastr(error));
+                          setDefaults(defaults);
+                          setPolicy(defaults);
                         })
                         .catch((error) => {
-                          showErrorToastr(error, { autoHide: false });
-                        })
-                    }
+                          showErrorToastr(error);
+                        });
+                    }}
                   />
                 </div>
               </div>

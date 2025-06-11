@@ -3399,11 +3399,6 @@ public class SystemHandler extends BaseHandler {
     public List<Channel> listSubscribedChildChannels(User loggedInUser, Integer sid) {
         Server server = lookupServer(loggedInUser, sid);
         Set<Channel> childChannels = server.getChildChannels();
-
-        if (childChannels == null) {
-            return new ArrayList<>();
-        }
-
         return new ArrayList<>(childChannels);
     }
 
@@ -7618,6 +7613,7 @@ public class SystemHandler extends BaseHandler {
      *          #struct_end()
      *      #array_end()
      */
+    @ReadOnly
     public List<Map<String, Object>> listMigrationTargets(User loggedInUser,
             Integer sid, boolean excludeTargetWhereMissingSuccessors) {
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();

@@ -19,6 +19,7 @@ import com.suse.manager.model.hub.ManagerInfoJson;
 import com.suse.manager.model.hub.OrgInfoJson;
 import com.suse.manager.model.hub.RegisterJson;
 import com.suse.manager.model.hub.SCCCredentialsJson;
+import com.suse.manager.model.hub.ServerInfoJson;
 import com.suse.manager.webui.controllers.ECMAScriptDateAdapter;
 
 import com.google.gson.Gson;
@@ -33,6 +34,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -131,6 +133,11 @@ public class DefaultHubInternalClient implements HubInternalClient {
         invokePost("hub/sync/migrate/v1", "deleteMaster", null);
     }
 
+    @Override
+    public ServerInfoJson getServerInfo() throws IOException {
+        return invokeGet("hub", "serverInfo", ServerInfoJson.class);
+    }
+
     private <R> R invokeGet(String namespace, String apiMethod, Type responseType)
             throws IOException {
         return invoke(HttpGet.METHOD_NAME, namespace, apiMethod, null, responseType);
@@ -163,7 +170,8 @@ public class DefaultHubInternalClient implements HubInternalClient {
         int statusCode = response.getStatusLine().getStatusCode();
         // Ensure we get a valid response
         if (statusCode != HttpStatus.SC_OK) {
-            throw new InvalidResponseException("Unexpected response code %d".formatted(statusCode));
+            throw new InvalidResponseException("Unexpected response code %d: %s".formatted(statusCode,
+                    extractErrorMessage(response).orElse("")));
         }
 
         // Parse the response object, if specified
@@ -178,4 +186,18 @@ public class DefaultHubInternalClient implements HubInternalClient {
         return null;
     }
 
+    private Optional<String> extractErrorMessage(HttpResponse response) {
+        try {
+            String body = EntityUtils.toString(response.getEntity());
+            Map<String, Object> responseMap = GSON.fromJson(body, new TypeToken<Map<String, Object>>() { }.getType());
+            Object messagesObj = responseMap.get("messages");
+            if (messagesObj instanceof List<?> messages) {
+                return Optional.of(String.join(", ", (List<String>) messages));
+            }
+            return Optional.empty();
+        }
+        catch (Exception eIn) {
+            return Optional.empty();
+        }
+    }
 }

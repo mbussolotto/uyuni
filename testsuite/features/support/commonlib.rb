@@ -1,10 +1,11 @@
-# Copyright (c) 2013-2024 SUSE LLC.
+# Copyright (c) 2013-2025 SUSE LLC.
 # Licensed under the terms of the MIT license.
 
 require 'tempfile'
 require 'yaml'
 require 'nokogiri'
 require 'timeout'
+require 'rubygems'
 require_relative 'constants'
 require_relative 'api_test'
 
@@ -300,13 +301,27 @@ def transactional_system?(name, runs_in_container: true)
   slemicro_host?(name, runs_in_container: runs_in_container) || leapmicro_host?(name, runs_in_container: runs_in_container)
 end
 
+# Checks if the 'proxy' host is a transactional system
+#
+# @return [Boolean] Returns true if the proxy is transactional
+def suse_proxy_transactional?
+  ENV.key?(ENV_VAR_BY_HOST['proxy']) && transactional_system?('proxy', runs_in_container: false)
+end
+
+# Checks if the 'proxy' host is a is non-transactional
+#
+# @return [Boolean] Returns true if the proxy is is non-transactional
+def suse_proxy_non_transactional?
+  ENV.key?(ENV_VAR_BY_HOST['proxy']) && !transactional_system?('proxy', runs_in_container: false)
+end
+
 # Determines if a given host name belongs to a Red Hat-like distribution.
 #
 # @param name [String] the host name to check
 # @return [Boolean] true if the host name belongs to a Red Hat-like distribution, false otherwise
 def rh_host?(name)
   os_family = get_target(name).os_family
-  %w[rocky centos redhat alma oracle liberty almalinux ol rhel].include? os_family
+  %w[alma almalinux amzn centos liberty ol oracle rocky redhat rhel].include? os_family
 end
 
 # Determines if the given host name is a Debian-based host.
@@ -340,6 +355,8 @@ def generate_repository_name(repo_url)
   repo_name.sub!(%r{http://(download.suse.de|download.opensuse.org|minima-mirror-ci-bv.mgr.*|.*compute.internal)/SUSE:/}, '')
   repo_name.sub!(%r{http://(download.suse.de|download.opensuse.org|minima-mirror-ci-bv.mgr.*|.*compute.internal)/ibs/Devel:/Galaxy:/Manager:/}, '')
   repo_name.sub!(%r{http://(download.suse.de|download.opensuse.org|minima-mirror-ci-bv.mgr.*|.*compute.internal)/SUSE:/Maintenance:/}, '')
+  repo_name.sub!(%r{http://(download.suse.de|download.opensuse.org|minima-mirror-ci-bv.mgr.*|.*compute.internal)/ibs/SUSE:/SLE-15:/Update:/Products:/MultiLinuxManagerTools/images/repo/}, '')
+  repo_name.sub!(%r{http://(download.suse.de|download.opensuse.org|minima-mirror-ci-bv.mgr.*|.*compute.internal)/ibs/SUSE:/}, '')
   repo_name.gsub!('/', '_')
   repo_name.gsub!(':', '_')
   repo_name[0...64] # HACK: Due to the 64 characters size limit of a repository label
@@ -801,4 +818,20 @@ end
 # @param package String The package name where it will trigger an upgrade
 def trigger_upgrade(hostname, package)
   get_target('server').run("spacecmd -u admin -p admin system_upgradepackage #{hostname} #{package} -y", check_errors: true)
+end
+
+# Function to select the latest package from a list based on version and release
+#
+# @param packages [Array<String>] A list of package strings in the format 'name-version-release'
+# @return [String] The package string with the highest version and release
+def latest_package(packages)
+  packages.max_by do |package|
+    if package =~ /^(.+)-(\d+\.\d+\.\d+)-(.+)$/
+      version = Regexp.last_match(2)
+      release = Regexp.last_match(3)
+      [Gem::Version.new(version), Gem::Version.new(release.gsub(/[^\d.]/, '.'))]
+    else
+      [Gem::Version.new('0.0.0'), Gem::Version.new('0')]
+    end
+  end
 end

@@ -1,7 +1,6 @@
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
-const LicenseCheckerWebpackPlugin = require("license-checker-webpack-plugin");
 const webpackAlias = require("./webpack.alias");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
@@ -14,6 +13,7 @@ const DEVSERVER_WEBSOCKET_PATHNAME = "/ws";
 module.exports = (env, opts) => {
   let pluginsInUse = [];
   const isProductionMode = opts.mode === "production";
+  const moduleName = isProductionMode ? "[id].[chunkhash]" : "[id]";
 
   if (opts.measurePerformance) {
     pluginsInUse.push(new SpeedMeasurePlugin());
@@ -77,26 +77,13 @@ module.exports = (env, opts) => {
       },
     ]),
     new MiniCssExtractPlugin({
-      chunkFilename: "css/[name].css",
+      chunkFilename: `css/${moduleName}.css`,
     }),
     new GenerateStoriesPlugin({
       inputDir: path.resolve(__dirname, "../manager"),
       outputFile: path.resolve(__dirname, "../manager/storybook/stories.generated.ts"),
     }),
   ];
-
-  if (isProductionMode) {
-    pluginsInUse = [
-      ...pluginsInUse,
-      new LicenseCheckerWebpackPlugin({
-        outputFilename: "../vendors/npm.licenses.structured.js",
-        outputWriter: path.resolve(__dirname, "../vendors/licenses.template.ejs"),
-      }),
-      new LicenseCheckerWebpackPlugin({
-        outputFilename: "../vendors/npm.licenses.txt",
-      }),
-    ];
-  }
 
   if (opts.verbose) {
     console.log("pluginsInUse:");
@@ -113,11 +100,15 @@ module.exports = (env, opts) => {
       "css/updated-uyuni": path.resolve(__dirname, "../branding/css/uyuni.scss"),
     },
     output: {
-      filename: `[name].bundle.js`,
+      // This needs to be constant as it's referenced from layout_head.jsp etc. All uses need to specify cache bust where imported.
+      filename: `[name].js`,
       path: path.resolve(__dirname, "../dist/"),
-      chunkFilename: "javascript/manager/[name].bundle.js",
+      chunkFilename: `javascript/manager/${moduleName}.js`,
       publicPath: "/",
-      hashFunction: "md5",
+    },
+    optimization: {
+      chunkIds: "named",
+      moduleIds: "named",
     },
     node: {
       __filename: true,

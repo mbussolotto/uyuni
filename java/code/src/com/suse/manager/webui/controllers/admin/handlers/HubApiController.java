@@ -25,10 +25,13 @@ import com.redhat.rhn.common.localization.LocalizationService;
 import com.redhat.rhn.domain.credentials.HubSCCCredentials;
 import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.frontend.listview.PageControl;
+import com.redhat.rhn.taskomatic.NoSuchBunchTaskException;
+import com.redhat.rhn.taskomatic.TaskoFactory;
 import com.redhat.rhn.taskomatic.TaskomaticApiException;
 
 import com.suse.manager.hub.HubManager;
 import com.suse.manager.hub.InvalidResponseException;
+import com.suse.manager.hub.PeripheralRegistrationException;
 import com.suse.manager.hub.migration.IssMigrator;
 import com.suse.manager.hub.migration.IssMigratorFactory;
 import com.suse.manager.model.hub.AccessTokenDTO;
@@ -66,6 +69,7 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.quartz.SchedulerException;
 
 import java.io.IOException;
 import java.security.cert.CertificateException;
@@ -135,7 +139,7 @@ public class HubApiController {
         post("/manager/api/admin/hub/access-tokens", withProductAdmin(this::createToken));
         post("/manager/api/admin/hub/access-tokens/:id/validity", withProductAdmin(this::setAccessTokenValidity));
         delete("/manager/api/admin/hub/access-tokens/:id", withProductAdmin(this::deleteAccessToken));
-
+        post("/manager/api/admin/hub/sync-bunch", withProductAdmin(this::scheduleUpdateTask));
     }
 
     private String deleteHub(Request request, Response response, User user) {
@@ -290,6 +294,12 @@ public class HubApiController {
             LOGGER.error("Invalid response received from the remote server {}", remoteServer, ex);
             return internalServerError(response, LOC.getMessage("hub.invalid_remote_response"));
         }
+        catch (PeripheralRegistrationException ex) {
+            LOGGER.error("{} cannot be registered as a peripheral from this hub: {}",
+                    remoteServer, ex.getMessage());
+            return internalServerError(response, LOC.getMessage("hub.error_peripheral_not_registrable",
+                    remoteServer));
+        }
         catch (IOException ex) {
             LOGGER.error("Error while attempting to connect to remote server {}", remoteServer, ex);
             return internalServerError(response, LOC.getMessage("hub.error_connecting_remote"));
@@ -404,11 +414,11 @@ public class HubApiController {
         }
 
         try {
-            hubManager.deregister(user, server.getFqdn(), false);
+            hubManager.deregister(user, server.getFqdn(), issRole, false);
         }
         catch (IOException | CertificateException ex) {
             LOGGER.error("Unable to register: error to connect with the remote server {}", server.getFqdn(), ex);
-            internalServerError(response, LOC.getMessage("hub.unable_to_deregister"));
+            return internalServerError(response, LOC.getMessage("hub.unable_to_deregister"));
         }
 
         return success(response);
@@ -467,7 +477,7 @@ public class HubApiController {
 
         // Run migration from v1
         IssMigrator migrator = migratorFactory.createFor(user);
-        return performMigration(request, response, migrationData, 1, data -> migrator.migrateFromV1(data));
+        return performMigration(request, response, migrationData, 1, migrator::migrateFromV1);
     }
 
     private String migrateFromV2(Request request, Response response, User user) {
@@ -482,7 +492,7 @@ public class HubApiController {
 
         // Run migration from v2
         IssMigrator migrator = migratorFactory.createFor(user);
-        return performMigration(request, response, migrationData, 2, data ->  migrator.migrateFromV2(data));
+        return performMigration(request, response, migrationData, 2, migrator::migrateFromV2);
     }
 
     private <T> String performMigration(Request request, Response response, T migrationData, int version,
@@ -498,6 +508,18 @@ public class HubApiController {
         }
         catch (Exception ex) {
             LOGGER.error("Unexpected error while migrating the servers", ex);
+            return internalServerError(response, LOC.getMessage("hub.unexpected_error_migrating", ex.getMessage()));
+        }
+    }
+
+    private String scheduleUpdateTask(Request request, Response response, User user) {
+        try {
+            Map<String, Object> params = Map.of("noRepoSync", false);
+            TaskoFactory.addSingleBunchRun(null, "mgr-sync-refresh-bunch", params, new Date());
+            return success(response);
+        }
+        catch (NoSuchBunchTaskException | SchedulerException ex) {
+            LOGGER.error("Failed to schedule mgr-sync-refresh job: {}", ex.getMessage());
             return internalServerError(response, LOC.getMessage("hub.unexpected_error_migrating", ex.getMessage()));
         }
     }

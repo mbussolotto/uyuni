@@ -31,7 +31,7 @@
 %define apache_group apache
 %endif
 Name:           uyuni-base
-Version:        5.1.2
+Version:        5.1.3
 Release:        0
 Summary:        Uyuni Base Package
 License:        GPL-2.0-only
@@ -121,9 +121,9 @@ getent passwd %{apache_user} >/dev/null && %{_sbindir}/usermod -a -G susemanager
 %if 0%{?suse_version} >= 1500 || 0%{?rhel} >= 9
 %files server
 %defattr(-,root,root)
-%dir %attr(755,%{apache_user}, root) %{_localstatedir}/spacewalk
-%dir %attr(755,%{apache_user}, %{apache_group}) %{_localstatedir}/spacewalk/systems
-%dir %attr(755,%{apache_user}, %{apache_group}) %{_localstatedir}/spacewalk/packages
+%dir %attr(775,%{apache_user}, root) %{_localstatedir}/spacewalk
+%dir %attr(775,%{apache_user}, %{apache_group}) %{_localstatedir}/spacewalk/systems
+%dir %attr(775,%{apache_user}, %{apache_group}) %{_localstatedir}/spacewalk/packages
 %dir %attr(755,root,root) /srv/www/distributions
 %endif
 

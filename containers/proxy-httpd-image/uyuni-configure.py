@@ -10,6 +10,7 @@ import yaml
 import socket
 import sys
 
+from pathlib import Path
 from typing import Tuple
 
 config_path = "/etc/uyuni/"
@@ -221,6 +222,10 @@ ProxyPassReverse /cobbler https://{config['server']}/cobbler
     ) as file:
         file.write("WSGIScriptAlias /pub /usr/share/rhn/wsgi/xmlrpc.py")
 
+    # redirect API calls to the server
+    with open("/etc/apache2/conf.d/smlm-api.conf", "w", encoding="utf-8") as file:
+        file.write("WSGIScriptAlias /rhn/manager/api /usr/share/rhn/wsgi/xmlrpc.py")
+
     with open("/etc/apache2/vhosts.d/ssl.conf", "w", encoding="utf-8") as file:
         file.write(
             f"""
@@ -287,3 +292,16 @@ if not os.path.exists("/var/cache/rhn/proxy-auth"):
 os.system("chown -R wwwrun:root /var/cache/rhn/proxy-auth")
 os.system("chown -R wwwrun:root /srv/tftpboot")
 os.system("chmod 755 /srv/tftpboot")
+
+# Invalidate (remove) possible old proxy auth cache files, based on sha1
+# after migration to sha256 proxy auth cache files.
+#
+# The old sha1 based cache files are like (filename length = 51):
+#    p10000100040c488b45d72291a0da497f5101d47e274c6b63ac
+#
+# The new sha256 based cache files are like (filename length = 75):
+#    p1000010004e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+#
+for cache_file in Path("/var/cache/rhn/proxy-auth").iterdir():
+    if cache_file.is_file() and len(cache_file.name) == 51:
+        cache_file.unlink()

@@ -1,4 +1,4 @@
-# Copyright (c) 2015-2022 SUSE LLC
+# Copyright (c) 2015-2025 SUSE LLC
 # Licensed under the terms of the MIT license.
 
 @scope_visualization
@@ -19,22 +19,31 @@ Feature: Main landing page options and preferences
     And I follow "API Documentation"
     Then I should see a "API Overview" text
 
-# TODO: We need to refactor this to navigate to a doc page
-
-@skip
+@susemanager
   Scenario: Access the Copyright Notice
-    Given I am not authorized
-    When I go to the home page
+    Given I am authorized
+    When I follow the left menu "Help"
+    And I switch to last opened window
+    Then I should see a "SUSE Multi-Linux Manager Documentation" text
+    When I click on a button within the item containing "Legal"
+    And I wait until I see "Copyright Notice" text
     And I follow "Copyright Notice"
-    Then I should see a "Copyright (c) 2011 - 2025 SUSE LLC." text
+    Then I should see a "Copyright Notice" text
+    And I should see a "SUSE Multi-Linux Manager LICENSE AGREEMENT" text
+    When I close the last opened window
 
 @susemanager
   Scenario: Access the EULA
-    Given I am not authorized
-    When I go to the home page
-    And I follow "Copyright Notice"
-    And I follow "SUSE Multi-Linux Manager License Agreement"
-    Then I should see a "SUSE Multi-Linux Manager License Agreement" text
+    Given I am authorized
+    When I follow the left menu "Help"
+    And I switch to last opened window
+    Then I should see a "SUSE Multi-Linux Manager Documentation" text
+    When I click on a button within the item containing "Legal"
+    And I wait until I see "End User License Agreement" text
+    And I follow "End User License Agreement"
+    Then I should see a "End User License Agreement" text
+    And I should see a "End User License Agreement for SUSE Software" text
+    When I close the last opened window
 
   Scenario: Log into Uyuni
     Given I am not authorized

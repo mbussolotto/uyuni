@@ -15,17 +15,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spacewalk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 13:25+0200\n"
-"PO-Revision-Date: 2024-06-11 06:47+0000\n"
+"POT-Creation-Date: 2025-04-25 09:41+0200\n"
+"PO-Revision-Date: 2025-05-30 05:59+0000\n"
 "Last-Translator: Carina Hagl <vistatec_pm@sunflare.co.jp>\n"
-"Language-Team: Japanese <https://l10n.opensuse.org/projects/uyuni/backend/ja/"
-">\n"
+"Language-Team: Japanese <https://l10n.opensuse.org/projects/uyuni/backend/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: ../server/apacheAuth.py:72
 #, python-format
@@ -84,13 +83,10 @@ msgstr ""
 "                   組織の管理者にお問い合わせください。"
 
 #: ../server/handlers/xmlrpc/proxy.py:71
-#, fuzzy, python-format
-#| msgid "SUSE Manager Proxy service not enabled for server profile: \"%s\""
+#, python-format
 msgid ""
 "SUSE Multi-Linux Manager Proxy service not enabled for server profile: \"%s\""
-msgstr ""
-"サーバプロファイルに対して SUSE Manager Proxy サービスが有効化されていませ"
-"ん: \"%s\""
+msgstr "サーバプロファイルに対して SUSE Multi-Linux サービスが有効化されていません: \"%s\""
 
 #: ../server/handlers/xmlrpc/proxy.py:94
 msgid "Invalid session key"
@@ -140,9 +136,8 @@ msgid ""
 "Your account does not have access to any channels matching "
 "(release='%(release)s', arch='%(arch)s')%(www_activation)s"
 msgstr ""
-"ご使用のアカウントには (release='%(release)s', "
-"arch='%(arch)s')%(www_activation)s に一致するチャンネルのいずれにもアクセスが"
-"ありません"
+"ご使用のアカウントには (release='%(release)s', arch='%(arch)s')"
+"%(www_activation)s に一致するチャンネルのいずれにもアクセスがありません"
 
 #: ../server/rhnChannel.py:2236
 #, python-format
@@ -459,15 +454,7 @@ msgid "Invalid value for entry."
 msgstr "エントリには無効な値です。"
 
 #: ../common/rhnException.py:88
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "     This system does not have a valid entitlement for SUSE Manager.\n"
-#| "     Please visit https://%(hostname)s/rhn/systems/SystemEntitlements.do\n"
-#| "     or login at https://%(hostname)s, and from the \"Overview\" tab,\n"
-#| "     select \"Subscription Management\" to enable the service for this "
-#| "system.\n"
-#| "     "
+#, python-format
 msgid ""
 "\n"
 "     This system does not have a valid entitlement for SUSE Multi-Linux "
@@ -479,13 +466,10 @@ msgid ""
 "     "
 msgstr ""
 "\n"
-"     このシステムには SUSE Manager 用の有効なエンタイトルメントがありませ"
-"ん。\n"
+"     このシステムには SUSE Multi-Linux Manager 用の有効なエンタイトルメントがありません。\n"
 "     このシステムに対してサービスを有効にする場合は、\n"
-"     https://%(hostname)s/rhn/systems/SystemEntitlements.do にアクセスする"
-"か、\n"
-"     https://%(hostname)s でログインしてから \"概要\" タブ内にある \"サブスク"
-"リプション管理\"\n"
+"     https://%(hostname)s/rhn/systems/SystemEntitlements.do にアクセスするか、\n"
+"     https://%(hostname)s でログインしてから \"概要\" タブ内にある \"サブスクリプション管理\"\n"
 "     を選択してください。\n"
 "     "
 
@@ -634,12 +618,6 @@ msgstr ""
 "     "
 
 #: ../common/rhnException.py:154
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "     The --force mgrpush option is disabled on this server.\n"
-#| "     Please contact your SUSE Manager administrator for more help.\n"
-#| "     "
 msgid ""
 "\n"
 "     The --force mgrpush option is disabled on this server.\n"
@@ -649,7 +627,7 @@ msgid ""
 msgstr ""
 "\n"
 "     このサーバーでは --force mgrpush のオプションは無効になっています。\n"
-"     詳細については SUSE Manager の管理者にお問い合わせください。\n"
+"     詳細については SUSE Multi-Linux Manager の管理者にお問い合わせください。\n"
 "     "
 
 #: ../common/rhnException.py:161
@@ -706,11 +684,8 @@ msgid "You can not unsubscribe from base channel."
 msgstr "ベースチャンネルのサブスクリプションを解除することはできません。"
 
 #: ../common/rhnException.py:183
-#, fuzzy
-#| msgid "SUSE Manager or Proxy channel can not be subscribed."
 msgid "SUSE Multi-Linux Manager or Proxy channel can not be subscribed."
-msgstr ""
-"SUSE Manager もしくは Proxy チャンネルはサブスクリプションを設定できません。"
+msgstr "SUSE Multi-Linux Manager もしくは Proxy チャンネルはサブスクリプションを設定できません。"
 
 #. 80-90: server group errors
 #: ../common/rhnException.py:185
@@ -776,25 +751,14 @@ msgstr "システム名を 1 文字未満にすることはできません"
 #. 1000-1999: Proxy specific errors:
 #. issued by a Proxy to the client
 #: ../common/rhnException.py:206
-#, fuzzy
-#| msgid "SUSE Manager Proxy error."
 msgid "SUSE Multi-Linux Manager Proxy error."
-msgstr "SUSE Manager Proxy のエラーです。"
+msgstr "SUSE Multi-Linux Manager Proxy のエラーです。"
 
 #: ../common/rhnException.py:207
-#, fuzzy
-#| msgid "SUSE Manager Proxy unable to login."
 msgid "SUSE Multi-Linux Manager Proxy unable to login."
-msgstr "SUSE Manager Proxy によるログインができません。"
+msgstr "SUSE Multi-Linux Manager Proxy によるログインができません。"
 
 #: ../common/rhnException.py:210
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "     SUSE Manager Proxy system ID does not match a Spacewalk Proxy "
-#| "Server\n"
-#| "     in the database.\n"
-#| "     "
 msgid ""
 "\n"
 "     SUSE Multi-Linux Manager Proxy system ID does not match a Spacewalk "
@@ -803,22 +767,17 @@ msgid ""
 "     "
 msgstr ""
 "\n"
-"     SUSE Manager Proxy のシステム ID と、データベース内の Spacewalk Proxy "
-"Server\n"
+"     SUSE Multi-Linux Manager Proxy のシステム ID と、データベース内の Spacewalk Proxy Server\n"
 "     の情報が合致しません。\n"
 "     "
 
 #: ../common/rhnException.py:215
-#, fuzzy
-#| msgid "SUSE Manager Proxy session token is invalid."
 msgid "SUSE Multi-Linux Manager Proxy session token is invalid."
-msgstr "SUSE Manager Proxy セッショントークンが正しくありません。"
+msgstr "SUSE Multi-Linux Manager Proxy セッショントークンが正しくありません。"
 
 #: ../common/rhnException.py:216
-#, fuzzy
-#| msgid "SUSE Manager Proxy session token has expired."
 msgid "SUSE Multi-Linux Manager Proxy session token has expired."
-msgstr "SUSE Manager Proxy セッショントークンの期限が切れています。"
+msgstr "SUSE Multi-Linux Manager Proxy セッショントークンの期限が切れています。"
 
 #: ../common/rhnException.py:220
 msgid ""
@@ -833,12 +792,6 @@ msgstr ""
 "     "
 
 #: ../common/rhnException.py:226
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "     This SUSE Manager server is not allowed to use Inter Server Sync on "
-#| "this server\n"
-#| "     "
 msgid ""
 "\n"
 "     This SUSE Multi-Linux Manager server is not allowed to use Inter Server "
@@ -846,23 +799,17 @@ msgid ""
 "     "
 msgstr ""
 "\n"
-"     この SUSE Manager サーバーでは、このサーバーでの Inter Server Sync の使"
-"用が許可されていません\n"
+"     この SUSE Multi-Linux Manager サーバーでは、このサーバーでの Inter Server Sync の使用が許可されていません\n"
 "     "
 
 #: ../common/rhnException.py:231
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "     Inter Server Sync is disabled on this SUSE Manager Server.\n"
-#| "     "
 msgid ""
 "\n"
 "     Inter Server Sync is disabled on this SUSE Multi-Linux Manager Server.\n"
 "     "
 msgstr ""
 "\n"
-"     Inter Server Sync は、この SUSE Manager サーバでは無効化されています。\n"
+"     Inter Server Sync は、この SUSE Multi-Linux Manager サーバでは無効化されています。\n"
 "     "
 
 #. 3000-3999: XML dumper errors:
@@ -1135,12 +1082,7 @@ msgstr ""
 "       %s\n"
 
 #: ../satellite_tools/messages.py:71
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "ERROR: you are not entitled to sync a channel in this set of channels.\n"
-#| "Please contact your SUSE Manager contact\n"
-#| "%s"
+#, python-format
 msgid ""
 "\n"
 "ERROR: you are not entitled to sync a channel in this set of channels.\n"
@@ -1148,9 +1090,8 @@ msgid ""
 "%s"
 msgstr ""
 "\n"
-"エラー: このチャンネルセット内でチャンネルを同期するためのエンタイトルメント"
-"がありません。\n"
-"SUSE Manager に連絡を行なってください\n"
+"エラー: このチャンネルセット内でチャンネルを同期するためのエンタイトルメントがありません。\n"
+"SUSE Multi-Linux Manager に連絡を行なってください\n"
 "%s"
 
 #: ../satellite_tools/messages.py:77
@@ -1615,8 +1556,8 @@ msgstr "+++ 電子メールの要求がありましたが、送信すべき内�
 #~ "DEBUG ONLY: max. batch-size for XML/database-import processing (1..%s)."
 #~ "\"man mgr-inter-sync\" for more information."
 #~ msgstr ""
-#~ "デバッグのみ: XML／データベース取り込み処理に対する最大バッチサイズ (1.."
-#~ "%s) 。詳しくは \"man mgr-inter-sync\" をお読みください。"
+#~ "デバッグのみ: XML／データベース取り込み処理に対する最大バッチサイズ "
+#~ "(1..%s) 。詳しくは \"man mgr-inter-sync\" をお読みください。"
 
 #~ msgid "alternative SSL CA Cert (fullpath to cert file)"
 #~ msgstr "代替 SSL CA 証明書 (証明書ファイルに対するフルパス)"
