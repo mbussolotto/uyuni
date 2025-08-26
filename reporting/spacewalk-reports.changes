@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jun 17 19:32:57 CEST 2025 - marina.latini@suse.com
+
+- version 5.1.2-0
+  * Fix system/listActiveSystems queries (bsc#1242010)
+
+-------------------------------------------------------------------
 Mon Oct 14 15:53:11 CEST 2024 - rosuna@suse.com
 
 - version 5.1.1-0
@@ -363,4 +369,3 @@ Wed Sep 15 09:50:26 CEST 2010 - mantel@suse.de
 
 - Initial release of spacewalk-reports
 
--------------------------------------------------------------------

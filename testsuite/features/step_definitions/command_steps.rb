@@ -58,7 +58,9 @@ end
 
 Then(/^it should be possible to use the HTTP proxy$/) do
   url = 'https://www.suse.com'
-  proxy = "suma2:P4$$wordWith%and&@#{$server_http_proxy}"
+  # Proxy Password: P4$$w/ord With%and&
+  # we must escape it before passing it to curl
+  proxy = "suma3:P4$$w%2Ford%20With%and&@#{$server_http_proxy}"
   get_target('server').run("curl --insecure --proxy '#{proxy}' --proxy-anyauth --location '#{url}' --output /dev/null")
 end
 
@@ -236,7 +238,7 @@ end
 
 When(/^I query latest Salt changes on "(.*?)"$/) do |host|
   node = get_target(host)
-  salt = use_salt_bundle ? 'venv-salt-minion' : 'salt'
+  salt = $use_salt_bundle ? 'venv-salt-minion' : 'salt'
   if host == 'server'
     salt = 'salt'
   end
@@ -250,12 +252,12 @@ end
 When(/^I query latest Salt changes on Debian-like system "(.*?)"$/) do |host|
   node = get_target(host)
   salt =
-    if use_salt_bundle
+    if $use_salt_bundle
       'venv-salt-minion'
     else
       'salt'
     end
-  changelog_file = use_salt_bundle ? 'changelog.gz' : 'changelog.Debian.gz'
+  changelog_file = $use_salt_bundle ? 'changelog.gz' : 'changelog.Debian.gz'
   result, _return_code = node.run("zcat /usr/share/doc/#{salt}/#{changelog_file}")
   result.split("\n")[0, 15].each do |line|
     line.force_encoding('UTF-8')
@@ -347,7 +349,7 @@ When(/^I kill running spacewalk-repo-sync for "([^"]*)"$/) do |os_product_versio
     command_output, _code = get_target('server').run('ps axo pid,cmd | grep spacewalk-repo-sync | grep -v grep', check_errors: false)
     process = command_output.split("\n")[0]
     if process.nil?
-      log "#{time_spent / 60.to_i} minutes waiting for '#{os_product_version}' remaining channels to start their repo-sync processes:\n#{channels_to_kill}" if ((time_spent += checking_rate) % 60).zero?
+      log "#{time_spent / 60} minutes waiting for '#{os_product_version}' remaining channels to start their repo-sync processes:\n#{channels_to_kill}" if ((time_spent += checking_rate) % 60).zero?
       sleep checking_rate
       next
     end
@@ -379,7 +381,7 @@ When(/^I kill running spacewalk-repo-sync for "([^"]*)" channel$/) do |channel|
     process = command_output.split("\n")[0]
     channel_synchronizing = process.split[5].strip
     if process.nil?
-      log "#{time_spent / 60.to_i} minutes waiting for '#{channel}' channel to start its repo-sync processes." if ((time_spent += checking_rate) % 60).zero?
+      log "#{time_spent / 60} minutes waiting for '#{channel}' channel to start its repo-sync processes." if ((time_spent += checking_rate) % 60).zero?
       sleep checking_rate
       next
     elsif channel_synchronizing == channel
@@ -431,12 +433,13 @@ When(/^I wait until the channel "([^"]*)" has been synced$/) do |channel|
     timeout = 60
   else
     timeout = TIMEOUT_BY_CHANNEL_NAME[channel]
+    timeout *= 2 if $code_coverage_mode
   end
   begin
     repeat_until_timeout(timeout: timeout, message: 'Channel not fully synced') do
       break if channel_sync_completed?(channel)
 
-      log "#{time_spent / 60.to_i} minutes out of #{timeout / 60.to_i} waiting for '#{channel}' channel to be synchronized" if ((time_spent += checking_rate) % 60).zero?
+      log "#{time_spent / 60} minutes out of #{timeout / 60} waiting for '#{channel}' channel to be synchronized" if ((time_spent += checking_rate) % 60).zero?
       sleep checking_rate
     end
   rescue StandardError => e
@@ -463,6 +466,7 @@ When(/^I wait until all synchronized channels for "([^"]*)" have finished$/) do 
       timeout += 60
     else
       timeout += TIMEOUT_BY_CHANNEL_NAME[channel]
+      timeout += TIMEOUT_BY_CHANNEL_NAME[channel] if $code_coverage_mode
     end
   end
   begin
@@ -475,7 +479,7 @@ When(/^I wait until all synchronized channels for "([^"]*)" have finished$/) do 
       end
       break if channels_to_wait.empty?
 
-      log "#{time_spent / 60.to_i} minutes out of #{timeout / 60.to_i} waiting for '#{os_product_version}' channels to be synchronized" if ((time_spent += checking_rate) % 60).zero?
+      log "#{time_spent / 60} minutes out of #{timeout / 60} waiting for '#{os_product_version}' channels to be synchronized" if ((time_spent += checking_rate) % 60).zero?
       sleep checking_rate
     end
   rescue StandardError => e
@@ -854,7 +858,7 @@ end
 # Repositories and packages management
 When(/^I migrate the non-SUMA repositories on "([^"]*)"$/) do |host|
   node = get_target(host)
-  salt_call = use_salt_bundle ? 'venv-salt-call' : 'salt-call'
+  salt_call = $use_salt_bundle ? 'venv-salt-call' : 'salt-call'
   # use sumaform states to migrate to latest SP the system repositories:
   node.run("#{salt_call} --local --file-root /root/salt/ state.apply repos")
   # disable again the non-SUMA repositories:
@@ -874,8 +878,32 @@ When(/^I (enable|disable) Debian-like "([^"]*)" repository on "([^"]*)"$/) do |a
 
   # edit ubuntu.sources with downloaded utility
   sources = '/etc/apt/sources.list.d/ubuntu.sources'
-  tmp = '/tmp//ubuntu.sources'
+  tmp = '/tmp/ubuntu.sources'
   node.run("awk -f #{dest} -v action=#{action} -v distro=$(lsb_release -sc) -v repo=#{repo} #{sources} > #{tmp} && mv #{tmp} #{sources}")
+end
+
+When(/^I add repository "([^"]*)" with url "([^"]*)" on "([^"]*)"((?: without error control)?)$/) do |repo, url, host, error_control|
+  node = get_target(host)
+  os_family = node.os_family
+  cmd = ''
+  # Pending to be added: cases for rhlike and a deblike minions
+  case os_family
+  when /^opensuse/, /^sles/, /^suse/
+    cmd = "zypper addrepo #{url} #{repo}"
+  end
+  node.run(cmd, verbose: true, check_errors: error_control.empty?)
+end
+
+When(/^I remove repository "([^"]*)" on "([^"]*)"((?: without error control)?)$/) do |repo, host, error_control|
+  node = get_target(host)
+  os_family = node.os_family
+  cmd = ''
+  # Pending to be added: cases for rhlike and a deblike minions
+  case os_family
+  when /^opensuse/, /^sles/, /^suse/
+    cmd = "zypper removerepo #{repo}"
+  end
+  node.run(cmd, verbose: true, check_errors: error_control.empty?)
 end
 
 When(/^I (enable|disable) (the repositories|repository) "([^"]*)" on this "([^"]*)"((?: without error control)?)$/) do |action, _optional, repos, host, error_control|
@@ -1063,7 +1091,7 @@ end
 
 When(/I generate a supportconfig for the server$/) do
   node = get_target('server')
-  node.run('mgradm support config', runs_in_container: false)
+  node.run('mgradm support config', timeout: 600, runs_in_container: false)
   node.run('mv /root/scc_*.tar.gz /root/server-supportconfig.tar.gz', runs_in_container: false)
 end
 
@@ -1123,7 +1151,7 @@ When(/^I create the bootstrap repository for "([^"]*)" on the server((?: without
 
   log 'Creating the bootstrap repository on the server:'
   log "  #{cmd}"
-  get_target('server').run(cmd)
+  get_target('server').run(cmd, exec_option: '-it')
 end
 
 When(/^I create the bootstrap repositories including custom channels$/) do
@@ -1340,7 +1368,7 @@ end
 
 When(/^I apply "([^"]*)" local salt state on "([^"]*)"$/) do |state, host|
   node = get_target(host)
-  salt_call = use_salt_bundle ? 'venv-salt-call' : 'salt-call'
+  salt_call = $use_salt_bundle ? 'venv-salt-call' : 'salt-call'
   if host == 'server'
     salt_call = 'salt-call'
   end
@@ -1396,7 +1424,7 @@ Then(/^I should be able to connect to the ReportDB on the server$/) do
   raise SystemCallError, 'Couldn\'t connect to the ReportDB on the server' unless return_code.zero?
 end
 
-Then(/^there should be a user allowed to create roles on the ReportDB $/) do
+Then(/^there should be a user allowed to create roles on the ReportDB$/) do
   users_and_permissions, return_code = get_target('server').run(reportdb_server_query('\\du'))
   raise SystemCallError, 'Couldn\'t connect to the ReportDB on the server' unless return_code.zero?
 

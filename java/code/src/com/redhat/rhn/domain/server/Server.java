@@ -2441,8 +2441,8 @@ public class Server extends BaseDomainHelper implements Identifiable {
      * @return <code>true</code> if OS supports CoCo Attestation
      */
     public boolean doesOsSupportCoCoAttestation() {
-        return (isSLES15() && getRelease().equals("15.6")) ||
-            (isLeap15() && getRelease().equals("15.6"));
+        return (isSLES15() && (getRelease().equals("15.6") || getRelease().equals("15.7"))) ||
+                (isLeap15() && (getRelease().equals("15.6") || getRelease().equals("15.7")));
     }
 
     /**
@@ -2607,12 +2607,27 @@ public class Server extends BaseDomainHelper implements Identifiable {
     }
 
     /**
+     * Predicate to check for Suse os family
+     * @return true is Suse os family
+     */
+    public boolean isOsFamilySuse() {
+        return this.osFamily.equals(ServerConstants.OS_FAMILY_SUSE);
+    }
+
+    /**
      * Setter for os family
      *
      * @param osFamilyIn to set
      */
     public void setOsFamily(String osFamilyIn) {
         this.osFamily = osFamilyIn;
+    }
+
+    /**
+     * Setter for Suse os family
+     */
+    public void setOsFamilySuse() {
+        this.osFamily = ServerConstants.OS_FAMILY_SUSE;
     }
 
     /**
@@ -2682,14 +2697,15 @@ public class Server extends BaseDomainHelper implements Identifiable {
 
     /**
      * Checks if a server in convertible to a proxy.
-     * Servers that are already proxies are not convertible. For the remaining, SUSE Manager is consider only:
-     * SLE Micro 5, SE Micro 6, SLE15 SP6 and SLE15 SP7.
+     * Servers that are already proxies are not convertible. For the remaining, SUSE Manager considers only:
+     * SE Micro 6.1 and SLE15 SP7.
      * @return true if the server is convertible to a proxy, false otherwise
      */
     public boolean isConvertibleToProxy() {
         return !isProxy() && (
-                ConfigDefaults.get().isUyuni() || isSLEMicro5() || isSEMicro6() ||
-                        (isSLES() && (getRelease().equals("15.6") || getRelease().equals("15.7")))
+                ConfigDefaults.get().isUyuni() ||
+                        (ServerConstants.SLMICRO.equalsIgnoreCase(getOs()) && getRelease().equals("6.1")) ||
+                        (isSLES() && getRelease().equals("15.7"))
         );
     }
 

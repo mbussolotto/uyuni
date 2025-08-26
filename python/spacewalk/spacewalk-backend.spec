@@ -16,7 +16,7 @@
 # Please submit bugfixes or comments via https://bugs.opensuse.org/
 #
 
-## The productprettyname macros is controlled in the prjconf. If not defined, we fallback here
+# The productprettyname macros is controlled in the prjconf. If not defined, we fallback here
 %{!?productprettyname: %global productprettyname Uyuni}
 
 %{!?_unitdir: %global _unitdir /lib/systemd/system}
@@ -49,7 +49,7 @@
 %endif
 
 Name:           spacewalk-backend
-Version:        5.1.8
+Version:        5.2.0
 Release:        0
 Summary:        Common programs needed to be installed on the %{productprettyname} servers/proxies
 License:        GPL-2.0-only
@@ -81,7 +81,7 @@ BuildRequires:  fdupes
 BuildRequires:  make
 BuildRequires:  python3
 BuildRequires:  python3-debian
-BuildRequires:  python3-rhn-client-tools
+BuildRequires:  python3-spacewalk-client-tools
 BuildRequires:  python3-rhnlib >= 2.5.74
 BuildRequires:  python3-rpm
 BuildRequires:  python3-rpm-macros
@@ -120,6 +120,7 @@ Requires:       %{name}-sql = %{version}-%{release}
 Requires:       spacewalk-config
 Requires:       (apache2-mod_wsgi or python3-mod_wsgi)
 Requires:       (python3-pam or python3-python-pam)
+Requires:       python3-defusedxml
 
 # cobbler-web is known to break our configuration
 Conflicts:      cobbler-web
@@ -178,7 +179,7 @@ BuildRequires:  systemd-rpm-macros
 %{?systemd_requires}
 %endif
 
-Requires:       python3-rhn-client-tools
+Requires:       python3-spacewalk-client-tools
 Requires:       python3-solv
 Requires:       python3-urlgrabber >= 4
 Requires:       python3-looseversion

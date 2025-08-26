@@ -71,17 +71,6 @@ def product_version_full
   out.strip if code.zero? && !out.nil?
 end
 
-# TODO: All our current supported versions are using Salt Bundle, consider to remove this method
-#       Refactoring all the code call it.
-# Determines whether to use the Salt bundle based on the product and product version.
-#
-# @return [Boolean] true if the product is 'Uyuni' or the product version is 'head', '5.0', '4.3', or '4.2'
-# - false otherwise
-def use_salt_bundle
-  # Use venv-salt-minion in Uyuni, or SUMA Head, 5.1, 5.0, 4.2 and 4.3
-  product == 'Uyuni' || %w[develHead 5.1 5.0 4.3 4.2].include?(product_version)
-end
-
 # WARN: It's working for /24 mask, but couldn't not work properly with others
 # Returns the reverse DNS lookup address for a given network address.
 #
@@ -423,7 +412,9 @@ end
 # @return [String] The system ID.
 def get_system_id(node)
   result = $api_test.system.search_by_name(node.full_hostname)
-  result.any? ? result.first['id'] : nil
+  raise "No system found for hostname: #{node.full_hostname}" unless result.any?
+
+  result.first['id']
 end
 
 # Checks if a host has shut down within a specified timeout period.
@@ -826,10 +817,23 @@ end
 # @return [String] The package string with the highest version and release
 def latest_package(packages)
   packages.max_by do |package|
-    if package =~ /^(.+)-(\d+\.\d+\.\d+)-(.+)$/
-      version = Regexp.last_match(2)
-      release = Regexp.last_match(3)
-      [Gem::Version.new(version), Gem::Version.new(release.gsub(/[^\d.]/, '.'))]
+    # Match something like 'bison-3.8.2-3.oe2403sp1'
+    if package =~ /^(.+)-(\d+(?:\.\d+)*?)-(.+)$/
+      version = Regexp.last_match(2)          # => "3.8.2"
+      release = Regexp.last_match(3)          # => "3.oe2403sp1"
+
+      begin
+        # extract numeric components like ["3", "2403", "1"]
+        numeric_parts = release.scan(/\d+/)
+        cleaned_release = numeric_parts.join('.')
+        [
+          Gem::Version.new(version),
+          Gem::Version.new(cleaned_release)
+        ]
+      rescue ArgumentError => e
+        puts "WARNING: Failed to parse version in package '#{package}': #{e.message}"
+        [Gem::Version.new('0.0.0'), Gem::Version.new('0')]
+      end
     else
       [Gem::Version.new('0.0.0'), Gem::Version.new('0')]
     end

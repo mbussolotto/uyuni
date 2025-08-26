@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Button, SubmitButton } from "components/buttons";
-import { Select } from "components/input";
+import { DEPRECATED_Select } from "components/input";
 import { Form } from "components/input/form/Form";
 import { FormGroup } from "components/input/FormGroup";
 import { Label } from "components/input/Label";
@@ -169,8 +169,16 @@ class VirtualHostManagerEdit extends React.Component<Props, State> {
   };
 
   renderButtons() {
-    var buttons = [
-      <div className="btn-group pull-right">
+    const buttons = [
+      <Button
+        id="clear-btn"
+        key="clear-btn"
+        className="btn-default"
+        icon="fa-eraser"
+        text={t("Clear fields")}
+        handler={this.clearFields}
+      />,
+      <div className="pull-right" key="back">
         <Button
           id="back"
           className="btn-default"
@@ -179,20 +187,14 @@ class VirtualHostManagerEdit extends React.Component<Props, State> {
           title={t("Back")}
           handler={this.props.onCancel}
         />
-        <Button
-          id="clear-btn"
-          className="btn-default"
-          icon="fa-eraser"
-          text={t("Clear fields")}
-          handler={this.clearFields}
-        />
       </div>,
     ];
     if (this.isEdit()) {
       buttons.unshift(
         <SubmitButton
           id="update-btn"
-          className="btn-primary"
+          key="update-btn"
+          className="btn-primary me-4"
           icon="fa-edit"
           text={t("Update")}
           disabled={this.state.isInvalid}
@@ -202,7 +204,8 @@ class VirtualHostManagerEdit extends React.Component<Props, State> {
       buttons.unshift(
         <SubmitButton
           id="create-btn"
-          className="btn-primary"
+          key="create-btn"
+          className="btn-primary me-4"
           icon="fa-plus"
           text={t("Create")}
           disabled={this.state.isInvalid}
@@ -298,7 +301,7 @@ class VirtualHostManagerEdit extends React.Component<Props, State> {
     var contextSelect;
     if (this.state.model.contexts) {
       contextSelect = (
-        <Select
+        <DEPRECATED_Select
           name="module_context"
           label={t("Current Context")}
           required

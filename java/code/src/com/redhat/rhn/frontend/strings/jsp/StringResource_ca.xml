@@ -996,7 +996,7 @@
         <context-group name="ctx">
           <context context-type="sourcefile">404 error page</context>
         </context-group>
-        <target state="needs-adaptation">Pàgina no trobada</target>
+        <target state="translated">404: pàgina no trobada</target>
       </trans-unit>
       <trans-unit id="404.jsp.summary" xml:space="preserve">
         <source>The page you requested, {0}, was not found.</source>
@@ -9792,13 +9792,6 @@ Tingueu en compte que encara pot ser necessària alguna configuració manual d'a
       <trans-unit id="bootstrap.jsp.ssl-cert" xml:space="preserve">
         <source>SSL cert location</source>
         <target state="translated">Ubicació del certificat SSL</target>
-        <context-group name="ctx">
-          <context context-type="sourcefile">/rhn/admin/config/BootstrapConfig.do</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="bootstrap.jsp.salt" xml:space="preserve">
-        <source>Bootstrap using Salt</source>
-        <target state="translated">Bootstrap utilitzant Salt</target>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/admin/config/BootstrapConfig.do</context>
         </context-group>
@@ -21119,8 +21112,8 @@ qualsevol d'aquestes revisions.  Estàs segur que vols fer-ho?</target>
         </context-group>
       </trans-unit>
       <trans-unit id="ssm.operations.provisioning.remotecommand.form.queue.succeed" xml:space="preserve">
-        <source>Task "{0}" has been successfully added to Action Chain {1}.</source>
-        <target state="translated">La tasca "{0}" s'ha afegit correctament a la cadena d'acció {1}.</target>
+        <source>Task "{0}" has been successfully added to Action Chain &lt;a href="/rhn/schedule/ActionChain.do?id={1}"&gt;{2}&lt;/a&gt;.</source>
+        <target state="needs-adaptation">La tasca "{0}" s'ha afegit correctament a la cadena d'acció {1}.</target>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/systems/ssm/kickstart/KickstartableSystems.do</context>
         </context-group>
@@ -27314,8 +27307,8 @@ canal indicat.</target>
         </context-group>
       </trans-unit>
       <trans-unit id="schedule.delete.jsp.introparagraph" xml:space="preserve">
-        <source>Are you sure you want to delete the schedule? Associated bunch won't get scheduled any more. This can have a huge impact on @@PRODUCT_NAME@@ functionality. Proceed only if you know what you're doing.</source>
-        <target state="translated">Segur que voleu suprimir la programació? El grup associat ja no es programarà més. Això pot tenir un gran impacte en la funcionalitat de @@PRODUCT_NAME@@. Procediu només si sabeu el que feu.</target>
+        <source>Are you sure you want to disable the schedule? Associated bunch won't get scheduled any more. This can have a huge impact on @@PRODUCT_NAME@@ functionality. Proceed only if you know what you're doing.</source>
+        <target state="needs-adaptation">Segur que voleu suprimir la programació? El grup associat ja no es programarà més. Això pot tenir un gran impacte en la funcionalitat de @@PRODUCT_NAME@@. Procediu només si sabeu el que feu.</target>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/admin/DeleteSchedule.do</context>
         </context-group>
@@ -27356,8 +27349,8 @@ canal indicat.</target>
         </context-group>
       </trans-unit>
       <trans-unit id="toolbar.delete.schedule" xml:space="preserve">
-        <source>delete schedule</source>
-        <target state="translated">suprimeix la planificació</target>
+        <source>disable schedule</source>
+        <target state="needs-adaptation">suprimeix la planificació</target>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/admin/ScheduleDetail.do</context>
         </context-group>
@@ -27436,8 +27429,8 @@ canal indicat.</target>
         </context-group>
       </trans-unit>
       <trans-unit id="schedule.delete.jsp.deleteschedule" xml:space="preserve">
-        <source>Delete Schedule</source>
-        <target state="translated">Suprimeix la planificació</target>
+        <source>Disable Schedule</source>
+        <target state="needs-adaptation">Suprimeix la planificació</target>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/admin/DeleteSchedule.do</context>
         </context-group>
@@ -29799,27 +29792,27 @@ lt;/pgt;
         <source>Proxy</source>
         <target state="translated">Servidor intermediari</target>
       </trans-unit>
-    <trans-unit id="403.jsp.title" xml:space="preserve">
+      <trans-unit id="403.jsp.title" xml:space="preserve">
         <source>403: Access Denied</source>
         <context-group name="ctx">
           <context context-type="sourcefile">403 error page</context>
         </context-group>
-      <target state="new"/>
-  </trans-unit>
+        <target state="translated">403: accés denegat</target>
+      </trans-unit>
       <trans-unit id="403.jsp.summary" xml:space="preserve">
         <source>You do not have permission to access the page: {0}.</source>
         <context-group name="ctx">
           <context context-type="sourcefile">403 error page</context>
         </context-group>
-      <target state="new"/>
-  </trans-unit>
+        <target state="translated">No teniu permís per accedir a la pàgina: {0}.</target>
+      </trans-unit>
       <trans-unit id="403.jsp.instruction" xml:space="preserve">
         <source>You are signed in, but your account does not have permission to access this resource. If you believe you should have access, contact your organization administrator to review your access permissions.</source>
         <context-group name="ctx">
           <context context-type="sourcefile">403 error page</context>
         </context-group>
-      <target state="new"/>
-  </trans-unit>
+        <target state="translated">Heu iniciat la sessió, però el compte no té permís per accedir a aquest recurs. Si creieu que hauríeu de tenir-hi accés, contacteu amb l'administrador de la vostra organització per revisar els permisos d'accés.</target>
+      </trans-unit>
       <trans-unit id="403.jsp.actions" xml:space="preserve">
         <source>
           You can also &lt;a href="{0}"&gt;log out&lt;/a&gt; or &lt;a href="javascript:history.back()"&gt;go back&lt;/a&gt; to the previous page.
@@ -29827,6 +29820,37 @@ lt;/pgt;
         <context-group name="ctx">
           <context context-type="sourcefile">403 error page</context>
         </context-group>
+        <target state="translated">
+          També podeu &lt;a href="{0}"&gt;tancar la sessió&lt;/a&gt; o &lt;a href="javascript:history.back()"&gt;tornar&lt;/a&gt; a la pàgina anterior.
+        </target>
+      </trans-unit>
+    <trans-unit id="userdetails.jsp.adminroles" xml:space="preserve">
+        <source>Administrative Roles</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/users/UserDetails</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="bunch.jsp.description.compare-task-bunch" xml:space="preserve">
+        <source>Schedules a generic comparison task</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/admin/BunchDetail.do</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="schedule.edit.jsp.activateschedule" xml:space="preserve">
+        <source>Activate Schedule</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/admin/ScheduleDetail.do</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="task.status.compare-task-files" xml:space="preserve">
+        <source>Compare Task</source>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="spmigration.jsp.dryrun.disabled.tooltip" xml:space="preserve">
+        <source>Dry run is not available for this product.</source>
       <target state="new"/>
   </trans-unit>
       </body>

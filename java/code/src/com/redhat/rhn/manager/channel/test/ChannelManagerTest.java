@@ -210,7 +210,7 @@ public class ChannelManagerTest extends BaseTestCaseWithUser {
 
        assertTrue(dr.isEmpty());
        SystemManager.unsubscribeServerFromChannel(user, server, server.getBaseChannel());
-       server = SystemManager.subscribeServerToChannel(user, server, channel);
+       SystemManager.subscribeServerToChannel(user, server, channel);
 
        dr = ChannelManager.popularChannelTree(user, 1L, null);
 
@@ -487,11 +487,13 @@ public class ChannelManagerTest extends BaseTestCaseWithUser {
 
         List<EssentialChannelDto> channels = ChannelManager.listBaseChannelsForSystem(user, s);
 
-        assertEquals(2, channels.size());
+        assertEquals(3, channels.size());
         List<String> expectedNames = new ArrayList<>(List.of(
                 "Channel for SUSE Liberty Linux 7 x86_64",
                 "Channel for SUSE Liberty Linux LTSS 7 x86_64"));
-        List<String> names = channels.stream().map(EssentialChannelDto::getName).toList();
+        List<String> names = channels.stream()
+                .filter(c -> !c.isCustom())
+                .map(EssentialChannelDto::getName).toList();
         expectedNames.removeAll(names);
         assertTrue(expectedNames.isEmpty(), "Missing expected channel names: " + expectedNames);
     }
@@ -761,10 +763,9 @@ public class ChannelManagerTest extends BaseTestCaseWithUser {
 
         UserTestUtils.addVirtualization(user.getOrg());
         Server s = ServerTestUtils.createTestSystem(user);
-        Channel[] chans = ChannelTestUtils.
-        setupBaseChannelForVirtualization(s.getCreator(), s.getBaseChannel());
+        ChannelTestUtils.setupBaseChannelForVirtualization(s.getCreator(), s.getBaseChannel());
         // Repeat to ensure there's multiple child channels created:
-        chans = ChannelTestUtils.
+        Channel[] chans = ChannelTestUtils.
         setupBaseChannelForVirtualization(s.getCreator(), s.getBaseChannel());
 
         // Subscribe to one set of the child channels but not the other, this should *not*
@@ -1106,6 +1107,37 @@ public class ChannelManagerTest extends BaseTestCaseWithUser {
         assertEquals(1, result.size());
 
         assertEquals(result.get(0).getId(), testPackage.getId());
+    }
+
+    @Test
+    public void ensureForceBecomingCloneOfWorksOnClonedChannels() throws Exception {
+        user.addToGroup(AccessGroupFactory.CHANNEL_ADMIN);
+        Channel origCh = ChannelFactoryTest.createTestChannel(user);
+        Channel clonedCh = ChannelFactoryTest.createTestClonedChannel(origCh, user);
+
+        assertTrue(clonedCh.asCloned().isPresent());
+        assertEquals(origCh, clonedCh.asCloned().orElseThrow().getOriginal());
+
+        Channel substituteOrigCh = ChannelFactoryTest.createTestChannel(user);
+        ChannelManager.forceBecomingCloneOf(clonedCh, substituteOrigCh);
+
+        assertTrue(clonedCh.asCloned().isPresent());
+        assertEquals(substituteOrigCh, clonedCh.asCloned().orElseThrow().getOriginal());
+    }
+
+    @Test
+    public void ensureForceBecomingCloneOfWorksOnRegularChannels() throws Exception {
+        user.addToGroup(AccessGroupFactory.CHANNEL_ADMIN);
+        Channel regularCh = ChannelFactoryTest.createTestChannel(user);
+
+        assertFalse(regularCh.asCloned().isPresent());
+
+        Channel origCh = ChannelFactoryTest.createTestChannel(user);
+        ChannelManager.forceBecomingCloneOf(regularCh, origCh);
+        regularCh = HibernateFactory.reload(regularCh);
+
+        assertTrue(regularCh.asCloned().isPresent());
+        assertEquals(origCh, regularCh.asCloned().orElseThrow().getOriginal());
     }
 
     /**

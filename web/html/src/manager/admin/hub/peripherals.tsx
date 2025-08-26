@@ -25,13 +25,13 @@ const IssPeripheral = (props: Props) => {
       <TopPanel
         title={t("Peripherals Configuration")}
         icon="spacewalk-icon-suse-manager"
-        helpUrl="reference/admin/hub/peripherals-configuration.html"
+        helpUrl="specialized-guides/large-deployments/hub-online-sync.html#_registration_of_the_hub_and_peripheral_servers"
         button={
           <div className="btn-group pull-right">
             <Button
               id="addPeripheral"
               icon="fa-plus"
-              className="btn-default"
+              className="btn-primary"
               text={t("Add Peripheral")}
               handler={() => window.pageRenderers?.spaengine?.navigate?.(`/rhn/manager/admin/hub/peripherals/register`)}
             />

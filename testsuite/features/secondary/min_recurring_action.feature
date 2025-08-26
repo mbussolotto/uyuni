@@ -136,7 +136,7 @@ Feature: Recurring Actions
     When I am on the "Groups" page of this "sle_minion"
     And I follow first "Join"
     And I check the first row in the list
-    And I click on "Join Selected Groups"
+    And I click on "Join Groups"
     Then I wait until I see "1 system groups added" text
 
   Scenario: Pre-requisite: subscribe system to Fake Channel
@@ -193,7 +193,7 @@ Feature: Recurring Actions
     And I follow "History"
     Then I wait until I see the event "Apply recurring states [uptodate] scheduled" completed during last minute, refreshing the page
     When I am on the Systems overview page of this "sle_minion"
-    Then I wait until I see "System is up to date" text, refreshing the page
+    Then I wait at most 500 seconds until I do not see "System is up to date" text, refreshing the page
 
 @susemanager
   Scenario: Cleanup: subscribe system back to default base channel

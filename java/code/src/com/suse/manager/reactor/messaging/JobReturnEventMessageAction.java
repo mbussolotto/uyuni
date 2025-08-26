@@ -140,7 +140,7 @@ public class JobReturnEventMessageAction implements MessageAction {
                     jobReturnEvent.getData().isSuccess(),
                     jobReturnEvent.getJobId(),
                     jobResult.get(),
-                    Optional.ofNullable(jobReturnEvent.getData().getFun()).map(Xor::right))));
+                    Optional.ofNullable(jobReturnEvent.getData().getFun()).map(Xor::right), null)));
         // Check if the event was triggered by an action chain execution
         Optional<Boolean> isActionChainResult = isActionChainResult(jobReturnEvent);
         boolean isActionChainInvolved = isActionChainResult.filter(isActionChain -> isActionChain).orElse(false);
@@ -172,7 +172,7 @@ public class JobReturnEventMessageAction implements MessageAction {
                                             .filter(m -> m.getMinionId().equals(jobReturnEvent.getMinionId()))
                                             .isPresent()
                                     )
-                                    .filter(sa -> !sa.getStatus().isDone())
+                                    .filter(sa -> !sa.isDone())
                                     .forEach(sa -> sa.fail(jobReturnEvent.getData().getResult().toString()));
                             if (ac.isDone()) {
                                 ActionChainFactory.delete(ac);

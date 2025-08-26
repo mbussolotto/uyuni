@@ -4,7 +4,7 @@ import SpaRenderer from "core/spa/spa-renderer";
 
 import { ActionChain, ActionSchedule } from "components/action-schedule";
 import { LinkButton, SubmitButton } from "components/buttons";
-import { Select } from "components/input";
+import { DEPRECATED_Select } from "components/input";
 import { Form } from "components/input/form/Form";
 import { FormGroup } from "components/input/FormGroup";
 import { Text } from "components/input/text/Text";
@@ -237,8 +237,25 @@ class BuildImage extends React.Component<Props, State> {
     return (
       <div className="col-md-5">
         <div className="panel panel-default">
-          <div className="panel-heading">
-            <h4>{t("Profile Summary")}</h4>
+          <div className="panel-heading d-flex">
+            <div className="col-md-8">
+              <h4>{t("Profile Summary")}</h4>
+            </div>
+            <div className="col-md-4">
+              {pselected && (
+                <LinkButton
+                  icon="fa-edit"
+                  title={t("Edit Profile Summary")}
+                  href={
+                    "/rhn/manager/cm/imageprofiles/edit/" +
+                    this.state.model.profileId +
+                    "?url_bounce=" +
+                    this.getBounceUrl()
+                  }
+                  className="btn-tertiary pull-right"
+                />
+              )}
+            </div>
           </div>
           <div className="panel-body">
             <div className="table-responsive">
@@ -318,19 +335,6 @@ class BuildImage extends React.Component<Props, State> {
                 )}
               </table>
             </div>
-            {pselected && (
-              <LinkButton
-                icon="fa-edit"
-                href={
-                  "/rhn/manager/cm/imageprofiles/edit/" +
-                  this.state.model.profileId +
-                  "?url_bounce=" +
-                  this.getBounceUrl()
-                }
-                className="btn-xs btn-default pull-right"
-                text="Edit"
-              />
-            )}
           </div>
         </div>
       </div>
@@ -353,7 +357,7 @@ class BuildImage extends React.Component<Props, State> {
             onSubmit={this.onBuild}
             onValidate={this.onValidate}
           >
-            <Select
+            <DEPRECATED_Select
               name="profileId"
               required
               label={t("Image Profile")}
@@ -383,7 +387,7 @@ class BuildImage extends React.Component<Props, State> {
               />
             )}
 
-            <Select
+            <DEPRECATED_Select
               name="buildHostId"
               required
               label={t("Build Host")}

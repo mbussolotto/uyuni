@@ -991,12 +991,12 @@
         </context-group>
         <target>サイトでエラーが発生しました。</target>
       </trans-unit>
-      <trans-unit id="404.jsp.title" xml:space="preserve">
+      <trans-unit approved="yes" id="404.jsp.title" xml:space="preserve">
         <source>404: Page Not Found</source>
         <context-group name="ctx">
           <context context-type="sourcefile">404 error page</context>
         </context-group>
-        <target state="needs-adaptation">ページが見つかりません</target>
+        <target state="final">404: ページが見つかりません</target>
       </trans-unit>
       <trans-unit id="404.jsp.summary" xml:space="preserve">
         <source>The page you requested, {0}, was not found.</source>
@@ -9796,13 +9796,6 @@ Please note that some manual configuration of these scripts may still be require
         </context-group>
         <target>SSL 証明書の場所</target>
       </trans-unit>
-      <trans-unit id="bootstrap.jsp.salt" xml:space="preserve">
-        <source>Bootstrap using Salt</source>
-        <target>Salt を使用するブートストラップ</target>
-        <context-group name="ctx">
-          <context context-type="sourcefile">/rhn/admin/config/BootstrapConfig.do</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="bootstrap.jsp.gpg" xml:space="preserve">
         <source>Enable Client GPG checking</source>
         <context-group name="ctx">
@@ -11338,7 +11331,7 @@ Please note that some manual configuration of these scripts may still be require
       </trans-unit>
       <trans-unit approved="yes" id="kickstart.advanced.filedetails.jsp.tip.copypaste" xml:space="preserve">
         <source> If you wish to re-use an existing Autoinstallation Profile we recommend you to copy-paste the template from /var/lib/cobbler/templates instead of from your browser.  This will ensure that the template variables will be preserved and the registration process will work properly after the autoinstallation.</source>
-        <target state="final"> 既存の自動インストールプロファイルを再利用したい場合は、ブラウザではなく/var/lib/cobbler/templatesからテンプレートをコピーアンドペーストしてください。  これによりテンプレート変数が保持され、自動インストール後に登録プロセスが適切に機能するようになります。</target>
+        <target state="final"> 既存の自動インストールプロファイルを再利用したい場合は、ブラウザではなく/var/lib/cobbler/templatesからテンプレートをコピーアンドペーストしてください。 これによりテンプレート変数が保持され、自動インストール後に登録プロセスが適切に機能するようになります。</target>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/kickstart/AdvancedMode* pages</context>
         </context-group>
@@ -21118,8 +21111,8 @@ any of these revisions.  Are you sure you want to do this?</source>
         </context-group>
       </trans-unit>
       <trans-unit id="ssm.operations.provisioning.remotecommand.form.queue.succeed" xml:space="preserve">
-        <source>Task "{0}" has been successfully added to Action Chain {1}.</source>
-        <target>タスク "{0}" が動作チェーン {1} に正しく追加されました。</target>
+        <source>Task "{0}" has been successfully added to Action Chain &lt;a href="/rhn/schedule/ActionChain.do?id={1}"&gt;{2}&lt;/a&gt;.</source>
+        <target state="needs-adaptation">タスク "{0}" が動作チェーン {1} に正しく追加されました。</target>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/systems/ssm/kickstart/KickstartableSystems.do</context>
         </context-group>
@@ -27313,11 +27306,11 @@ given channel.</source>
         <target>選択しているバンチのスケジュールはここで設定できます。</target>
       </trans-unit>
       <trans-unit approved="yes" id="schedule.delete.jsp.introparagraph" xml:space="preserve">
-        <source>Are you sure you want to delete the schedule? Associated bunch won't get scheduled any more. This can have a huge impact on @@PRODUCT_NAME@@ functionality. Proceed only if you know what you're doing.</source>
+        <source>Are you sure you want to disable the schedule? Associated bunch won't get scheduled any more. This can have a huge impact on @@PRODUCT_NAME@@ functionality. Proceed only if you know what you're doing.</source>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/admin/DeleteSchedule.do</context>
         </context-group>
-        <target state="final">本当にスケジュールを削除してもよいですか? 関連付けられているバンチがスケジュールされなくなります。これにより@@PRODUCT_NAME@@の機能性に多大な影響を及ぼす可能性があります。削除による影響をよく理解した上で続行してください。</target>
+        <target state="needs-adaptation">本当にスケジュールを削除してもよいですか? 関連付けられているバンチがスケジュールされなくなります。これにより@@PRODUCT_NAME@@の機能性に多大な影響を及ぼす可能性があります。削除による影響をよく理解した上で続行してください。</target>
       </trans-unit>
       <trans-unit id="schedule.jsp.schedulenameinuse" xml:space="preserve">
         <source>Schedule name {0} is already in use. Please choose another one.</source>
@@ -27355,11 +27348,11 @@ given channel.</source>
         <target>スケジュールの作成</target>
       </trans-unit>
       <trans-unit id="toolbar.delete.schedule" xml:space="preserve">
-        <source>delete schedule</source>
+        <source>disable schedule</source>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/admin/ScheduleDetail.do</context>
         </context-group>
-        <target>スケジュールの削除</target>
+        <target state="needs-adaptation">スケジュールの削除</target>
       </trans-unit>
       <trans-unit id="schedule.edit.jsp.satschedules" xml:space="preserve">
         <source>@@PRODUCT_NAME@@ Schedules</source>
@@ -27435,11 +27428,11 @@ given channel.</source>
         </context-group>
       </trans-unit>
       <trans-unit id="schedule.delete.jsp.deleteschedule" xml:space="preserve">
-        <source>Delete Schedule</source>
+        <source>Disable Schedule</source>
         <context-group name="ctx">
           <context context-type="sourcefile">/rhn/admin/DeleteSchedule.do</context>
         </context-group>
-        <target>スケジュールの削除</target>
+        <target state="needs-adaptation">スケジュールの削除</target>
       </trans-unit>
       <trans-unit id="task.edit.jsp.name" xml:space="preserve">
         <source>Task Name</source>
@@ -29798,34 +29791,65 @@ given channel.</source>
         <source>Proxy</source>
         <target state="final">プロキシ</target>
       </trans-unit>
-    <trans-unit id="403.jsp.title" xml:space="preserve">
+      <trans-unit approved="yes" id="403.jsp.title" xml:space="preserve">
         <source>403: Access Denied</source>
         <context-group name="ctx">
           <context context-type="sourcefile">403 error page</context>
         </context-group>
-      <target state="new"/>
-  </trans-unit>
-      <trans-unit id="403.jsp.summary" xml:space="preserve">
+        <target state="final">403: アクセスが拒否されました</target>
+      </trans-unit>
+      <trans-unit approved="yes" id="403.jsp.summary" xml:space="preserve">
         <source>You do not have permission to access the page: {0}.</source>
         <context-group name="ctx">
           <context context-type="sourcefile">403 error page</context>
         </context-group>
-      <target state="new"/>
-  </trans-unit>
-      <trans-unit id="403.jsp.instruction" xml:space="preserve">
+        <target state="final">ページ {0} にアクセスする許可がありません。</target>
+      </trans-unit>
+      <trans-unit approved="yes" id="403.jsp.instruction" xml:space="preserve">
         <source>You are signed in, but your account does not have permission to access this resource. If you believe you should have access, contact your organization administrator to review your access permissions.</source>
         <context-group name="ctx">
           <context context-type="sourcefile">403 error page</context>
         </context-group>
-      <target state="new"/>
-  </trans-unit>
-      <trans-unit id="403.jsp.actions" xml:space="preserve">
+        <target state="final">サインインしていますが、アカウントにはこのリソースにアクセスする許可がありません。アクセス許可があると思われる場合は、組織の管理者に連絡してアクセス許可を確認してください。</target>
+      </trans-unit>
+      <trans-unit approved="yes" id="403.jsp.actions" xml:space="preserve">
         <source>
           You can also &lt;a href="{0}"&gt;log out&lt;/a&gt; or &lt;a href="javascript:history.back()"&gt;go back&lt;/a&gt; to the previous page.
         </source>
         <context-group name="ctx">
           <context context-type="sourcefile">403 error page</context>
         </context-group>
+        <target state="final">
+          &lt;a href="{0}"&gt;ログアウト&lt;/a&gt;することも、前のページに &lt;a href="javascript:history.back()"&gt;戻る&lt;/a&gt;こともできます。
+        </target>
+      </trans-unit>
+    <trans-unit id="userdetails.jsp.adminroles" xml:space="preserve">
+        <source>Administrative Roles</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/users/UserDetails</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="bunch.jsp.description.compare-task-bunch" xml:space="preserve">
+        <source>Schedules a generic comparison task</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/admin/BunchDetail.do</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="schedule.edit.jsp.activateschedule" xml:space="preserve">
+        <source>Activate Schedule</source>
+        <context-group name="ctx">
+          <context context-type="sourcefile">/rhn/admin/ScheduleDetail.do</context>
+        </context-group>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="task.status.compare-task-files" xml:space="preserve">
+        <source>Compare Task</source>
+      <target state="new"/>
+  </trans-unit>
+      <trans-unit id="spmigration.jsp.dryrun.disabled.tooltip" xml:space="preserve">
+        <source>Dry run is not available for this product.</source>
       <target state="new"/>
   </trans-unit>
       </body>
