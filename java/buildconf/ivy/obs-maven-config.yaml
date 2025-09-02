@@ -302,24 +302,24 @@ artifacts:
     repository: Uyuni_Other
 
   - artifact: jasper
-    package: tomcat10-lib
+    package: tomcat-lib
     jar: jasper\.jar
-    repository: Leap_sle
+    repository: Leap
   - artifact: jasper-el
-    package: tomcat10-lib
-    repository: Leap_sle
-  - artifact: tomcat-el-5.0-api
-    package: tomcat10-el-5_0-api
-    repository: Leap_sle
-  - artifact: tomcat-jsp-3.1-api
-    package: tomcat10-jsp-3_1-api
-    repository: Leap_sle
+    package: tomcat-lib
+    repository: Leap
+  - artifact: tomcat-el-3.0-api
+    package: tomcat-el-3_0-api
+    repository: Leap
+  - artifact: tomcat-jsp-2.3-api
+    package: tomcat-jsp-2_3-api
+    repository: Leap
   - artifact: tomcat-juli
-    package: tomcat10-lib
-    repository: Leap_sle
-  - artifact: tomcat-servlet-6.0-api
-    package: tomcat10-servlet-6_0-api
-    repository: Leap_sle
+    package: tomcat-lib
+    repository: Leap
+  - artifact: tomcat-servlet-4.0-api
+    package: tomcat-servlet-4_0-api
+    repository: Leap
 
   - artifact: hamcrest-core
     repository: Leap

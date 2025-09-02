@@ -142,8 +142,8 @@ BuildRequires:  spark-core
 BuildRequires:  spark-template-jade
 BuildRequires:  statistics
 BuildRequires:  struts >= 1.2.9
-BuildRequires:  tomcat10
-BuildRequires:  tomcat10-lib
+BuildRequires:  tomcat >= 7
+BuildRequires:  tomcat-lib >= 7
 BuildRequires:  tomcat-taglibs-standard
 BuildRequires:  uyuni-base-server
 BuildRequires:  woodstox
@@ -231,7 +231,7 @@ Requires:       struts >= 1.2.9
 Requires:       sudo
 Requires:       susemanager-docs_en
 Requires:       system-lock-formula
-Requires:       tomcat10-lib
+Requires:       tomcat-lib >= 7
 Requires:       tomcat-taglibs-standard
 Requires:       woodstox
 Requires:       xalan-j2 >= 2.6.0
@@ -239,16 +239,16 @@ Requires:       xerces-j2
 Requires:       xmlsec
 Requires:       (/sbin/unix2_chkpwd or /usr/sbin/unix2_chkpwd)
 Requires:       (google-gson >= 2.2.4 with google-gson < 2.10.0)
-Requires:       mvn(org.apache.tomcat:tomcat10-servlet-api)
+Requires:       mvn(org.apache.tomcat:tomcat-servlet-api) > 8
 Requires:       mvn(org.hibernate:hibernate-c3p0)
 Requires:       mvn(org.hibernate:hibernate-core)
 Requires:       mvn(org.hibernate:hibernate-ehcache)
 Requires:       openssl
 # libtcnative-1-0 is only recommended in tomcat.
 # We want it always to prevent warnings about openssl cannot be used
-Requires:       tomcat10-native
+Requires:       tomcat-native
 Requires(pre):  salt
-Requires(pre):  tomcat10
+Requires(pre):  tomcat >= 7
 Requires(pre):  uyuni-base-server
 
 %if 0%{?rhel}
@@ -271,7 +271,7 @@ Summary:        Configuration files for Spacewalk Java
 Group:          Applications/Internet
 Requires(post): %{apache2}
 Requires(post): salt-master
-Requires(post): tomcat10
+Requires(post): tomcat
 
 %description config
 This package contains the configuration files for the %{productprettyname} Java web
@@ -292,7 +292,7 @@ Summary:        PostgreSQL database backend support files for Spacewalk Java
 # FIXME: use correct group or remove it, see "https://en.opensuse.org/openSUSE:Package_group_guidelines"
 Group:          Applications/Internet
 Requires:       postgresql-jdbc
-Requires:       tomcat10
+Requires:       tomcat >= 7
 Provides:       spacewalk-java-jdbc = %{version}-%{release}
 
 %description postgresql
@@ -317,8 +317,8 @@ This package contains testing files of spacewalk-java.
 %{_datadir}/rhn/lib/rhn-test.jar
 %{_datadir}/rhn/unit-tests/*
 %{_datadir}/rhn/unittest.xml
-%attr(644, tomcat, tomcat) %{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/commons-lang3.jar
-%attr(644, tomcat, tomcat) %{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/commons-text.jar
+%attr(644, tomcat, tomcat) %{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/commons-lang3.jar
+%attr(644, tomcat, tomcat) %{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/commons-text.jar
 %endif
 
 %package apidoc-sources
@@ -500,11 +500,11 @@ export JAVA_HOME=/usr/lib/jvm/java-%{java_version}-openjdk/
 
 export NO_BRP_STALE_LINK_ERROR=yes
 
-mkdir -p %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib
+mkdir -p %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib
 %if 0%{?suse_version}
 ant -Dproduct.name="'$PRODUCT_NAME'" -Dprefix=%{buildroot} -Dtomcat="tomcat9" install-tomcat9-suse
-install -d -m 755 %{buildroot}%{serverdir}/tomcat/webapps/rhn/META-INF/
-install -m 755 conf/rhn-tomcat9.xml %{buildroot}%{serverdir}/tomcat/webapps/rhn/META-INF/context.xml
+install -d -m 755 %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/META-INF/
+install -m 755 conf/rhn-tomcat9.xml %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/META-INF/context.xml
 %else
 ant -Dproduct.name="'$PRODUCT_NAME'" -Dprefix=%{buildroot} install-tomcat
 install -d -m 755 %{buildroot}%{_sysconfdir}/tomcat/Catalina/localhost/
@@ -565,9 +565,9 @@ install -m 644 scripts/taskomatic.service %{buildroot}%{_unitdir}
 ln -sf service %{buildroot}%{_sbindir}/rctaskomatic
 
 install -m 644 scripts/unittest.xml %{buildroot}%{_datadir}/rhn/
-install -m 644 build/webapp/rhnjava/WEB-INF/lib/rhn.jar %{buildroot}%{_datadir}/rhn/lib
+install -m 644 build/webapps-javaee/rhnjava/WEB-INF/lib/rhn.jar %{buildroot}%{_datadir}/rhn/lib
 %if ! 0%{?omit_tests} > 0
-install -m 644 build/webapp/rhnjava/WEB-INF/lib/rhn-test.jar %{buildroot}%{_datadir}/rhn/lib
+install -m 644 build/webapps-javaee/rhnjava/WEB-INF/lib/rhn-test.jar %{buildroot}%{_datadir}/rhn/lib
 cp -a build/classes/com/redhat/rhn/common/conf/test/conf %{buildroot}%{_datadir}/rhn/unit-tests/
 %endif
 install -m 644 conf/log4j2.xml.taskomatic %{buildroot}%{_datadir}/rhn/classes/log4j2.xml
@@ -594,10 +594,10 @@ if [ -e %{_javadir}/ongres-stringprep/stringprep.jar ]; then
     ln -s -f %{_javadir}/ongres-stringprep/stringprep.jar $RPM_BUILD_ROOT$RHN_SEARCH_BUILD_DIR/ongres-stringprep_stringprep.jar
     ln -s -f %{_javadir}/ongres-stringprep/saslprep.jar $RPM_BUILD_ROOT$RHN_SEARCH_BUILD_DIR/ongres-stringprep_saslprep.jar
     echo "
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/ongres-scram_client.jar
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/ongres-scram_common.jar
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/ongres-stringprep_stringprep.jar
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/ongres-stringprep_saslprep.jar
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/ongres-scram_client.jar
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/ongres-scram_common.jar
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/ongres-stringprep_stringprep.jar
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/ongres-stringprep_saslprep.jar
 %{_datadir}/rhn/search/lib/ongres-scram_client.jar
 %{_datadir}/rhn/search/lib/ongres-scram_common.jar
 %{_datadir}/rhn/search/lib/ongres-stringprep_stringprep.jar
@@ -605,8 +605,8 @@ if [ -e %{_javadir}/ongres-stringprep/stringprep.jar ]; then
     " > .mfiles-postgresql
 else
     echo "
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/ongres-scram_client.jar
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/ongres-scram_common.jar
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/ongres-scram_client.jar
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/ongres-scram_common.jar
 %{_datadir}/rhn/search/lib/ongres-scram_client.jar
 %{_datadir}/rhn/search/lib/ongres-scram_common.jar
     " > .mfiles-postgresql
@@ -617,10 +617,10 @@ mkdir -p %{buildroot}%{_docdir}/%{name}/xml
 install -m 644 build/reports/apidocs/docbook/susemanager_api_doc.xml %{buildroot}%{_docdir}/%{name}/xml/susemanager_api_doc.xml
 cp -R build/reports/apidocs/asciidoc/ %{buildroot}%{_docdir}/%{name}/asciidoc/
 # delete JARs which must not be deployed
-rm -rf %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/jspapi.jar
-rm -rf %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/jasper5-compiler.jar
-rm -rf %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/jasper5-runtime.jar
-rm -rf %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/tomcat*.jar
+rm -rf %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/jspapi.jar
+rm -rf %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/jasper5-compiler.jar
+rm -rf %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/jasper5-runtime.jar
+rm -rf %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/tomcat*.jar
 %if 0%{?omit_tests} > 0
 rm -rf %{buildroot}%{_datadir}/rhn/lib/rhn-test.jar
 rm -rf %{buildroot}/classes/com/redhat/rhn/common/conf/test/conf
@@ -631,16 +631,16 @@ rm -rf %{buildroot}%{_datadir}/rhn/unittest.xml
 mkdir -p %{buildroot}%{_var}/log/rhn
 
 # Prettifying symlinks
-mv %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/jboss-loggingjboss-logging.jar %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/jboss-logging.jar
+mv %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/jboss-loggingjboss-logging.jar %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/jboss-logging.jar
 
 # Removing unused symlinks.
 %if 0%{?rhel}
-rm -rf %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/javamailmail.jar
+rm -rf %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/javamailmail.jar
 %endif
 
 # show all JAR symlinks
 echo "#### SYMLINKS START ####"
-find %{buildroot}%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib -name *.jar
+find %{buildroot}%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib -name *.jar
 echo "#### SYMLINKS END ####"
 
 %pre -n spacewalk-taskomatic
@@ -704,34 +704,34 @@ fi
 %dir %{_localstatedir}/lib/spacewalk
 %defattr(644,tomcat,tomcat,775)
 %attr(775, %{salt_user_group}, %{salt_user_group}) %dir %{userserverdir}/susemanager/salt/salt_ssh
-%attr(775, tomcat, tomcat) %dir %{serverdir}/tomcat/webapps
+%attr(775, tomcat, tomcat) %dir %{serverdir}/tomcat/webapps-javaee
 %dir %{userserverdir}/susemanager
 %dir %{userserverdir}/susemanager/salt
 %attr(770, tomcat, %{salt_user_group}) %dir %{userserverdir}/susemanager/tmp
-%dir %{serverdir}/tomcat/webapps/rhn/
-%{serverdir}/tomcat/webapps/rhn/apidoc/
-%{serverdir}/tomcat/webapps/rhn/css/
-%{serverdir}/tomcat/webapps/rhn/errata/
-%{serverdir}/tomcat/webapps/rhn/img/
-%{serverdir}/tomcat/webapps/rhn/META-INF/
-%{serverdir}/tomcat/webapps/rhn/schedule/
-%{serverdir}/tomcat/webapps/rhn/systems/
-%{serverdir}/tomcat/webapps/rhn/users/
-%{serverdir}/tomcat/webapps/rhn/errors/
-%{serverdir}/tomcat/webapps/rhn/*.jsp
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/classes
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/decorators
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/includes
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/nav
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/pages
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/*.xml
+%dir %{serverdir}/tomcat/webapps-javaee/rhn/
+%{serverdir}/tomcat/webapps-javaee/rhn/apidoc/
+%{serverdir}/tomcat/webapps-javaee/rhn/css/
+%{serverdir}/tomcat/webapps-javaee/rhn/errata/
+%{serverdir}/tomcat/webapps-javaee/rhn/img/
+%{serverdir}/tomcat/webapps-javaee/rhn/META-INF/
+%{serverdir}/tomcat/webapps-javaee/rhn/schedule/
+%{serverdir}/tomcat/webapps-javaee/rhn/systems/
+%{serverdir}/tomcat/webapps-javaee/rhn/users/
+%{serverdir}/tomcat/webapps-javaee/rhn/errors/
+%{serverdir}/tomcat/webapps-javaee/rhn/*.jsp
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/classes
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/decorators
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/includes
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/nav
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/pages
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/*.xml
 
 # all jars in WEB-INF/lib/
 %dir %{serverdir}/tomcat
-%dir %{serverdir}/tomcat/webapps
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib
-%exclude %{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/postgresql-jdbc.jar
-%exclude %{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/ongres-*.jar
+%dir %{serverdir}/tomcat/webapps-javaee
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib
+%exclude %{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/postgresql-jdbc.jar
+%exclude %{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/ongres-*.jar
 
 # owned by cobbler needs cobbler permissions
 %attr(755,root,root) %dir %{cobprofdir}
@@ -749,7 +749,7 @@ fi
 %config %{spacewalksnippetsdir}/sles_no_signature_checks
 %config %{spacewalksnippetsdir}/wait_for_networkmanager_script
 %if 0%{?suse_version}
-%config(noreplace) %{serverdir}/tomcat/webapps/rhn/META-INF/context.xml
+%config(noreplace) %{serverdir}/tomcat/webapps-javaee/rhn/META-INF/context.xml
 %else
 %config(noreplace) %{_sysconfdir}/tomcat/Catalina/localhost/rhn.xml
 %endif
@@ -757,7 +757,7 @@ fi
 
 %attr(755, tomcat, root) %dir %{_localstatedir}/lib/spacewalk/scc
 %attr(755, tomcat, root) %dir %{_localstatedir}/lib/spacewalk/subscription-matcher
-%dir %{serverdir}/tomcat/webapps/rhn/WEB-INF
+%dir %{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF
 
 %files -n spacewalk-taskomatic
 %defattr(644,root,root,775)
@@ -799,10 +799,10 @@ fi
 %dir %{_datadir}/rhn/search/lib
 %dir %{serverdir}
 %dir %{susemanagershareddir}
-%{serverdir}/tomcat/webapps/rhn/WEB-INF/lib/postgresql-jdbc.jar
+%{serverdir}/tomcat/webapps-javaee/rhn/WEB-INF/lib/postgresql-jdbc.jar
 %{_datadir}/rhn/search/lib/postgresql-jdbc.jar
 %defattr(644,tomcat,tomcat,775)
 %dir %{serverdir}/tomcat
-%dir %{serverdir}/tomcat/webapps
+%dir %{serverdir}/tomcat/webapps-javaee
 
 %changelog

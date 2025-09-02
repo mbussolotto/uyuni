@@ -28,7 +28,7 @@ Requires:       apache2
 Requires:       python3-Flask
 Requires:       spacewalk-backend-sql
 Requires:       spacewalk-taskomatic
-Requires:       tomcat10
+Requires:       tomcat
 Recommends:     csp-billing-adapter-service
 BuildArch:      noarch
 

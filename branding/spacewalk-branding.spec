@@ -41,7 +41,7 @@ Requires:       susemanager-docs_en
 Requires:       susemanager-frontend-libs
 Requires:       susemanager-getting-started_en-pdf
 Requires:       susemanager-reference_en-pdf
-Requires(pre):  tomcat10
+Requires(pre):  tomcat
 #BuildArch:  noarch
 %if 0%{?suse_version}
 BuildRequires:  apache2
@@ -74,24 +74,24 @@ install -d -m 755 %{buildroot}%{wwwdocroot}
 install -d -m 755 %{buildroot}%{_datadir}/spacewalk
 install -d -m 755 %{buildroot}%{_datadir}/spacewalk/web
 install -d -m 755 %{buildroot}%{_datadir}/rhn/lib/
-install -d -m 755 %{buildroot}%{tomcat_path}/webapps/rhn/WEB-INF/lib/
+install -d -m 755 %{buildroot}%{tomcat_path}/webapps-javaee/rhn/WEB-INF/lib/
 install -d -m 755 %{buildroot}/%{_sysconfdir}/rhn
 cp -pR java-branding.jar %{buildroot}%{_datadir}/rhn/lib/
-ln -s %{_datadir}/rhn/lib/java-branding.jar %{buildroot}%{tomcat_path}/webapps/rhn/WEB-INF/lib/java-branding.jar
+ln -s %{_datadir}/rhn/lib/java-branding.jar %{buildroot}%{tomcat_path}/webapps-javaee/rhn/WEB-INF/lib/java-branding.jar
 
 %files
 %{_datadir}/spacewalk/
 %{_datadir}/rhn/lib/java-branding.jar
-%{tomcat_path}/webapps/rhn/WEB-INF/lib/java-branding.jar
+%{tomcat_path}/webapps-javaee/rhn/WEB-INF/lib/java-branding.jar
 %license LICENSE
 %dir %{susemanager_shared_path}
 %dir %{wwwroot}
 %dir %{wwwdocroot}
 %attr(775,tomcat,tomcat) %dir %{tomcat_path}
-%attr(775,tomcat,tomcat) %dir %{tomcat_path}/webapps
-%attr(775,tomcat,tomcat) %dir %{tomcat_path}/webapps/rhn
-%attr(775,tomcat,tomcat) %dir %{tomcat_path}/webapps/rhn/WEB-INF
-%attr(775,tomcat,tomcat) %dir %{tomcat_path}/webapps/rhn/WEB-INF/lib/
+%attr(775,tomcat,tomcat) %dir %{tomcat_path}/webapps-javaee
+%attr(775,tomcat,tomcat) %dir %{tomcat_path}/webapps-javaee/rhn
+%attr(775,tomcat,tomcat) %dir %{tomcat_path}/webapps-javaee/rhn/WEB-INF
+%attr(775,tomcat,tomcat) %dir %{tomcat_path}/webapps-javaee/rhn/WEB-INF/lib/
 %dir %{_datadir}/rhn
 %dir %{_datadir}/rhn/lib
 
