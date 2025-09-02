@@ -57,6 +57,7 @@ RUN echo "rpm.install.excludedocs = yes" >>/etc/zypp/zypp.conf && \
         sssd-ldap \
         sssd-tools \
         susemanager-tftpsync \
+        tomcat10* \
         uyuni-config-formula \
         vim \
         virtual-host-gatherer-Libvirt \
