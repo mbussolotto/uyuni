@@ -1,0 +1,27 @@
+---
+name: "uyuni"
+services:
+  uyuni-master-ephemeral:
+    image: ghcr.io/mbussolotto/uyuni/devcontainer:latest
+    command: /bin/sh -c "sleep infinity"
+    tty: true
+    privileged: true
+    hostname: uyuni.ephemeral.local
+    cgroup: host
+    network_mode: "bridge"
+    tmpfs:
+      - /run
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - "../..:/workspaces/uyuni:cached"
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
+      # Mount your ~/.ssh folder into the container
+      # for Authenticating to Github
+      - "~/.ssh:/home/uyuni/.ssh"
+      # For GPG Auth to Github
+      - "~/.gnupg:/home/uyuni/.gnupg"
+    working_dir: "/workspaces/uyuni"
+    environment:
+      - GPG_TTY=/dev/pts/1

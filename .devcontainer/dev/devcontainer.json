@@ -10,7 +10,7 @@
     "DB_HOST": "db"
   },
 
-  "forwardPorts": [8001, 8002, 8003, 443, 80, 5432],
+  "forwardPorts": [8001, 8002, 8003, 443, 80, 5432, 9000],
 
   "portsAttributes": {
     "8001": {
@@ -31,6 +31,10 @@
     },
     "443": {
       "label": "Ephemeral Instance",
+      "onAutoForward": "notify"
+    },
+    "9000": { 
+      "label": "Test Reports",
       "onAutoForward": "notify"
     }
   },
@@ -69,4 +73,5 @@
   "remoteUser": "uyuni",
 
   "postCreateCommand": "cp /workspaces/uyuni/java/buildconf/test/rhn.conf.postgresql-example /workspaces/uyuni/java/buildconf/test/rhn.conf"
+  "postStartCommand": "mkdir -p java/test-results/html && nohup python3 -m http.server 9000 --directory java/test-results/html >/dev/null 2>&1 &"
 }

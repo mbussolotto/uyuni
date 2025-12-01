@@ -1,0 +1,58 @@
+{
+    "dockerComposeFile": "./docker-compose.yml",
+    "service": "uyuni-master-ephemeral",
+    "workspaceFolder": "/workspaces/uyuni",
+    "remoteUser": "uyuni",
+    "postStartCommand": {
+      "set-git-config-safe-directory": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+      "set-git-config-line-endings": "git config --global core.autocrlf input",
+      "set-git-config-gpg-program": "git config --global --add gpg.program /usr/bin/gpg"
+    },
+    "postCreateCommand": "bash .devcontainer/ephemeral/setup.sh",
+    "forwardPorts": [80, 443, 4505, 4506, 5432],
+    "portsAttributes": {
+      "443": { "protocol": "https" }
+    },
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "editor.fontSize": 12,
+          "terminal.integrated.fontSize": 12,
+          "terminal.integrated.scrollback": 1000,
+          "[markdown]": {
+            "editor.defaultFormatter": "vscode.markdown-language-features",
+            "editor.tabSize": 2
+          },
+          "editor.formatOnSave": true,
+          "evenBetterToml.formatter.allowedBlankLines": 2,
+          "files.exclude": {
+            "*.egg-info": true,
+            ".pytest_cache": true,
+            ".tox": true,
+            "__pycache__": true,
+            "build": true
+          },
+          "git.ignoreLimitWarning": true,
+          "sortLines.filterBlankLines": true,
+          "yaml.completion": true,
+          "yaml.customTags": [
+            "!encrypted/pkcs1-oaep scalar",
+            "!vault scalar"
+          ],
+          "yaml.format.enable": false,
+          "yaml.validate": true,
+          "evenBetterToml.formatter.alignComments": false,
+          "[yaml]": {
+            "editor.defaultFormatter": "redhat.vscode-yaml"
+          }
+        },
+        "extensions": [
+          "dbaeumer.vscode-eslint",
+          "esbenp.prettier-vscode",
+          "nhoizey.gremlins",
+          "redhat.vscode-yaml"
+        ]
+      }
+    }
+  }
+  
