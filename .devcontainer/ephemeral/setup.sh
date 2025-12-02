@@ -1,19 +1,20 @@
 #!/bin/bash
 set -e
 
-echo ">>> Setting up Uyuni Master environment..."
-
-echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Master:/ContainerUtils/Ubuntu_24.04/ /' | sudo tee /etc/apt/sources.list.d/uyuni-utils.list
-curl -fsSL https://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Master:/ContainerUtils/Ubuntu_24.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/uyuni-utils.gpg > /dev/null
-
-sudo apt-get update
-sudo apt-get install -y mgradm podman
-
+echo ">>> Waiting for Systemd..."
+until systemctl is-system-running --wait >/dev/null 2>&1 || [ $? -eq 1 ]; do
+  sleep 1
+done
 
 FQDN="uyuni.ephemeral.local"
 echo "127.0.0.1 $FQDN" | sudo tee -a /etc/hosts
+# Try to set hostname, but don't fail script if container permissions block it
+sudo hostnamectl set-hostname $FQDN || true
 
 cat <<EOF > /tmp/mgradm.yaml
+# Note: These are the stable rolling images. 
+# If you want the strict 'Master' branch images, change to:
+# image: registry.opensuse.org/systemsmanagement/uyuni/master/containers/uyuni/server
 image: registry.opensuse.org/uyuni/server:latest
 pgsql:
   image: registry.opensuse.org/uyuni/server-postgresql:latest
@@ -30,6 +31,7 @@ ssl:
 EOF
 
 echo ">>> Installing Uyuni..."
-sudo mgradm install podman --config /tmp/mgradm.yaml
+sudo mgradm install podman \
+    --config /tmp/mgradm.yaml
 
 echo ">>> DONE! Access https://localhost (Accept Self-Signed Cert)"
