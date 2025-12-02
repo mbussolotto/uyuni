@@ -3,7 +3,7 @@ db_backend = postgresql
 db_user = spacewalk
 db_password = spacewalk
 db_name = susemanager
-db_host = localhost
+db_host = db
 db_port = 5432
 server.nls_lang = english.UTF8
 
@@ -12,7 +12,7 @@ report_db_backend = postgresql
 report_db_user = pythia
 report_db_password = oracle
 report_db_name = reportdb
-report_db_host = localhost
+report_db_host = db
 report_db_port = 5432
 report_db_ssl_enabled = 0
 
