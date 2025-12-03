@@ -17,6 +17,8 @@ if [[ $CODESPACES == "true" ]]; then
   # 2. TCP Ports (Forwarded to localhost via VS Code Tunnel)
   DB_EXTERNAL="localhost:5432"
   DB_NOTE="(Forwarded via VS Code)"
+
+  UNIT_TEST_URL="https://${CODESPACE_NAME}-9000.app.github.dev"
 else
   # Local Docker Environment
   EPHEMERAL_UI_URL="https://localhost"
@@ -28,6 +30,8 @@ else
   # Standard Port Mapping
   DB_EXTERNAL="localhost:5432"
   DB_NOTE="(Running on Host)"
+
+  UNIT_TEST_URL="http://localhost:9000"
 fi
 
 # ---------------------------------------------------------------------
@@ -69,5 +73,5 @@ printf "${YELLOW}🛠️  Build & Test Commands (Ant):${RESET}\n"
 printf "   * Download Deps:      ${PINK}ant -f java/manager-build.xml ivy${RESET}\n"
 printf "   * Compile Code:       ${PINK}ant -f java/manager-build.xml compile${RESET}\n"
 printf "   * Run Unit Tests:     ${PINK}ant -f java/manager-build.xml test-report${RESET}\n"
-printf "     (View Reports:      ${PINK}python3 -m http.server 9000${RESET} inside java/test-results/html)\n"
+printf "     (View Reports:      ${PINK}${REPORT_URL}${RESET} - Live Update)\n"
 printf "\n"
