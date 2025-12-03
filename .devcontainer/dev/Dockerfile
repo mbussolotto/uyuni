@@ -6,8 +6,8 @@ FROM registry.opensuse.org/opensuse/tumbleweed:latest
 ENV ZYPPER_CMD="zypper --non-interactive"
 
 # Installing all packages
-RUN $ZYPPER_CMD addrepo --refresh --no-gpgcheck "https://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Utils/openSUSE_Tumbleweed systemsmanagement:uyuni:utils" && \
-    $ZYPPER_CMD addrepo --refresh --no-gpgcheck "https://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Master:/ContainerUtils/openSUSE_Tumbleweed/" uyuni-utils && \
+RUN $ZYPPER_CMD addrepo --refresh --no-gpgcheck "https://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Utils/openSUSE_Tumbleweed systemsmanagement:uyuni:utils" uyuni-utils && \
+    $ZYPPER_CMD addrepo --refresh --no-gpgcheck "https://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Master:/ContainerUtils/openSUSE_Tumbleweed/" uyuni-tools && \
     $ZYPPER_CMD refresh && \
 RUN $ZYPPER_CMD install --no-recommends \
     # Core System & Network
