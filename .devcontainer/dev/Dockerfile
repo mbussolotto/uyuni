@@ -45,7 +45,8 @@ RUN useradd --create-home --shell /bin/bash uyuni
 RUN echo "uyuni ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER root
-COPY ./etc/update-motd.d/00-header /etc/update-motd.d/
+COPY --chown=uyuni --chmod=755 ./etc/update-motd.d/00-header /etc/update-motd.d/00-header
+echo "cat /etc/motd" >> ~/.bash_profile
 COPY --chown=uyuni --chmod=755 initialize.sh /home/uyuni/initialize.sh
 
 USER uyuni
