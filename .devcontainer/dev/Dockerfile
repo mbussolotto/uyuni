@@ -46,7 +46,7 @@ RUN echo "uyuni ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER root
 COPY --chown=uyuni --chmod=755 ./etc/update-motd.d/00-header /etc/update-motd.d/00-header
-RUN echo "cat /etc/motd" >> ~/.bash_profile
+RUN echo "cat /etc/update-motd.d" >> ~/.bash_profile
 COPY --chown=uyuni --chmod=755 initialize.sh /home/uyuni/initialize.sh
 
 USER uyuni
