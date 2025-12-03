@@ -11,7 +11,7 @@ RUN $ZYPPER_CMD addrepo --refresh --no-gpgcheck \
     $ZYPPER_CMD addrepo --refresh --no-gpgcheck \
     "https://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Master:/ContainerUtils/openSUSE_Tumbleweed/" uyuni-tools && \
     $ZYPPER_CMD refresh && \
-RUN $ZYPPER_CMD install --no-recommends \
+    $ZYPPER_CMD install --no-recommends \
     # Core System & Network
     systemd systemd-sysvinit shadow \
     glibc-locale iproute2 hostname \
