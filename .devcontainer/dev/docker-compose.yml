@@ -3,11 +3,18 @@ version: '3.8'
 services:
   uyuni-dev:
     image: ghcr.io/mbussolotto/uyuni/devcontainer:latest
-    command: /bin/sh -c "while sleep 1000; do :; done"
-
+    command: /usr/sbin/init
+    stop_signal: SIGRTMIN+3
+    privileged: true
+    cgroup: host
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
     volumes:
       - ../../:/workspaces/uyuni:cached
       - /var/run/docker.sock:/run/podman/podman.sock
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
     user: uyuni
     links: 
       - db
@@ -38,3 +45,4 @@ services:
       - ./setup-ephemeral.sh:/root/setup.sh
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - ../../:/workspaces/uyuni:cached
+      - /var/run/docker.sock:/run/podman/podman.sock
