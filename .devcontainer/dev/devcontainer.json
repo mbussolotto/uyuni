@@ -10,6 +10,8 @@
     "DB_HOST": "db"
   },
 
+  "forwardPorts": [8001, 8002, 8003, 443, 80, 5432],
+
   "portsAttributes": {
     "8001": {
       "label": "Debug Taskomatic",
@@ -21,6 +23,14 @@
     },
     "8003": {
       "label": "Debug Tomcat",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "Unit Test DB (Postgres)",
+      "onAutoForward": "notify"
+    },
+    "443": {
+      "label": "Ephemeral Instance",
       "onAutoForward": "notify"
     }
   },
@@ -58,5 +68,5 @@
 
   "remoteUser": "uyuni",
 
-  "postCreateCommand": "cp /workspaces/uyuni/java/buildconf/test/rhn.conf.postgresql-example /workspaces/uyuni/java/buildconf/test/rhn.conf && /bin/bash -C -- /home/uyuni/initialize.sh ${containerWorkspaceFolder}"
+  "postCreateCommand": "cp /workspaces/uyuni/java/buildconf/test/rhn.conf.postgresql-example /workspaces/uyuni/java/buildconf/test/rhn.conf"
 }

@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Detect if running in GitHub Codespaces
+if [[ $CODESPACES == "true" ]]; then
+  # 1. HTTP/HTTPS Ports get a Public URL
+  EPHEMERAL_UI_URL="https://${CODESPACE_NAME}-443.app.github.dev"
+  TASKOMATIC_DEBUG_URL="https://${CODESPACE_NAME}-8001.app.github.dev"
+  SEARCH_DEBUG_URL="https://${CODESPACE_NAME}-8002.app.github.dev"
+  TOMCAT_DEBUG_URL="https://${CODESPACE_NAME}-8003.app.github.dev"
+  
+  # 2. TCP Ports (DB) do NOT get a URL. They are tunneled to your machine.
+  # VS Code forwards remote:5432 -> local:5432 automatically.
+  DB_EXTERNAL="localhost:5432"
+  DB_NOTE="(Forwarded to your local machine via VS Code)"
+else
+  # Local Docker
+  EPHEMERAL_UI_URL="https://localhost"
+  TASKOMATIC_DEBUG_URL="http://localhost:8001"
+  SEARCH_DEBUG_URL="http://localhost:8002"
+  TOMCAT_DEBUG_URL="http://localhost:8003"
+  DB_EXTERNAL="localhost:5432"
+  DB_NOTE="(Running on host)"
+fi
+
+# ANSI Colors
+CYAN='\e[33;0;36m'
+YELLOW='\e[33;1;93m'
+PINK='\e[38;5;198m'
+GREEN='\e[32m'
+RESET='\e[0m'
+
+printf "\n"
+printf "${CYAN}Welcome to the Integrated Uyuni Development Environment!${RESET}\n"
+printf "${CYAN}This environment runs Java Dev, Unit Test DB, and Ephemeral Server.${RESET}\n"
+printf "\n"
+
+printf "${YELLOW}🚀 Development Endpoints (HTTP):${RESET}\n"
+printf "   * Taskomatic Debug:   ${PINK}${TASKOMATIC_DEBUG_URL}${RESET}\n"
+printf "   * Search Debug:       ${PINK}${SEARCH_DEBUG_URL}${RESET}\n"
+printf "   * Tomcat Debug:       ${PINK}${TOMCAT_DEBUG_URL}${RESET}\n"
+printf "\n"
+
+printf "${YELLOW}📦 Ephemeral Server (Full Uyuni Instance):${RESET}\n"
+printf "   * Web UI:             ${PINK}${EPHEMERAL_UI_URL}${RESET}\n"
+printf "   * Setup/Install:      ${PINK}docker exec -it dev-uyuni-server-1 bash /root/setup.sh${RESET}\n"
+printf "\n"
+
+printf "${YELLOW}🗄️  Unit Test Database (Postgres):${RESET}\n"
+printf "   * Internal Host:      ${GREEN}db${RESET}   (Use this inside Java/Unit Tests)\n"
+printf "   * Internal Port:      ${GREEN}5432${RESET}\n"
+printf "   * External Access:    ${PINK}${DB_EXTERNAL}${RESET} ${DB_NOTE}\n"
+printf "   * JDBC String:        ${PINK}jdbc:postgresql://db:5432/spaceschema${RESET}\n"
+printf "\n"
+
+printf "${YELLOW}🛠️  Useful Commands:${RESET}\n"
+printf "   * Run Unit Tests:     ${PINK}mvn test${RESET}\n"
+printf "   * View Test Reports:  ${PINK}python3 -m http.server 9000${RESET}\n"
+printf "\n"
