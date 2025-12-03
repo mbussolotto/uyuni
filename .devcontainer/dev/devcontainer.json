@@ -7,7 +7,9 @@
   "containerEnv": {
     "JAVA_HOME": "/usr/lib64/jvm/java-17-openjdk",
     "ANT_HOME": "/usr/share/ant",
-    "DB_HOST": "db"
+    "DB_HOST": "db",
+    "CONTAINER_HOST": "unix:///run/podman/podman.sock",
+    "CONTAINER_CONNECTION_TYPE": "socket"
   },
 
   "forwardPorts": [8001, 8002, 8003, 443, 80, 5432, 9000],
@@ -71,7 +73,7 @@
   },
 
   "remoteUser": "uyuni",
-
-  "postCreateCommand": "cp /workspaces/uyuni/java/buildconf/test/rhn.conf.postgresql-example /workspaces/uyuni/java/buildconf/test/rhn.conf",
-  "postStartCommand": "mkdir -p java/test-results/html && nohup python3 -m http.server 9000 --directory java/test-results/html >/dev/null 2>&1 &"
+  
+  "postStartCommand": "sudo chmod 666 /run/podman/podman.sock && mkdir -p java/test-results/html && nohup python3 -m http.server 9000 --directory java/test-results/html >/dev/null 2>&1 &",
+  "postCreateCommand": "cp /workspaces/uyuni/java/buildconf/test/rhn.conf.postgresql-example /workspaces/uyuni/java/buildconf/test/rhn.conf"
 }
