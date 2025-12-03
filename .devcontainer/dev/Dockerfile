@@ -3,16 +3,34 @@
 # SPDX-License-Identifier: Apache-2.0
 FROM registry.opensuse.org/opensuse/tumbleweed:latest
 
+ENV ZYPPER_CMD="zypper --non-interactive"
+
 # Installing all packages
-RUN zypper addrepo --no-gpgcheck https://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Utils/openSUSE_Tumbleweed systemsmanagement:uyuni:utils && \
-        zypper refresh && \
-        zypper -n install awk bash-completion curl expect git iputils make man neovim openssh rsync sudo tar vim wget \
-                          intltool cpio java-25-openjdk-devel java-17-openjdk-devel \
-                          nodejs22 npm22 \
-                          ant ant-junit ant-junit5 apache-ivy maven servletapi5 \
-                          python3 python3-pip python3-PyYAML python3-setuptools \
-                          obs-to-maven && \
-         zypper clean -a
+RUN $ZYPPER_CMD addrepo --refresh --no-gpgcheck "https://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Utils/openSUSE_Tumbleweed systemsmanagement:uyuni:utils" && \
+    $ZYPPER_CMD addrepo --refresh --no-gpgcheck "https://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Master:/ContainerUtils/openSUSE_Tumbleweed/" uyuni-utils && \
+    $ZYPPER_CMD refresh && \
+RUN $ZYPPER_CMD install --no-recommends \
+    # Core System & Network
+    systemd systemd-sysvinit shadow \
+    glibc-locale iproute2 hostname \
+    iputils sudo curl wget openssh \
+    # Development Tools & Editors
+    vim neovim tar gzip awk git \
+    make man rsync cpio expect \
+    bash-completion intltool \
+    # Java Stack
+    java-17-openjdk-devel \
+    java-25-openjdk-devel \
+    ant ant-junit ant-junit5 \
+    apache-ivy maven servletapi5 \
+    obs-to-maven \
+    # Web & Python Stack
+    nodejs22 npm22 python3 \
+    python3-pip python3-PyYAML \
+    python3-setuptools \
+    # Uyuni Tools
+    mgradm podman \
+    && $ZYPPER_CMD clean -a
 
 # Setting Java 17 as system default
 RUN /usr/sbin/alternatives --set javac /usr/lib64/jvm/java-17-openjdk/bin/javac && \
