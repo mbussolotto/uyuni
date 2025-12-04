@@ -31,7 +31,7 @@ RUN $ZYPPER_CMD addrepo --refresh --no-gpgcheck \
     python3-pip python3-PyYAML \
     python3-setuptools \
     # Uyuni Tools
-    mgradm podman \
+    mgradm podman docker\
     && $ZYPPER_CMD clean -a
 
 # Setting Java 17 as system default
