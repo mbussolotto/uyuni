@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   uyuni-dev:
-    hostname: uyuni.ephemeral.local
+    hostname: uyuni.dev.local
     image: ghcr.io/mbussolotto/uyuni/devcontainer:latest
     entrypoint: []
     command: /usr/sbin/init
@@ -19,7 +19,6 @@ services:
     user: root
     links: 
       - db
-      - uyuni-server
     ports:
       - "443:443"   # UI HTTPS
       - "80:80"     # UI HTTP
