@@ -3,6 +3,7 @@ version: '3.8'
 services:
   uyuni-dev:
     image: ghcr.io/mbussolotto/uyuni/devcontainer:latest
+    entrypoint: []
     command: /usr/sbin/init
     stop_signal: SIGRTMIN+3
     privileged: true
