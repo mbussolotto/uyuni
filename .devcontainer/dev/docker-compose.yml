@@ -3,12 +3,12 @@ version: '3.8'
 services:
   uyuni-dev:
     image: ghcr.io/mbussolotto/uyuni/devcontainer:latest
-    entrypoint: []
+    #entrypoint: []
     command: /bin/sh -c "while sleep 1000; do :; done"
-    stop_signal: SIGRTMIN+3
+    #stop_signal: SIGRTMIN+3
     privileged: true
     cgroup: host
-    tty: true
+    #tty: true
     tmpfs:
       - /run
       - /run/lock
