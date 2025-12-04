@@ -10,7 +10,6 @@ services:
     tmpfs:
       - /run
       - /run/lock
-      - /tmp
     volumes:
       - ../../:/workspaces/uyuni:cached
       - /var/run/docker.sock:/run/podman/podman.sock
