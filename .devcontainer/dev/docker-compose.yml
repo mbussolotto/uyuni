@@ -10,11 +10,10 @@ services:
     cgroup: host
     tty: true
     tmpfs:
+      - /var/lib/docker:mode=0777,dev,size=15g,suid,exec # docker
       - /run
-      - /run/lock
     volumes:
       - ../../:/workspaces/uyuni:cached
-      - /var/run/docker.sock:/run/podman/podman.sock
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     user: uyuni
     links: 
