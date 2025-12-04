@@ -4,7 +4,7 @@ services:
   uyuni-dev:
     image: ghcr.io/mbussolotto/uyuni/devcontainer:latest
     entrypoint: []
-    command: /usr/sbin/init
+    command: /bin/sh -c "while sleep 1000; do :; done"
     stop_signal: SIGRTMIN+3
     privileged: true
     cgroup: host
