@@ -26,7 +26,8 @@ public enum DiskCheckSeverity {
     OK,
 
     /**
-     * The configuration is not correct. It must be reviewed in order to obtain a sensible result.
+     * The configuration is not correct. It must be reviewed in order to obtain a
+     * sensible result.
      */
     MISCONFIGURATION,
 
@@ -36,29 +37,30 @@ public enum DiskCheckSeverity {
     ALERT,
 
     /**
-     * The disk space is almost exhausted. An immediate action is needed in order to keep the system running.
+     * The disk space is almost exhausted. An immediate action is needed in order to
+     * keep the system running.
      */
     CRITICAL;
 
+
     /**
      * Returns the enum constant corresponding to the exit value of the bash script.
-     * @param exitValue the exit value reported by the bash script.
-     * @return the enum constant equivalent to the specified exit value.
-     * @throws IllegalArgumentException if the exit value is invalid.
+     * @param percentage the percentage of disk space used.
+     * @return the enum constant equivalent to the specified percentage value.
+     * @throws IllegalArgumentException if the percentage value is invalid.
      */
-    public static DiskCheckSeverity valueOf(int exitValue) {
-        switch (exitValue) {
-            case 0:
-                return OK;
-            case 1:
-                return MISCONFIGURATION;
-            case 2:
-                return ALERT;
-            case 3:
-                return CRITICAL;
-            default:
-                throw new IllegalArgumentException("Exit value " + exitValue + " is not valid");
+    public static DiskCheckSeverity valueOf(int percentage) {
+        if (percentage < 0 || percentage > 100) {
+            throw new IllegalArgumentException("Percentage value " + percentage + " is not valid");
         }
-
+        else if (percentage < 80) {
+            return OK;
+        }
+        else if (percentage < 95) {
+            return ALERT;
+        }
+        else {
+            return CRITICAL;
+        }
     }
 }
