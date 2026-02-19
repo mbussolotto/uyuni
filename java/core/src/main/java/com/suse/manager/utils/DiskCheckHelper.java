@@ -15,6 +15,7 @@
 
 package com.suse.manager.utils;
 
+import com.redhat.rhn.common.hibernate.HibernateFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,11 +29,6 @@ public class DiskCheckHelper {
     private static final Logger LOG = LogManager.getLogger(DiskCheckHelper.class);
 
     /**
-     * Default path of the bash script to check the available space.
-     */
-    public static final String DISKCHECK_SCRIPT = "/usr/bin/spacewalk-diskcheck";
-
-    /**
      * Invoke the external script and execute the check.
      *
      * @return the {@link DiskCheckSeverity} reported by the script or {@link DiskCheckSeverity#UNDEFINED} if it was
@@ -43,7 +39,7 @@ public class DiskCheckHelper {
             final int result = invokeExternalScript();
             return DiskCheckSeverity.valueOf(result);
         }
-        catch (IOException | InterruptedException ex) {
+        catch (IOException ex) {
             LOG.warn("Unable to execute disk space check", ex);
             return DiskCheckSeverity.UNDEFINED;
         }
@@ -58,10 +54,9 @@ public class DiskCheckHelper {
      * specific result.
      * @return the exit value as returned from the execution of the script.
      * @throws IOException          when an I/O error occurs during the execution of the script.
-     * @throws InterruptedException when the process is interrupted while waiting for a result from the script.
      */
-    protected int invokeExternalScript() throws IOException, InterruptedException {
-        final Process process = Runtime.getRuntime().exec(new String[]{DISKCHECK_SCRIPT, "-c"});
-        return process.waitFor();
+    protected int invokeExternalScript() throws IOException {
+        return (int) HibernateFactory.getSession().createNativeQuery("SELECT get_pgsql_disk_usage_percent()")
+                .getSingleResult();
     }
 }
