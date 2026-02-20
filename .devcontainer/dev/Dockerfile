@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2025 SUSE LLC
 #
 # SPDX-License-Identifier: Apache-2.0
-FROM registry.opensuse.org/opensuse/tumbleweed:latest
+FROM ghcr.io/uyuni-project/uyuni/opensuse/tumbleweed:master
 
 ENV ZYPPER_CMD="zypper --non-interactive"
 
