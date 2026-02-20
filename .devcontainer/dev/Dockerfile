@@ -27,7 +27,7 @@ RUN $ZYPPER_CMD addrepo --refresh --no-gpgcheck \
     apache-ivy maven servletapi5 \
     obs-to-maven \
     # Web & Python Stack
-    nodejs22 npm22 python3 \
+    nodejs24 npm24 python3 \
     python3-pip python3-PyYAML \
     python3-setuptools \
     # Uyuni Tools
