@@ -21,6 +21,8 @@ spec:
         app.kubernetes.io/component: hub-xmlrpc
         app.kubernetes.io/part-of: uyuni
     spec:
+{{- include "uyuni.nodePlacement" (dict "global" $ "local" .Values.hubAPI) | nindent 6 }}
+{{- include "uyuni.hostAliases" (dict "global" $ "local" .Values.hubAPI) | nindent 6 }}
       containers:
       - env:
         - name: HUB_API_URL

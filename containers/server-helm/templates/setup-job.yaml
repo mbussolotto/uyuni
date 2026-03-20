@@ -16,6 +16,7 @@ spec:
         app.kubernetes.io/component: server-setup
         app.kubernetes.io/part-of: uyuni
     spec:
+{{- include "uyuni.hostAliases" (dict "global" $ "local" .Values.server) | nindent 6 }}
       containers:
         - command:
           - /docker-entrypoint-init.d/00-mgrSetup.sh

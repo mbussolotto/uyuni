@@ -19,6 +19,8 @@ spec:
         app.kubernetes.io/component: tftp
         app.kubernetes.io/part-of: uyuni
     spec:
+{{- include "uyuni.nodePlacement" (dict "global" $ "local" .Values.tftp) | nindent 6 }}
+{{- include "uyuni.hostAliases" (dict "global" $ "local" .Values.tftp) | nindent 6 }}
 {{- if .Values.tftp.hostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true

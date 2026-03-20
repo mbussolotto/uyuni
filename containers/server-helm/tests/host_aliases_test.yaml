@@ -1,0 +1,200 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: Host Aliases
+templates:
+  - server.yaml
+  - db.yaml
+  - tftp.yaml
+  - coco.yaml
+  - saline.yaml
+  - hub.yaml
+  - setup-job.yaml
+tests:
+  - it: check hostAliases on server
+    set:
+      global:
+        fqdn: "test.example.com"
+      server:
+        hostAliases:
+        - ip: "192.168.1.100"
+          hostnames:
+          - "server.local"
+          - "uyuni.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "192.168.1.100"
+            hostnames:
+            - "server.local"
+            - "uyuni.local"
+        template: server.yaml
+  - it: check hostAliases on setup job
+    set:
+      global:
+        fqdn: "test.example.com"
+      server:
+        hostAliases:
+        - ip: "192.168.1.100"
+          hostnames:
+          - "test.example.com"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "192.168.1.100"
+            hostnames:
+            - "test.example.com"
+        template: setup-job.yaml
+  - it: check hostAliases on db
+    set:
+      global:
+        fqdn: "test.example.com"
+      db:
+        hostAliases:
+        - ip: "10.0.0.50"
+          hostnames:
+          - "db.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.50"
+            hostnames:
+            - "db.local"
+        template: db.yaml
+  - it: check hostAliases on tftp
+    set:
+      global:
+        fqdn: "test.example.com"
+      tftp:
+        hostAliases:
+        - ip: "10.0.0.60"
+          hostnames:
+          - "tftp.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.60"
+            hostnames:
+            - "tftp.local"
+        template: tftp.yaml
+  - it: check hostAliases on coco
+    set:
+      global:
+        fqdn: "test.example.com"
+      coco:
+        replicas: 1
+        hostAliases:
+        - ip: "10.0.0.70"
+          hostnames:
+          - "coco.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.70"
+            hostnames:
+            - "coco.local"
+        template: coco.yaml
+  - it: check hostAliases on saline
+    set:
+      global:
+        fqdn: "test.example.com"
+      saline:
+        enable: true
+        hostAliases:
+        - ip: "10.0.0.80"
+          hostnames:
+          - "saline.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.80"
+            hostnames:
+            - "saline.local"
+        template: saline.yaml
+  - it: check hostAliases on hub
+    set:
+      global:
+        fqdn: "test.example.com"
+      hubAPI:
+        enable: true
+        hostAliases:
+        - ip: "10.0.0.90"
+          hostnames:
+          - "hub.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.90"
+            hostnames:
+            - "hub.local"
+        template: hub.yaml
+  - it: check global hostAliases fallback
+    set:
+      global:
+        fqdn: "test.example.com"
+        hostAliases:
+        - ip: "10.0.0.1"
+          hostnames:
+          - "global.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.1"
+            hostnames:
+            - "global.local"
+        template: server.yaml
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.1"
+            hostnames:
+            - "global.local"
+        template: db.yaml
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.1"
+            hostnames:
+            - "global.local"
+        template: tftp.yaml
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.1"
+            hostnames:
+            - "global.local"
+        template: setup-job.yaml
+  - it: check local hostAliases overrides global
+    set:
+      global:
+        fqdn: "test.example.com"
+        hostAliases:
+        - ip: "10.0.0.1"
+          hostnames:
+          - "global.local"
+      server:
+        hostAliases:
+        - ip: "192.168.1.100"
+          hostnames:
+          - "server-override.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "192.168.1.100"
+            hostnames:
+            - "server-override.local"
+        template: server.yaml
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.1"
+            hostnames:
+            - "global.local"
+        template: db.yaml

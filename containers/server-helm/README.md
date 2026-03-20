@@ -61,6 +61,61 @@ They all are using the `ReadWriteOnce` access mode and can be configured in the 
 Changing the default volume sizes according to the distributions you plan to synchronize and manage is recommended.
 See the [requirements documentation](https://www.uyuni-project.org/uyuni-docs/en/uyuni/installation-and-upgrade/uyuni-install-requirements.html) for more information.
 
+### Node Tuning
+
+For each of the components you can tune the node where the pod will be scheduled.
+This chart supports a **global default** configuration with **local overrides**, allowing you to set baseline rules for all pods and customize them for specific components when needed.
+
+You can control scheduling using `nodeSelector`, `affinity`, `tolerations`, or `nodeName`. You do not need to use all of them; simply choose the method that matches your cluster's scheduling strategy.
+
+You can also set `hostAliases` to inject custom entries into the pod's `/etc/hosts` file, which is useful for resolving hostnames that are not available through DNS.
+
+For example, to set a baseline rule for all components but override the placement for the `db` pod specifically, your `values.yaml` would look like this:
+
+```yaml
+# 1. GLOBAL DEFAULTS
+# These rules apply to all pods unless overridden by a specific component.
+global:
+  fqdn: "test.example.com"
+  nodeSelector:
+    environment: production
+
+  tolerations:
+  - key: "server-tier"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+# 2. LOCAL OVERRIDES
+# These rules apply ONLY to the specific component and override the global equivalents.
+db:
+  nodeSelector:
+    "kubernetes.io/hostname": "node-42"
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "kubernetes.io/hostname"
+            operator: In
+            values:
+            - "node-42"
+
+  # nodeName: "node-42"
+```
+
+An example using `hostAliases` to add custom `/etc/hosts` entries:
+
+```yaml
+server:
+  hostAliases:
+  - ip: "192.168.1.100"
+    hostnames:
+    - "custom-server.local"
+    - "uyuni.local"
+```
+
 ### Exposing ports
 
 Uyuni requires some TCP and UDP ports to be routed to its services.

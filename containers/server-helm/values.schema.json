@@ -36,6 +36,7 @@
       "required": [
         "fqdn"
       ],
+      "allOf": [{ "$ref": "#/definitions/nodeSelectorConfig" }],
       "properties": {
         "fqdn": {
           "type": "string",
@@ -47,7 +48,9 @@
       "type": ["object", "null"],
       "description": "configuration of the server component",
       "allOf": [
-        { "$ref": "#/definitions/imageConfig" }
+        { "$ref": "#/definitions/imageConfig" },
+        { "$ref": "#/definitions/nodeSelectorConfig" },
+        { "$ref": "#/definitions/hostAliasesConfig" }
       ],
       "properties": {
         "email": {
@@ -87,7 +90,9 @@
       "type": ["object", "null"],
       "description": "configuration of the tftp server component",
       "allOf": [
-        { "$ref": "#/definitions/imageConfig" }
+        { "$ref": "#/definitions/imageConfig" },
+        { "$ref": "#/definitions/nodeSelectorConfig" },
+        { "$ref": "#/definitions/hostAliasesConfig" }
       ],
       "properties": {
         "hostNetwork": {
@@ -209,7 +214,9 @@
       "type": ["object", "null"],
       "description": "configuration of the hub API component",
       "allOf": [
-        { "$ref": "#/definitions/imageConfig" }
+        { "$ref": "#/definitions/imageConfig" },
+        { "$ref": "#/definitions/nodeSelectorConfig" },
+        { "$ref": "#/definitions/hostAliasesConfig" }
       ],
       "properties": {
         "enable": {
@@ -223,7 +230,9 @@
       "type": ["object", "null"],
       "description": "configuration of the confidential computing attestation component",
       "allOf": [
-        { "$ref": "#/definitions/imageConfig" }
+        { "$ref": "#/definitions/imageConfig" },
+        { "$ref": "#/definitions/nodeSelectorConfig" },
+        { "$ref": "#/definitions/hostAliasesConfig" }
       ],
       "properties": {
         "replicas": {
@@ -238,7 +247,9 @@
       "type": ["object", "null"],
       "description": "configuration of the saline component",
       "allOf": [
-        { "$ref": "#/definitions/imageConfig" }
+        { "$ref": "#/definitions/imageConfig" },
+        { "$ref": "#/definitions/nodeSelectorConfig" },
+        { "$ref": "#/definitions/hostAliasesConfig" }
       ],
       "properties": {
         "enable": {
@@ -252,7 +263,9 @@
       "type": ["object", "null"],
       "description": "configuration of the PostgreSQL database",
       "allOf": [
-        { "$ref": "#/definitions/imageConfig" }
+        { "$ref": "#/definitions/imageConfig" },
+        { "$ref": "#/definitions/nodeSelectorConfig" },
+        { "$ref": "#/definitions/hostAliasesConfig" }
       ],
       "properties": {
         "enable": {
@@ -266,6 +279,31 @@
     }
   },
   "definitions": {
+    "nodeSelectorConfig": {
+      "type": ["object", "null"],
+      "properties": {
+        "nodeSelector": { "type": ["object", "null"], "description": "Node label matching rules." },
+        "affinity": { "type": ["object", "null"], "description": "Advanced scheduling rules." },
+        "tolerations": { "type": ["array", "null"], "description": "Node taint tolerations." },
+        "nodeName": { "type": ["string", "null"], "description": "Specific node assignment." }
+      }
+    },
+    "hostAliasesConfig": {
+      "type": ["object", "null"],
+      "properties": {
+        "hostAliases": {
+          "type": ["array", "null"],
+          "description": "Custom entries to add to the pod's /etc/hosts file.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ip": { "type": "string" },
+              "hostnames": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
     "imageConfig": {
       "type": ["object", "null"],
       "properties": {

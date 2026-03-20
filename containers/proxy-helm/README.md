@@ -26,6 +26,70 @@ They all are using the `ReadWriteOnce` access mode and can be configured in the 
 Changing the default volume sizes according to the distributions you plan to synchronize and manage is recommended.
 See the [requirements documentation](https://www.uyuni-project.org/uyuni-docs/en/uyuni/installation-and-upgrade/uyuni-install-requirements.html#_proxy_requirements) for more information.
 
+### Node Tuning
+
+For the Uyuni Proxy deployments, you can finely control which nodes your pods are scheduled on. This chart supports a **global default** configuration with **local overrides**, allowing you to set baseline rules for all pods and customize them for specific components (like `tftp` or the main proxy) when needed.
+
+You can control scheduling using `nodeSelector`, `affinity`, `tolerations`, or `nodeName`. You do not need to use all of them; simply choose the method that matches your cluster's scheduling strategy.
+
+You can also set `hostAliases` to inject custom entries into the pod's `/etc/hosts` file, which is useful for resolving hostnames that are not available through DNS.
+
+> Note: These keys are **not pre-populated** in the default `values.yaml`. You can add them under the sections below (e.g. `global:`, `proxy:`, `tftp:`) as needed for your deployment.
+
+For example, to set a baseline rule for all components but override the placement for the `proxy` and `tftp` pods specifically, your `values.yaml` could look like this:
+
+```yaml
+# 1. GLOBAL DEFAULTS
+# These rules apply to all pods unless overridden by a specific component.
+global:
+  nodeSelector:
+    environment: production
+
+  # Allowing all pods to schedule on tainted nodes
+  tolerations:
+  - key: "proxy-tier"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+# 2. LOCAL OVERRIDES
+# These rules apply ONLY to the specific component and override the global equivalents.
+proxy:
+  # Example: ensure the main proxy pods land on a specific node pool
+  nodeSelector:
+    node-pool: "proxy-nodes"
+
+tftp:
+  # Overrides the global nodeSelector with a specific node requirement
+  nodeSelector:
+    "kubernetes.io/hostname": "node-42"
+
+  # Complex scheduling rules (Soft or Hard requirements)
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "kubernetes.io/hostname"
+            operator: In
+            values:
+            - "node-42"
+
+  # Direct node assignment (bypasses the scheduler and affinity rules completely)
+  # nodeName: "node-42"
+```
+
+An example using `hostAliases` to add custom `/etc/hosts` entries:
+
+```yaml
+proxy:
+  hostAliases:
+  - ip: "192.168.1.100"
+    hostnames:
+    - "custom-proxy.local"
+    - "uyuni.local"
+```
+
 ### Exposing ports
 
 Uyuni proxy requires some TCP ports to be routed to its services.

@@ -1,0 +1,101 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: Host Aliases
+templates:
+  - deployment.yaml
+  - tftp.yaml
+tests:
+  - it: check hostAliases on proxy
+    set:
+      global:
+        config: "dummy"
+        httpd: "dummy"
+        ssh: "dummy"
+      proxy:
+        hostAliases:
+        - ip: "192.168.1.100"
+          hostnames:
+          - "proxy.local"
+          - "uyuni-proxy.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "192.168.1.100"
+            hostnames:
+            - "proxy.local"
+            - "uyuni-proxy.local"
+        template: deployment.yaml
+  - it: check hostAliases on tftp
+    set:
+      global:
+        config: "dummy"
+        httpd: "dummy"
+        ssh: "dummy"
+      tftp:
+        hostAliases:
+        - ip: "10.0.0.60"
+          hostnames:
+          - "tftp.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.60"
+            hostnames:
+            - "tftp.local"
+        template: tftp.yaml
+  - it: check global hostAliases fallback
+    set:
+      global:
+        config: "dummy"
+        httpd: "dummy"
+        ssh: "dummy"
+        hostAliases:
+        - ip: "10.0.0.1"
+          hostnames:
+          - "global.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.1"
+            hostnames:
+            - "global.local"
+        template: deployment.yaml
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.1"
+            hostnames:
+            - "global.local"
+        template: tftp.yaml
+  - it: check local hostAliases overrides global
+    set:
+      global:
+        config: "dummy"
+        httpd: "dummy"
+        ssh: "dummy"
+        hostAliases:
+        - ip: "10.0.0.1"
+          hostnames:
+          - "global.local"
+      proxy:
+        hostAliases:
+        - ip: "192.168.1.100"
+          hostnames:
+          - "proxy-override.local"
+    asserts:
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "192.168.1.100"
+            hostnames:
+            - "proxy-override.local"
+        template: deployment.yaml
+      - equal:
+          path: spec.template.spec.hostAliases
+          value:
+          - ip: "10.0.0.1"
+            hostnames:
+            - "global.local"
+        template: tftp.yaml

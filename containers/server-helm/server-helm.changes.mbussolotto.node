@@ -1,0 +1,2 @@
+- Add Helm node placement controls and tests for server and
+  proxy charts.

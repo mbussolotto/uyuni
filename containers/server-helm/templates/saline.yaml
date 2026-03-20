@@ -21,6 +21,8 @@ spec:
         app.kubernetes.io/component: saline
         app.kubernetes.io/part-of: uyuni
     spec:
+{{- include "uyuni.nodePlacement" (dict "global" $ "local" .Values.saline) | nindent 6 }}
+{{- include "uyuni.hostAliases" (dict "global" $ "local" .Values.saline) | nindent 6 }}
       containers:
       - env:
         - name: NOSSL

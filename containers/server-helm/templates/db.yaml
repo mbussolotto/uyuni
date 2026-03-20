@@ -22,6 +22,8 @@ spec:
         app.kubernetes.io/component: db
         app.kubernetes.io/part-of: uyuni
     spec:
+{{- include "uyuni.nodePlacement" (dict "global" $ "local" .Values.db) | nindent 6 }}
+{{- include "uyuni.hostAliases" (dict "global" $ "local" .Values.db) | nindent 6 }}
       containers:
         - env:
             - name: TZ
