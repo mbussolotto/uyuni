@@ -70,7 +70,7 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+          echo "${GPG_PRIVATE_KEY}" | base64 --decode | gpg --batch --import
           GPG_KEY_ID=$(gpg --list-secret-keys --with-colons | grep '^fpr' | head -1 | cut -d: -f10)
           if [ -z "${GPG_KEY_ID}" ]; then
             echo "ERROR: Failed to extract GPG key fingerprint after import"
