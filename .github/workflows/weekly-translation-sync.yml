@@ -13,7 +13,7 @@ jobs:
       contents: write
       pull-requests: write
     env:
-      UPSTREAM_REPO: uyuni-project/uyuni
+      UPSTREAM_REPO: mbussolotto/uyuni
       WEBLATE_API_BASE: https://l10n.opensuse.org/api
       WEBLATE_PROJECT: uyuni
 
@@ -95,8 +95,9 @@ jobs:
           git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
           git config --global user.signingkey "${{ env.GPG_KEY_ID }}"
           git config --global commit.gpgsign true
-          git config --global gpg.program gpg
-
+          # Fix the typo and add the loopback mode explicitly
+          git config --global gpg.program "gpg --batch --pinentry-mode loopback"
+          
       - name: Clone upstream repository
         run: |
           git clone --branch master-weblate \
