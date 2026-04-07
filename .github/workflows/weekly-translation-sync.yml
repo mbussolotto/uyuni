@@ -160,13 +160,13 @@ jobs:
             status=$(curl -sf \
               -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
               "${{ env.WEBLATE_API_BASE }}/components/${{ env.WEBLATE_PROJECT }}/${component}/repository/")
-            needs_merge=$(echo "${status}" | python3 -c "import sys,json; print(json.load(sys.stdin).get('merge_failure', False))")
-            if [ "${needs_merge}" = "True" ]; then
+            has_merge_failure=$(echo "${status}" | python3 -c "import sys,json; print(json.load(sys.stdin).get('merge_failure', False))")
+            if [ "${has_merge_failure}" = "True" ]; then
               failed_components="${failed_components} ${component}"
             fi
           done
           if [ -n "${failed_components}" ]; then
-            echo "WARNING: The following Weblate components report merge conflicts:${failed_components}"
+            echo "ERROR: The following Weblate components report merge conflicts:${failed_components}"
             echo "Manual conflict resolution is required."
             exit 1
           fi
