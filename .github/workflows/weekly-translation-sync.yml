@@ -130,9 +130,16 @@ jobs:
           git remote add weblate "${{ github.workspace }}/weblate-repo"
           git remote update weblate
 
-          conflicting_files=$(git diff --name-only --diff-filter=U)
+          # Use git ls-files --unmerged to detect ALL conflict types (UU, AA, DU, UD, AU, UA),
+          # not just both-modified (UU) which --diff-filter=U would only catch.
+          conflicting_files=$(git ls-files --unmerged | cut -f2 | sort -u)
           if [ -z "${conflicting_files}" ]; then
-            echo "No conflicting files found, but merge reported a failure. Aborting."
+            echo "No conflicting files found, but merge reported a failure."
+            echo "--- Merge log ---"
+            cat /tmp/merge.log
+            echo "--- Git status ---"
+            git status
+            echo "Aborting."
             exit 1
           fi
 
