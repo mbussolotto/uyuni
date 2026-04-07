@@ -77,11 +77,14 @@ jobs:
             exit 1
           fi
           echo "GPG_KEY_ID=${GPG_KEY_ID}" >> "$GITHUB_ENV"
+          # Configure gpg to use loopback pinentry so there is no attempt to open a
+          # curses/TTY pinentry dialog (which always fails in a headless CI environment).
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          echo "no-tty" >> ~/.gnupg/gpg.conf
           gpgconf --kill gpg-agent
           if [ -n "${GPG_PASSPHRASE}" ]; then
             # Pre-cache the passphrase in gpg-agent so subsequent git commits don't prompt.
-            # The test signing operation may fail on some systems but the cache is still populated.
             echo "${GPG_PASSPHRASE}" | gpg --batch --yes --passphrase-fd 0 \
               --pinentry-mode loopback --quiet -s /dev/null 2>/dev/null || true
           fi
