@@ -21,9 +21,12 @@ jobs:
       - name: Get Weblate components
         id: get-components
         run: |
-          response=$(curl -sf -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
-            "${{ env.WEBLATE_API_BASE }}/projects/${{ env.WEBLATE_PROJECT }}/components/")
-          components=$(echo "${response}" | python3 -c "
+          # Paginate through all Weblate components
+          url="${{ env.WEBLATE_API_BASE }}/projects/${{ env.WEBLATE_PROJECT }}/components/"
+          all_components=""
+          while [ -n "${url}" ]; do
+            response=$(curl -sf -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" "${url}")
+            page_components=$(echo "${response}" | python3 -c "
           import sys, json
           data = json.load(sys.stdin)
           if 'results' not in data:
@@ -31,7 +34,19 @@ jobs:
               sys.exit(1)
           print(' '.join(c['slug'] for c in data['results']))
           ")
-          echo "components=${components}" >> "$GITHUB_OUTPUT"
+            all_components="${all_components} ${page_components}"
+            url=$(echo "${response}" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          print(data.get('next') or '')
+          ")
+          done
+          all_components=$(echo "${all_components}" | xargs)
+          if [ -z "${all_components}" ]; then
+            echo "ERROR: No Weblate components found"
+            exit 1
+          fi
+          echo "components=${all_components}" >> "$GITHUB_OUTPUT"
 
       - name: Lock Weblate components
         run: |
@@ -80,13 +95,28 @@ jobs:
           # Configure gpg to use loopback pinentry so there is no attempt to open a
           # curses/TTY pinentry dialog (which always fails in a headless CI environment).
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
           echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
           echo "no-tty" >> ~/.gnupg/gpg.conf
           gpgconf --kill gpg-agent
+          gpgconf --launch gpg-agent
           if [ -n "${GPG_PASSPHRASE}" ]; then
-            # Pre-cache the passphrase in gpg-agent so subsequent git commits don't prompt.
-            echo "${GPG_PASSPHRASE}" | gpg --batch --yes --passphrase-fd 0 \
-              --pinentry-mode loopback --quiet -s /dev/null 2>/dev/null || true
+            # Pre-cache the passphrase in gpg-agent using gpg-preset-passphrase so
+            # that subsequent git commit/merge signing operations succeed without a
+            # pinentry prompt.  The loopback signing trick (gpg -s /dev/null) does not
+            # reliably persist the passphrase in the agent cache, so we use the
+            # dedicated preset mechanism instead.
+            PASSPHRASE_HEX=$(printf '%s' "${GPG_PASSPHRASE}" | od -A n -t x1 | tr -d ' \n')
+            for KEYGRIP in $(gpg --list-secret-keys --with-keygrip --with-colons \
+                             | grep '^grp' | cut -d: -f10); do
+              gpg-connect-agent "PRESET_PASSPHRASE ${KEYGRIP} -1 ${PASSPHRASE_HEX}" /bye
+            done
+            # Verify that GPG signing works in this environment before proceeding.
+            if ! echo "test" | gpg --batch --clearsign > /dev/null 2>&1; then
+              echo "ERROR: GPG signing verification failed"
+              exit 1
+            fi
+            echo "GPG signing verification passed."
           fi
 
       - name: Configure git
@@ -105,23 +135,12 @@ jobs:
             "https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ env.UPSTREAM_REPO }}.git" \
             upstream
 
-      - name: Clone Weblate git repository
-        run: |
-          git clone --branch master-weblate \
-            https://l10n.opensuse.org/git/uyuni/backend/ \
-            weblate-repo
-
       - name: Merge master into master-weblate
-        id: merge
         working-directory: upstream
         run: |
           git fetch origin master
           git checkout master-weblate
-          set +e
-          git merge origin/master --no-edit 2>&1 | tee /tmp/merge.log
-          MERGE_EXIT=${PIPESTATUS[0]}
-          set -e
-          echo "merge_exit=${MERGE_EXIT}" >> "$GITHUB_OUTPUT"
+          git merge origin/master --no-edit -X theirs
 
       - name: Run update-all-translation-strings.sh
         working-directory: upstream
@@ -136,10 +155,38 @@ jobs:
         run: |
           git push origin master-weblate
 
+      - name: Pull changes into Weblate and verify repo status
+        run: |
+          # Ask Weblate to pull the latest changes from the upstream repo
+          curl -sf -X POST \
+            -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"operation": "pull"}' \
+            "${{ env.WEBLATE_API_BASE }}/projects/${{ env.WEBLATE_PROJECT }}/repository/"
+
+          # Verify that all components report a clean repo state
+          failed_components=""
+          for component in ${{ steps.get-components.outputs.components }}; do
+            status=$(curl -sf \
+              -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
+              "${{ env.WEBLATE_API_BASE }}/components/${{ env.WEBLATE_PROJECT }}/${component}/repository/")
+            has_merge_failure=$(echo "${status}" | python3 -c "import sys,json; print(json.load(sys.stdin).get('merge_failure', False))")
+            if [ "${has_merge_failure}" = "True" ]; then
+              failed_components="${failed_components} ${component}"
+            fi
+          done
+          if [ -n "${failed_components}" ]; then
+            echo "ERROR: The following Weblate components report merge conflicts:${failed_components}"
+            echo "Manual conflict resolution is required."
+            exit 1
+          fi
+          echo "All Weblate components report a clean repository state."
+
       - name: Create pull request against master
         working-directory: upstream
         run: |
-          pr_body='## What does this PR change?
+          read -r -d '' pr_body << 'PRBODY' || true
+          ## What does this PR change?
 
           Translation updates
 
@@ -147,7 +194,7 @@ jobs:
 
           Make sure the changelogs entries you are adding are compliant with https://github.com/uyuni-project/uyuni/wiki/Contributing#changelogs and https://github.com/uyuni-project/uyuni/wiki/Contributing#uyuni-projectuyuni-repository
 
-          If you don'"'"'t need a changelog check, please mark this checkbox:
+          If you don't need a changelog check, please mark this checkbox:
 
           - [X] No changelog needed
 
@@ -167,7 +214,8 @@ jobs:
 
           # Before you merge
 
-          Check [How to branch and merge properly](https://github.com/uyuni-project/uyuni/wiki/How-to-branch-and-merge-properly)!'
+          Check [How to branch and merge properly](https://github.com/uyuni-project/uyuni/wiki/How-to-branch-and-merge-properly)!
+          PRBODY
 
           # Check if a PR already exists from master-weblate to master
           existing_pr=$(gh pr list \
@@ -188,15 +236,6 @@ jobs:
               --body "${pr_body}")
             echo "Created PR: ${pr_url}"
 
-            pr_number=$(echo "${pr_url}" | grep -oE '[0-9]+$')
-            if [ -z "${pr_number}" ]; then
-              echo "ERROR: Could not extract PR number from URL: ${pr_url}"
-              exit 1
-            fi
-            gh api \
-              --method POST \
-              -H "Accept: application/vnd.github+json" \
-              "/repos/${{ env.UPSTREAM_REPO }}/pulls/${pr_number}/requested_reviewers"
           fi
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
