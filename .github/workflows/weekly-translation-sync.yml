@@ -1,0 +1,205 @@
+name: Weekly Translation Sync
+
+on:
+  schedule:
+    - cron: '0 8 * * 5'
+  workflow_dispatch:
+
+jobs:
+  translation-sync:
+    name: Sync translations with Weblate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      UPSTREAM_REPO: mbussolotto/uyuni
+      WEBLATE_API_BASE: https://l10n.opensuse.org/api
+      WEBLATE_PROJECT: uyuni
+
+    steps:
+      - name: Get Weblate components
+        id: get-components
+        run: |
+          response=$(curl -sf -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
+            "${{ env.WEBLATE_API_BASE }}/projects/${{ env.WEBLATE_PROJECT }}/components/")
+          components=$(echo "${response}" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          if 'results' not in data:
+              print('ERROR: Unexpected API response structure', file=sys.stderr)
+              sys.exit(1)
+          print(' '.join(c['slug'] for c in data['results']))
+          ")
+          echo "components=${components}" >> "$GITHUB_OUTPUT"
+
+      - name: Lock Weblate components
+        run: |
+          for component in ${{ steps.get-components.outputs.components }}; do
+            echo "Locking component: ${component}"
+            curl -sf -X POST \
+              -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d '{"lock": true}' \
+              "${{ env.WEBLATE_API_BASE }}/components/${{ env.WEBLATE_PROJECT }}/${component}/lock/"
+          done
+
+      - name: Commit pending Weblate translations
+        run: |
+          curl -sf -X POST \
+            -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"operation": "commit"}' \
+            "${{ env.WEBLATE_API_BASE }}/projects/${{ env.WEBLATE_PROJECT }}/repository/"
+
+      - name: Push pending Weblate translations
+        run: |
+          curl -sf -X POST \
+            -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"operation": "push"}' \
+            "${{ env.WEBLATE_API_BASE }}/projects/${{ env.WEBLATE_PROJECT }}/repository/"
+
+      - name: Install required tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make git gettext intltool python3
+
+      - name: Import GPG key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "${GPG_PRIVATE_KEY}" | gpg --batch --import
+          GPG_KEY_ID=$(gpg --list-secret-keys --with-colons | grep '^fpr' | head -1 | cut -d: -f10)
+          if [ -z "${GPG_KEY_ID}" ]; then
+            echo "ERROR: Failed to extract GPG key fingerprint after import"
+            exit 1
+          fi
+          echo "GPG_KEY_ID=${GPG_KEY_ID}" >> "$GITHUB_ENV"
+          # Configure gpg to use loopback pinentry so there is no attempt to open a
+          # curses/TTY pinentry dialog (which always fails in a headless CI environment).
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          echo "no-tty" >> ~/.gnupg/gpg.conf
+          gpgconf --kill gpg-agent
+          if [ -n "${GPG_PASSPHRASE}" ]; then
+            # Pre-cache the passphrase in gpg-agent so subsequent git commits don't prompt.
+            echo "${GPG_PASSPHRASE}" | gpg --batch --yes --passphrase-fd 0 \
+              --pinentry-mode loopback --quiet -s /dev/null 2>/dev/null || true
+          fi
+
+      - name: Configure git
+        run: |
+          git config --global user.name "${{ secrets.GIT_USER_NAME }}"
+          git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
+          git config --global user.signingkey "${{ env.GPG_KEY_ID }}"
+          git config --global commit.gpgsign true
+          # gpg.program must be a single executable; flags like --batch and
+          # --pinentry-mode loopback are already in ~/.gnupg/gpg.conf (set above).
+          git config --global gpg.program gpg
+          
+      - name: Clone upstream repository
+        run: |
+          git clone --branch master-weblate \
+            "https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ env.UPSTREAM_REPO }}.git" \
+            upstream
+
+      - name: Clone Weblate git repository
+        run: |
+          git clone --branch master-weblate \
+            https://l10n.opensuse.org/git/uyuni/backend/ \
+            weblate-repo
+
+      - name: Merge master into master-weblate
+        id: merge
+        working-directory: upstream
+        run: |
+          git fetch origin master
+          git checkout master-weblate
+          set +e
+          git merge origin/master --no-edit 2>&1 | tee /tmp/merge.log
+          MERGE_EXIT=${PIPESTATUS[0]}
+          set -e
+          echo "merge_exit=${MERGE_EXIT}" >> "$GITHUB_OUTPUT"
+
+      - name: Run update-all-translation-strings.sh
+        working-directory: upstream
+        run: |
+          ADDITIONAL_SAFE_BRANCHNAME=master-weblate \
+            scripts/translation/update-all-translation-strings.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Push changes to master-weblate
+        working-directory: upstream
+        run: |
+          git push origin master-weblate
+
+      - name: Create pull request against master
+        working-directory: upstream
+        run: |
+          pr_body='## What does this PR change?
+
+          Translation updates
+
+          ## Changelogs
+
+          Make sure the changelogs entries you are adding are compliant with https://github.com/uyuni-project/uyuni/wiki/Contributing#changelogs and https://github.com/uyuni-project/uyuni/wiki/Contributing#uyuni-projectuyuni-repository
+
+          If you don'"'"'t need a changelog check, please mark this checkbox:
+
+          - [X] No changelog needed
+
+          If you uncheck the checkbox after the PR is created, you will need to re-run `changelog_test` (see below)
+
+          ## Re-run a test
+
+          If you need to re-run a test, please mark the related checkbox, it will be unchecked automatically once it has re-run:
+
+          - [ ] Re-run test "changelog_test"
+          - [ ] Re-run test "backend_unittests_pgsql"
+          - [ ] Re-run test "java_pgsql_tests"
+          - [ ] Re-run test "schema_migration_test_pgsql"
+          - [ ] Re-run test "susemanager_unittests"
+          - [ ] Re-run test "frontend_checks"
+          - [ ] Re-run test "spacecmd_unittests"
+
+          # Before you merge
+
+          Check [How to branch and merge properly](https://github.com/uyuni-project/uyuni/wiki/How-to-branch-and-merge-properly)!'
+
+          # Check if a PR already exists from master-weblate to master
+          existing_pr=$(gh pr list \
+            --repo "${{ env.UPSTREAM_REPO }}" \
+            --head master-weblate \
+            --base master \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -n "${existing_pr}" ]; then
+            echo "A PR already exists: #${existing_pr} — skipping PR creation."
+          else
+            pr_url=$(gh pr create \
+              --repo "${{ env.UPSTREAM_REPO }}" \
+              --head master-weblate \
+              --base master \
+              --title "Translation updates" \
+              --body "${pr_body}")
+            echo "Created PR: ${pr_url}"
+
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Unlock Weblate components
+        if: always()
+        run: |
+          for component in ${{ steps.get-components.outputs.components }}; do
+            echo "Unlocking component: ${component}"
+            curl -sf -X POST \
+              -H "Authorization: Token ${{ secrets.WEBLATE_API_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d '{"lock": false}' \
+              "${{ env.WEBLATE_API_BASE }}/components/${{ env.WEBLATE_PROJECT }}/${component}/lock/"
+          done
