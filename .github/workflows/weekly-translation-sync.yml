@@ -95,13 +95,28 @@ jobs:
           # Configure gpg to use loopback pinentry so there is no attempt to open a
           # curses/TTY pinentry dialog (which always fails in a headless CI environment).
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
           echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
           echo "no-tty" >> ~/.gnupg/gpg.conf
           gpgconf --kill gpg-agent
+          gpgconf --launch gpg-agent
           if [ -n "${GPG_PASSPHRASE}" ]; then
-            # Pre-cache the passphrase in gpg-agent so subsequent git commits don't prompt.
-            echo "${GPG_PASSPHRASE}" | gpg --batch --yes --passphrase-fd 0 \
-              --pinentry-mode loopback --quiet -s /dev/null 2>/dev/null || true
+            # Pre-cache the passphrase in gpg-agent using gpg-preset-passphrase so
+            # that subsequent git commit/merge signing operations succeed without a
+            # pinentry prompt.  The loopback signing trick (gpg -s /dev/null) does not
+            # reliably persist the passphrase in the agent cache, so we use the
+            # dedicated preset mechanism instead.
+            PASSPHRASE_HEX=$(printf '%s' "${GPG_PASSPHRASE}" | od -A n -t x1 | tr -d ' \n')
+            for KEYGRIP in $(gpg --list-secret-keys --with-keygrip --with-colons \
+                             | grep '^grp' | cut -d: -f10); do
+              gpg-connect-agent "PRESET_PASSPHRASE ${KEYGRIP} -1 ${PASSPHRASE_HEX}" /bye
+            done
+            # Verify that GPG signing works in this environment before proceeding.
+            if ! echo "test" | gpg --batch --clearsign > /dev/null 2>&1; then
+              echo "ERROR: GPG signing verification failed"
+              exit 1
+            fi
+            echo "GPG signing verification passed."
           fi
 
       - name: Configure git
