@@ -125,12 +125,7 @@ jobs:
         run: |
           git fetch origin master
           git checkout master-weblate
-          if ! git merge origin/master --no-edit; then
-            echo "ERROR: Merge of master into master-weblate failed."
-            echo "There are merge conflicts that must be resolved manually."
-            git merge --abort
-            exit 1
-          fi
+          git merge origin/master --no-edit -X theirs
 
       - name: Run update-all-translation-strings.sh
         working-directory: upstream
