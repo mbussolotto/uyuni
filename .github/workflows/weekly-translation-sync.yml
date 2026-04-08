@@ -6,8 +6,42 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-branch-lock:
+    name: Check if master branch is locked
+    runs-on: ubuntu-latest
+    outputs:
+      is_locked: ${{ steps.check-lock.outputs.is_locked }}
+    steps:
+      - name: Check if master branch is locked
+        id: check-lock
+        run: |
+          # Query GitHub branch protection API to check if master is locked.
+          # If the API returns an error (e.g. no protection rules), assume not locked.
+          response=$(curl -s -w "\n%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.GH_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/branches/master/protection")
+          http_code=$(echo "${response}" | tail -1)
+          body=$(echo "${response}" | sed '$d')
+          if [ "${http_code}" != "200" ]; then
+            echo "Branch protection API returned ${http_code}. Assuming branch is not locked."
+            echo "is_locked=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          is_locked=$(echo "${body}" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          print(str(data.get('lock_branch', {}).get('enabled', False)).lower())
+          ")
+          echo "is_locked=${is_locked}" >> "$GITHUB_OUTPUT"
+          if [ "${is_locked}" = "true" ]; then
+            echo "::warning::Master branch is locked. Translation sync will be skipped."
+          fi
+
   translation-sync:
     name: Sync translations with Weblate
+    needs: check-branch-lock
+    if: needs.check-branch-lock.outputs.is_locked != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
