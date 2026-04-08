@@ -9,6 +9,7 @@ jobs:
   check-branch-lock:
     name: Check if master branch is locked
     runs-on: ubuntu-latest
+    permissions: {}
     outputs:
       is_locked: ${{ steps.check-lock.outputs.is_locked }}
     steps:
@@ -31,7 +32,8 @@ jobs:
           is_locked=$(echo "${body}" | python3 -c "
           import sys, json
           data = json.load(sys.stdin)
-          print(str(data.get('lock_branch', {}).get('enabled', False)).lower())
+          lock_branch = data.get('lock_branch') or {}
+          print(str(lock_branch.get('enabled', False)).lower())
           ")
           echo "is_locked=${is_locked}" >> "$GITHUB_OUTPUT"
           if [ "${is_locked}" = "true" ]; then
