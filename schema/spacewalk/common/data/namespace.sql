@@ -906,6 +906,9 @@ INSERT INTO access.namespace (namespace, access_mode, description)
     VALUES ('api.admin.payg.set_details', 'W', 'Updates the details of a ssh connection data')
     ON CONFLICT (namespace, access_mode) DO NOTHING;
 INSERT INTO access.namespace (namespace, access_mode, description)
+    VALUES ('api.admin.ssh.remove_known_host', 'W', 'Remove host from known list.')
+    ON CONFLICT (namespace, access_mode) DO NOTHING;
+INSERT INTO access.namespace (namespace, access_mode, description)
     VALUES ('api.ansible.create_ansible_path', 'W', 'Create ansible path')
     ON CONFLICT (namespace, access_mode) DO NOTHING;
 INSERT INTO access.namespace (namespace, access_mode, description)
@@ -3097,6 +3100,9 @@ INSERT INTO access.namespace (namespace, access_mode, description)
     ON CONFLICT (namespace, access_mode) DO NOTHING;
 INSERT INTO access.namespace (namespace, access_mode, description)
     VALUES ('api.proxy.backup_configuration', 'W', 'Saves the configuration of a proxy to the server for later conversion')
+    ON CONFLICT (namespace, access_mode) DO NOTHING;
+INSERT INTO access.namespace (namespace, access_mode, description)
+    VALUES ('api.system.list_migration_targets_with_channels', 'R', 'Lists the valid migration targets for a given server, including channel details')
     ON CONFLICT (namespace, access_mode) DO NOTHING;
 
 INSERT INTO access.namespace (namespace, access_mode, description) VALUES
