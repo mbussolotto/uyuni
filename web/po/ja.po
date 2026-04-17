@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-07 16:11+0000\n"
+"POT-Creation-Date: 2026-04-14 11:17+0200\n"
 "PO-Revision-Date: 2026-03-08 11:04+0000\n"
 "Last-Translator: Carina Hagl <vistatec_pm@sunflare.co.jp>\n"
 "Language-Team: Japanese <https://l10n.opensuse.org/projects/uyuni/web/ja/>\n"
@@ -49,13 +49,14 @@ msgid "Confirm Attestation Execution"
 msgstr "認証実行の確認"
 
 #: ../html/src/components/CoCoScansList.tsx:130
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:162
 #: ../html/src/manager/admin/hub/hub-details.tsx:45
 #: ../html/src/manager/maintenance/edit/maintenance-windows-edit.tsx:40
 #: ../html/src/manager/maintenance/edit/maintenance-windows-edit.tsx:60
 #: ../html/src/manager/maintenance/ssm/schedule-picker.tsx:126
 #: ../html/src/manager/minion/ansible/schedule-playbook.tsx:157
 #: ../html/src/manager/minion/details/support-data.tsx:141
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:232
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:250
 #: ../html/src/manager/systems/coco/ssm-schedule.tsx:108
 msgid "Schedule"
 msgstr "スケジュール"
@@ -64,7 +65,7 @@ msgstr "スケジュール"
 #: ../html/src/components/CoCoScansList.tsx:192
 #: ../html/src/components/package/PackageListActionScheduler.tsx:191
 #: ../html/src/manager/admin/hub/peripheral-details.tsx:43
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:242
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:260
 msgid "Back to list"
 msgstr "一覧に戻る"
 
@@ -79,6 +80,10 @@ msgstr "認証のスケジュールを設定する"
 #: ../html/src/components/CoCoScansList.tsx:187
 msgid "Attestation Report details"
 msgstr "認証レポートの詳細"
+
+#: ../html/src/components/ComplianceBadge.tsx:13
+msgid "No Scans"
+msgstr ""
 
 #: ../html/src/components/FormulaForm.tsx:24
 msgid "Formula saved. Applying the highstate is not needed for this formula."
@@ -140,6 +145,145 @@ msgstr "以下に追加:"
 msgid "Loading the scheduler..."
 msgstr "スケジューラを読み込んでいます..."
 
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:147
+#, fuzzy
+#| msgid "The action has been {0}."
+msgid "SCAP scan has been "
+msgstr "動作は {0} でした。"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:148
+#: ../html/src/manager/minion/audit/rule-result-detail.tsx:311
+msgid "scheduled."
+msgstr "スケジュールしました。"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:171
+#, fuzzy
+#| msgid "Schedule Name"
+msgid "Schedule New XCCDF Scan"
+msgstr "スケジュール名"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:180
+#: ../html/src/components/policies-picker.tsx:117
+#, fuzzy
+#| msgid "Policy"
+msgid "SCAP Policy"
+msgstr "ポリシー"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:184
+#, fuzzy
+#| msgid "No profile selected"
+msgid "No Policy Selected"
+msgstr "プロファイルが選択されていません"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:194
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:173
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:111
+#, fuzzy
+#| msgid "Playbook Content"
+msgid "SCAP Content"
+msgstr "playbook の内容"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:198
+#, fuzzy
+#| msgid "A positive integer is required"
+msgid "SCAP Content is required."
+msgstr "正の整数を指定する必要があります"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:227
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:194
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:323
+#, fuzzy
+#| msgid "Delete Profile"
+msgid "XCCDF Profile"
+msgstr "プロファイルの削除"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:231
+#, fuzzy
+#| msgid "Image version is required."
+msgid "XCCDF Profile is required."
+msgstr "イメージバージョンを指定する必要があります。"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:238
+#, fuzzy
+#| msgid "Select a module..."
+msgid "Select XCCDF profile..."
+msgstr "モジュールを選択してください..."
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:253
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:210
+msgid "Tailoring File"
+msgstr ""
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:257
+#, fuzzy
+#| msgid "Select a module..."
+msgid "Select Tailoring file..."
+msgstr "モジュールを選択してください..."
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:276
+msgid "Profile from Tailoring File"
+msgstr ""
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:281
+#, fuzzy
+#| msgid "Select a module..."
+msgid "Select profile..."
+msgstr "モジュールを選択してください..."
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:292
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:246
+#, fuzzy
+#| msgid "Command-line Arguments"
+msgid "Advanced Arguments"
+msgstr "コマンドライン引数"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:296
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:250
+msgid "e.g: --rule <rule_id> --remediate"
+msgstr ""
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:297
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:251
+#, fuzzy
+#| msgid "Command-line Arguments"
+msgid "Additional command-line arguments for oscap"
+msgstr "コマンドライン引数"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:302
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:256
+msgid "OVAL Files"
+msgstr ""
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:306
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:260
+msgid "e.g: /usr/share/xml/scap/suse-sles15-cve.xml"
+msgstr ""
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:307
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:261
+#, fuzzy
+#| msgid "Has to be a comma-separated list of host names"
+msgid "Comma-separated list of OVAL files"
+msgstr "カンマ区切りのホスト名リストでなければなりません"
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:310
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:264
+msgid "Note: Paths to local OVAL definitions on target system (comma separated)"
+msgstr ""
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:316
+msgid "Fetch Remote Content"
+msgstr ""
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:332
+msgid "This requires internet and a lot of memory, make sure this minion has enough memory available!"
+msgstr ""
+
+#: ../html/src/components/audit/schedule-scap-scan-form.tsx:357
+#: ../html/src/manager/state/highstate.tsx:142
+msgid "Create Recurring"
+msgstr "繰り返し作成"
+
 #: ../html/src/components/buttons/index.example.tsx:228
 #: ../html/src/components/input/form-multi-input/multiple-fields.example.tsx:50
 #: ../html/src/components/input/text/Text.example.tsx:23
@@ -162,6 +306,11 @@ msgstr "姓"
 #: ../html/src/manager/admin/access-control/access-group-permissions.tsx:354
 #: ../html/src/manager/admin/access-control/access-group-review.tsx:175
 #: ../html/src/manager/audit/cveaudit/cveaudit.tsx:410
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:103
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:168
+#: ../html/src/manager/audit/scap/create-tailoring-file.tsx:107
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:127
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:134
 #: ../html/src/manager/content-management/list-filters/list-filters.tsx:179
 #: ../html/src/manager/content-management/list-projects/list-projects.tsx:97
 #: ../html/src/manager/content-management/shared/business/filters.enum.ts:139
@@ -194,6 +343,7 @@ msgstr "認証 #{identifier} は {date} {time} に実行されます"
 #: ../html/src/components/coco-attestation/CoCoReport.tsx:49
 #: ../html/src/components/target-systems.tsx:34
 #: ../html/src/manager/admin/config/monitoring-admin.tsx:54
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:217
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-messages.tsx:68
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:286
 #: ../html/src/manager/content-management/list-filters/templates/live-patching.tsx:117
@@ -227,6 +377,7 @@ msgstr "最終変更"
 #: ../html/src/manager/admin/payg-shared/info/payg-info-view.tsx:18
 #: ../html/src/manager/admin/task-engine-status/taskotop.tsx:231
 #: ../html/src/manager/audit/cveaudit/cveaudit.tsx:390
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:259
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:151
 #: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-view.tsx:57
 #: ../html/src/manager/images/image-view-runtime.tsx:138
@@ -245,6 +396,10 @@ msgstr "認証時間"
 #: ../html/src/manager/admin/access-control/access-group-list.tsx:130
 #: ../html/src/manager/admin/access-control/access-group-user.tsx:142
 #: ../html/src/manager/audit/cveaudit/cveaudit.tsx:427
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:147
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:168
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:134
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:269
 #: ../html/src/manager/content-management/list-filters/list-filters.tsx:208
 #: ../html/src/manager/images/image-profiles.tsx:191
 #: ../html/src/manager/images/image-stores.tsx:193
@@ -261,6 +416,7 @@ msgstr "アクション"
 #: ../html/src/components/coco-attestation/CoCoResult.tsx:54
 #: ../html/src/manager/admin/access-control/access-group.tsx:185
 #: ../html/src/manager/admin/setup/products/products-scc-dialog.tsx:199
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:93
 #: ../html/src/manager/images/image-view-patches.tsx:87
 #: ../html/src/manager/images/image-view.tsx:695
 #: ../html/src/manager/maintenance/list/calendar-list.tsx:74
@@ -361,6 +517,8 @@ msgid "Reset Changes"
 msgstr "変更のリセット"
 
 #: ../html/src/components/coco-attestation/Utils.tsx:49
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:166
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:167
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:92
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:98
 msgid "N/A"
@@ -440,6 +598,9 @@ msgstr "取り消し"
 #: ../html/src/components/table/Table.tsx:239
 #: ../html/src/manager/admin/payg/payg.tsx:70
 #: ../html/src/manager/admin/payg/payg.tsx:71
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:99
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:105
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:93
 #: ../html/src/manager/content-management/list-filters/filter-edit.tsx:162
 #: ../html/src/manager/content-management/list-filters/list-filters.tsx:154
 #: ../html/src/manager/content-management/list-filters/list-filters.tsx:229
@@ -461,8 +622,8 @@ msgstr "取り消し"
 #: ../html/src/manager/notifications/notifications-list.tsx:115
 #: ../html/src/manager/packages/list.tsx:72
 #: ../html/src/manager/packages/list.tsx:125
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:249
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:252
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:250
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:253
 #: ../html/src/manager/recurring/recurring-actions-list.tsx:222
 #: ../html/src/manager/salt/keys/key-management.tsx:54
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:126
@@ -857,8 +1018,8 @@ msgstr "移行するISSv1スレーブはありません。"
 #: ../html/src/manager/maintenance/edit/maintenance-windows-edit.tsx:52
 #: ../html/src/manager/minion/ansible/ansible-var-yaml-editor.tsx:269
 #: ../html/src/manager/minion/ansible/schedule-playbook.tsx:149
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:234
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:236
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:235
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:237
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:105
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:107
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-edit.tsx:186
@@ -898,14 +1059,17 @@ msgstr "定義されていません"
 #: ../html/src/components/large-text-attachment.tsx:122
 #: ../html/src/components/salt-state-popup.tsx:58
 #: ../html/src/manager/admin/setup/proxy/proxy.tsx:60
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:93
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:99
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:87
 #: ../html/src/manager/images/image-profiles.tsx:205
 #: ../html/src/manager/images/image-stores.tsx:199
 #: ../html/src/manager/maintenance/details/maintenance-windows-details.tsx:35
 #: ../html/src/manager/maintenance/details/maintenance-windows-details.tsx:38
 #: ../html/src/manager/maintenance/list/calendar-list.tsx:83
 #: ../html/src/manager/maintenance/list/schedule-list.tsx:63
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:241
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:244
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:242
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:245
 #: ../html/src/manager/recurring/recurring-actions-list.tsx:213
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:119
 #: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-details.tsx:121
@@ -1227,6 +1391,7 @@ msgstr "名前でフィルタ"
 
 #: ../html/src/components/hub/SyncOrgsToPeripheralChannels.tsx:234
 #: ../html/src/components/hub/SyncOrgsToPeripheralChannels.tsx:270
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:121
 #: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-form.tsx:38
 #: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-view.tsx:39
 #: ../html/src/manager/content-management/shared/components/panels/properties/properties-form.tsx:27
@@ -1323,7 +1488,8 @@ msgid "Valid"
 msgstr "有効"
 
 #: ../html/src/components/hub/TokenTable.tsx:76
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:86
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:90
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:176
 #: ../html/src/manager/systems/coco/ssm-schedule.tsx:116
 #: ../html/src/manager/systems/coco/ssm-settings.tsx:74
 #: ../html/src/manager/systems/list-filter.tsx:38
@@ -1332,7 +1498,8 @@ msgid "Yes"
 msgstr "はい"
 
 #: ../html/src/components/hub/TokenTable.tsx:76
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:86
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:90
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:176
 #: ../html/src/manager/systems/coco/ssm-schedule.tsx:116
 #: ../html/src/manager/systems/coco/ssm-settings.tsx:74
 #: ../html/src/manager/systems/list-filter.tsx:39
@@ -1671,6 +1838,82 @@ msgstr "独自のクォーツ書式:"
 msgid "Select a Schedule"
 msgstr "スケジュールの選択:"
 
+#: ../html/src/components/policies-picker.tsx:91
+#, fuzzy
+#| msgid "State assignments have been saved."
+msgid "Policy assignment has been saved."
+msgstr "状態の割り当てが保存されました。"
+
+#: ../html/src/components/policies-picker.tsx:94
+#: ../html/src/components/states-picker.tsx:176
+msgid "An error occurred on save."
+msgstr "保存時にエラーが発生しました。"
+
+#: ../html/src/components/policies-picker.tsx:105
+msgid "No SCAP Policies Found"
+msgstr ""
+
+#: ../html/src/components/policies-picker.tsx:160
+#, fuzzy
+#| msgid "Search in states"
+msgid "Search in SCAP policies"
+msgstr "状態の検索"
+
+#: ../html/src/components/policies-picker.tsx:165
+#: ../html/src/components/states-picker.tsx:432
+#: ../html/src/components/table/SearchField.tsx:66
+#: ../html/src/manager/header/search/search.tsx:80
+#: ../html/src/manager/header/search/search.tsx:89
+#: ../html/src/manager/minion/packages/package-states.tsx:213
+#: ../html/src/manager/minion/packages/package-states.tsx:246
+msgid "Search"
+msgstr "検索"
+
+#: ../html/src/components/policies-picker.tsx:175
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:318
+#, fuzzy
+#| msgid "Policy"
+msgid "Policy Name"
+msgstr "ポリシー"
+
+#: ../html/src/components/policies-picker.tsx:176
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:322
+#, fuzzy
+#| msgid "Stream"
+msgid "Data Stream"
+msgstr "ストリーム"
+
+#: ../html/src/components/policies-picker.tsx:177
+#: ../html/src/components/states-picker.tsx:465
+#: ../html/src/manager/admin/access-control/access-group-details.tsx:120
+#: ../html/src/manager/admin/access-control/access-group-list.tsx:111
+#: ../html/src/manager/admin/access-control/access-group-permissions.tsx:374
+#: ../html/src/manager/admin/access-control/access-group-review.tsx:176
+#: ../html/src/manager/admin/create-payg/create-payg.tsx:45
+#: ../html/src/manager/admin/list-payg/list-payg.tsx:78
+#: ../html/src/manager/admin/payg-shared/info/payg-info-form.tsx:21
+#: ../html/src/manager/admin/payg-shared/info/payg-info-view.tsx:14
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:105
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:170
+#: ../html/src/manager/audit/scap/create-tailoring-file.tsx:109
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:134
+#: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:371
+#: ../html/src/manager/audit/subscription-matching/subscription-matching-subscriptions.tsx:80
+#: ../html/src/manager/content-management/list-projects/list-projects.tsx:107
+#: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-form.tsx:45
+#: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-view.tsx:43
+#: ../html/src/manager/content-management/shared/components/panels/properties/properties-form.tsx:34
+#: ../html/src/manager/content-management/shared/components/panels/properties/properties-view.tsx:45
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:301
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:327
+msgid "Description"
+msgstr "説明"
+
+#: ../html/src/components/policies-picker.tsx:178
+#: ../html/src/components/states-picker.tsx:466
+msgid "Assign"
+msgstr "割り当て"
+
 #: ../html/src/components/product-migration/MigrationChannelsSelectorForm.tsx:153
 #: ../html/src/components/product-migration/MigrationTargetSelectorForm.tsx:55
 msgid "Source Product"
@@ -1689,7 +1932,7 @@ msgid "Target child channels"
 msgstr "ターゲット子チャンネル"
 
 #: ../html/src/components/product-migration/MigrationChannelsSelectorForm.tsx:188
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:84
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:88
 msgid "Allow vendor change"
 msgstr "ベンダの変更を許可する"
 
@@ -1701,42 +1944,78 @@ msgstr "ターゲット選択に戻る"
 msgid "Schedule Migration"
 msgstr "移行のスケジュール"
 
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:40
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:44
 msgid "Please review your selection and confirm below to schedule the migration."
 msgstr "選択内容を確認し、以下を確認して移行をスケジュールしてください。"
 
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:44
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:48
 #: ../html/src/manager/header/search/search.tsx:10
 #: ../html/src/manager/systems/appstreams/ssm-appstreams-configure-list.tsx:103
 #: ../html/src/manager/systems/ssm/ssm-subscribe-channels.tsx:182
 msgid "Systems"
 msgstr "システム"
 
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:59
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:63
 msgid "Product after migration"
 msgstr "移行後の製品"
 
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:65
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:69
 msgid "Channel subscriptions after migration"
 msgstr "移行後のチャンネルサブスクリプション"
 
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:90
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:94
 msgid "Schedule action for no sooner than"
 msgstr "早くとも指定日時以降にアクションをスケジュール"
 
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:103
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:108
+msgid "Before Migrating to SLES 16 — Please ensure"
+msgstr ""
+
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:110
+#, fuzzy
+#| msgid "System is up to date"
+msgid "System is fully up to date"
+msgstr "システムは最新の状態です"
+
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:111
+#, fuzzy
+#| msgid "Affected, patch is unavailable"
+msgid "Sufficient disk space is available"
+msgstr "影響を受ける、パッチは利用不可"
+
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:114
+msgid "Ensure SSH key-based access is available for at least one user. If root login is required, create /etc/ssh/sshd_config.d/50-permit-root-login.conf with: PermitRootLogin yes"
+msgstr ""
+
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:117
+msgid "KVM guests are shut down (if applicable)"
+msgstr ""
+
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:118
+msgid "Network configuration will be migrated from wicked to NetworkManager"
+msgstr ""
+
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:119
+msgid "AppArmor profiles will be migrated to SELinux"
+msgstr ""
+
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:127
 msgid "In order to detect any possible problems it is recommended to always do a Dry Run before scheduling the actual Product Migration."
 msgstr "潜在的な問題を検出するために、実際の製品移行をスケジュールする前に必ず予行演習を実行することをお勧めします。"
 
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:113
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:138
 msgid "Back to channel selection"
 msgstr "チャンネル選択に戻る"
 
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:120
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:145
 msgid "Dry run"
 msgstr "予行演習"
 
-#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:126
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:148
+msgid "Dry run is not available for this migration"
+msgstr ""
+
+#: ../html/src/components/product-migration/MigrationConfirmScheduleForm.tsx:153
 #: ../html/src/manager/admin/hub/peripherals.tsx:37
 msgid "Migrate"
 msgstr "移行"
@@ -1759,7 +2038,7 @@ msgstr "製品ID"
 msgid "Target Products"
 msgstr "ターゲット製品"
 
-#: ../html/src/components/product-migration/MigrationTargetSelectorForm.tsx:83
+#: ../html/src/components/product-migration/MigrationTargetSelectorForm.tsx:86
 msgid "Select Channels"
 msgstr "チャンネルの選択"
 
@@ -1816,10 +2095,6 @@ msgstr "「システムの再起動」と「必要に応じてシステムを再
 msgid "State assignments have been saved."
 msgstr "状態の割り当てが保存されました。"
 
-#: ../html/src/components/states-picker.tsx:176
-msgid "An error occurred on save."
-msgstr "保存時にエラーが発生しました。"
-
 #: ../html/src/components/states-picker.tsx:316
 msgid "No states assigned. Use search to find and assign states."
 msgstr "状態が割り当てられていません。検索機能を利用して状態の検索と割り当てを行なってください。"
@@ -1842,15 +2117,6 @@ msgstr "状態の検索"
 msgid "Search in configuration channels"
 msgstr "設定チャンネル内での検索"
 
-#: ../html/src/components/states-picker.tsx:432
-#: ../html/src/components/table/SearchField.tsx:66
-#: ../html/src/manager/header/search/search.tsx:80
-#: ../html/src/manager/header/search/search.tsx:89
-#: ../html/src/manager/minion/packages/package-states.tsx:213
-#: ../html/src/manager/minion/packages/package-states.tsx:246
-msgid "Search"
-msgstr "検索"
-
 #: ../html/src/components/states-picker.tsx:442
 msgid "Edit State Ranks"
 msgstr "状態ランクの編集"
@@ -1872,12 +2138,12 @@ msgid "There are no states assigned."
 msgstr "状態が何も割り当てられていません。"
 
 #: ../html/src/components/states-picker.tsx:463
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:283
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:284
 msgid "State Name"
 msgstr "状態名"
 
 #: ../html/src/components/states-picker.tsx:464
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:296
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:297
 msgid "State Label"
 msgstr "状態ラベル"
 
@@ -1885,30 +2151,6 @@ msgstr "状態ラベル"
 #: ../html/src/components/table/nested-data.example.tsx:56
 msgid "Channel Label"
 msgstr "チャンネルラベル"
-
-#: ../html/src/components/states-picker.tsx:465
-#: ../html/src/manager/admin/access-control/access-group-details.tsx:120
-#: ../html/src/manager/admin/access-control/access-group-list.tsx:111
-#: ../html/src/manager/admin/access-control/access-group-permissions.tsx:374
-#: ../html/src/manager/admin/access-control/access-group-review.tsx:176
-#: ../html/src/manager/admin/create-payg/create-payg.tsx:45
-#: ../html/src/manager/admin/list-payg/list-payg.tsx:78
-#: ../html/src/manager/admin/payg-shared/info/payg-info-form.tsx:21
-#: ../html/src/manager/admin/payg-shared/info/payg-info-view.tsx:14
-#: ../html/src/manager/audit/subscription-matching/subscription-matching-pins.tsx:371
-#: ../html/src/manager/audit/subscription-matching/subscription-matching-subscriptions.tsx:80
-#: ../html/src/manager/content-management/list-projects/list-projects.tsx:107
-#: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-form.tsx:45
-#: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-view.tsx:43
-#: ../html/src/manager/content-management/shared/components/panels/properties/properties-form.tsx:34
-#: ../html/src/manager/content-management/shared/components/panels/properties/properties-view.tsx:45
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:300
-msgid "Description"
-msgstr "説明"
-
-#: ../html/src/components/states-picker.tsx:466
-msgid "Assign"
-msgstr "割り当て"
 
 #: ../html/src/components/states-picker.tsx:527
 msgid "Select the systems to schedule for immediate state execution and confirm."
@@ -2465,6 +2707,11 @@ msgid "Add PAYG ssh data"
 msgstr "PAYGのsshデータを追加"
 
 #: ../html/src/manager/admin/create-payg/create-payg.tsx:60
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:311
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:82
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:83
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:76
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:77
 #: ../html/src/manager/content-management/create-project/top-panel-buttons.tsx:14
 #: ../html/src/manager/images/image-profile-edit.tsx:505
 #: ../html/src/manager/images/image-store-edit.tsx:222
@@ -3264,6 +3511,335 @@ msgstr "チャンネル"
 #: ../html/src/manager/audit/cveaudit/cveaudit.tsx:525
 msgid "Errata"
 msgstr "Errata"
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:80
+#, fuzzy
+#| msgid "An error occurred while displaying the list of packages."
+msgid "An error occurred while uploading the SCAP content."
+msgstr "パッケージのリストを表示中にエラーが発生しました。"
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:84
+#: ../html/src/manager/audit/scap/create-tailoring-file.tsx:87
+#, fuzzy
+#| msgid "An unexpected error occurred while fetching users."
+msgid "An unexpected error occurred."
+msgstr "ユーザのフェッチ中に予期しないエラーが発生しました。"
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:91
+msgid "Edit SCAP Content"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:108
+msgid "SCAP Datastream File"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:113
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:128
+#, fuzzy
+#| msgid "Current Schedule"
+msgid "Current file"
+msgstr "現在のスケジュール"
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:115
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:130
+msgid "Upload a new file to replace the existing one"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:118
+msgid "Upload the DataStream file (*-ds.xml)"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:123
+msgid "XCCDF File"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:133
+msgid "Upload the XCCDF file (*-xccdf.xml)"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-content.tsx:145
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:311
+#: ../html/src/manager/audit/scap/create-tailoring-file.tsx:139
+#: ../html/src/manager/images/image-profile-edit.tsx:495
+#: ../html/src/manager/images/image-store-edit.tsx:212
+#: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-edit.tsx:199
+msgid "Update"
+msgstr "更新"
+
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:123
+#, fuzzy
+#| msgid "A positive integer is required"
+msgid "SCAP Content is required"
+msgstr "正の整数を指定する必要があります"
+
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:127
+msgid "XCCDF Profile is required"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:154
+msgid "Unexpected error."
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:158
+msgid "Edit Compliance Policy"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:158
+#, fuzzy
+#| msgid "Create Image Profile"
+msgid "Create Compliance Policy"
+msgstr "イメージプロファイルの作成"
+
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:231
+#, fuzzy
+#| msgid "Image Profile"
+msgid "Tailoring Profile"
+msgstr "イメージプロファイル"
+
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:270
+msgid "Fetch Remote Resources"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:286
+msgid "This requires internet access and significant memory. Ensure the target minion has sufficient available memory before applying it!"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/create-scap-policy.tsx:303
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:145
+#, fuzzy
+#| msgid "Back to list"
+msgid "Back to List"
+msgstr "一覧に戻る"
+
+#: ../html/src/manager/audit/scap/create-tailoring-file.tsx:83
+#, fuzzy
+#| msgid "An error occurred while displaying the list of packages."
+msgid "An error occurred while saving the tailoring file."
+msgstr "パッケージのリストを表示中にエラーが発生しました。"
+
+#: ../html/src/manager/audit/scap/create-tailoring-file.tsx:94
+#, fuzzy
+#| msgid "Edit variables"
+msgid "Edit Tailoring File"
+msgstr "変数の編集"
+
+#: ../html/src/manager/audit/scap/create-tailoring-file.tsx:113
+#, fuzzy
+#| msgid "Create Filter"
+msgid "Current File"
+msgstr "フィルタの作成"
+
+#: ../html/src/manager/audit/scap/create-tailoring-file.tsx:122
+msgid "Replace File (optional)"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:42
+#, fuzzy
+#| msgid "Image profile has been deleted."
+msgid "SCAP content has been deleted."
+msgstr "イメージプロファイルを削除しました。"
+
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:43
+#, fuzzy
+#| msgid "Image profiles have been deleted."
+msgid "SCAP content items have been deleted."
+msgstr "イメージプロファイルを削除しました。"
+
+#. Handle server-returned error messages
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:58
+#, fuzzy
+#| msgid "Failed to connect"
+msgid "Failed to delete SCAP content"
+msgstr "接続に失敗しました"
+
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:61
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:62
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:59
+#, fuzzy
+#| msgid "An unexpected error occurred while fetching users."
+msgid "An unexpected error occurred while deleting"
+msgstr "ユーザのフェッチ中に予期しないエラーが発生しました。"
+
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:82
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:83
+#, fuzzy
+#| msgid "Upload a file"
+msgid "Upload"
+msgstr "ファイルのアップロード"
+
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:141
+#, fuzzy
+#| msgid "Filter Name"
+msgid "File Name"
+msgstr "フィルタ名"
+
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:157
+#, fuzzy
+#| msgid "Delete PAYG Connection"
+msgid "Delete SCAP Content"
+msgstr "PAYGの接続の削除"
+
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:160
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:182
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:147
+#, fuzzy
+#| msgid "Are you sure you want to delete store"
+msgid "Are you sure you want to delete"
+msgstr "ストアを削除してよろしいですか"
+
+#: ../html/src/manager/audit/scap/list-scap-content.tsx:160
+#, fuzzy
+#| msgid "Loading content.."
+msgid "this content"
+msgstr "内容を読み込んでいます..."
+
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:44
+#, fuzzy
+#| msgid "Image profile has been deleted."
+msgid "Scap Policy has been deleted."
+msgstr "イメージプロファイルを削除しました。"
+
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:45
+#, fuzzy
+#| msgid "Image profiles have been deleted."
+msgid "Scap Policies have been deleted."
+msgstr "イメージプロファイルを削除しました。"
+
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:59
+msgid "Failed to delete SCAP policy"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:117
+msgid "Scap Policies"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:142
+#, fuzzy
+#| msgid "Playbook Content"
+msgid "Content"
+msgstr "playbook の内容"
+
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:150
+#, fuzzy
+#| msgid "System Locked"
+msgid "Systems Scanned"
+msgstr "システムはロック済み"
+
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:157
+#, fuzzy
+#| msgid "Completed"
+msgid "Compliance"
+msgstr "完了しました"
+
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:179
+#, fuzzy
+#| msgid "Delete Pin"
+msgid "Delete Scap Policy"
+msgstr "ピンの削除"
+
+#: ../html/src/manager/audit/scap/list-scap-policies.tsx:182
+msgid "this policy"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:41
+#, fuzzy
+#| msgid "Image profile has been deleted."
+msgid "Tailoring file has been deleted."
+msgstr "イメージプロファイルを削除しました。"
+
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:42
+#, fuzzy
+#| msgid "Image profiles have been deleted."
+msgid "Tailoring files have been deleted."
+msgstr "イメージプロファイルを削除しました。"
+
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:56
+msgid "Failed to delete tailoring file"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:105
+msgid "Tailoring Files"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:128
+#, fuzzy
+#| msgid "Target Name"
+msgid "Tailoring File Name"
+msgstr "ターゲット名"
+
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:144
+#, fuzzy
+#| msgid "Delete Profile"
+msgid "Delete Tailoring file"
+msgstr "プロファイルの削除"
+
+#: ../html/src/manager/audit/scap/list-tailoring-files.tsx:147
+#, fuzzy
+#| msgid "Attach file"
+msgid "this file"
+msgstr "ファイルの添付"
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:80
+#, fuzzy
+#| msgid "Completed"
+msgid "Compliant"
+msgstr "完了しました"
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:80
+msgid "Non-Compliant"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:162
+#, fuzzy
+#| msgid "Proxy Configuration"
+msgid "Policy Configuration"
+msgstr "プロキシ設定"
+
+#. Scan History Table - Separate Panel
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:185
+#, fuzzy
+#| msgid "Select an image store"
+msgid "Scan History"
+msgstr "イメージストアの選択"
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:191
+msgid "No scans have been performed with this policy yet."
+msgstr ""
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:203
+msgid "Show only latest scan per system"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:222
+msgid "Scan Date"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:228
+#, fuzzy
+#| msgid "Password"
+msgid "Passed"
+msgstr "パスワード"
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:235
+#: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-view.tsx:32
+#: ../html/src/manager/images/image-view-overview.tsx:87
+#: ../html/src/manager/images/image-view.tsx:514
+msgid "Failed"
+msgstr "失敗"
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:244
+msgid "Other"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:249
+msgid "not selected or not applicable"
+msgstr ""
+
+#: ../html/src/manager/audit/scap/scap-policy-details.tsx:275
+#, fuzzy
+#| msgid "Filter Details"
+msgid "View Details"
+msgstr "フィルタの詳細"
 
 #: ../html/src/manager/audit/subscription-matching/subscription-matching-matcher-run-panel.tsx:64
 msgid "Match data status"
@@ -4144,12 +4720,6 @@ msgstr "リポジトリデータが生成されるのを待機しています"
 msgid "Built"
 msgstr "構築済み"
 
-#: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-view.tsx:32
-#: ../html/src/manager/images/image-view-overview.tsx:87
-#: ../html/src/manager/images/image-view.tsx:514
-msgid "Failed"
-msgstr "失敗"
-
 #: ../html/src/manager/content-management/shared/components/panels/environment-lifecycle/environment-view.tsx:51
 #: ../html/src/manager/content-management/shared/components/panels/promote/promote.tsx:85
 msgid "not built"
@@ -4567,11 +5137,9 @@ msgstr "独自の info 値"
 msgid "Create additional custom info keys"
 msgstr "追加の独自 info 鍵の作成"
 
-#: ../html/src/manager/images/image-profile-edit.tsx:495
-#: ../html/src/manager/images/image-store-edit.tsx:212
-#: ../html/src/manager/systems/virtualhostmanager/virtualhostmanager-edit.tsx:199
-msgid "Update"
-msgstr "更新"
+#: ../html/src/manager/images/image-profile-edit.tsx:517
+msgid "Edit Image Profile: '"
+msgstr "イメージプロファイルの編集: '"
 
 #: ../html/src/manager/images/image-profile-edit.tsx:517
 msgid "Edit Image Profile: '"
@@ -5263,7 +5831,7 @@ msgid "Multi"
 msgstr "マルチ"
 
 #: ../html/src/manager/maintenance/details/schedule-details.tsx:100
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:157
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:158
 msgid "Schedule Details"
 msgstr "スケジュールの詳細"
 
@@ -5316,12 +5884,12 @@ msgid "Refreshing the calendar will reschedule all affected actions."
 msgstr "カレンダーを更新すると、全ての影響する動作を再スケジュールすることになります。"
 
 #: ../html/src/manager/maintenance/edit/maintenance-windows-edit.tsx:40
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:232
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:250
 msgid "Update "
 msgstr "更新 "
 
 #: ../html/src/manager/maintenance/edit/maintenance-windows-edit.tsx:40
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:232
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:250
 msgid "Create "
 msgstr "作成 "
 
@@ -5523,7 +6091,7 @@ msgstr "変数の追加"
 
 #: ../html/src/manager/minion/ansible/ansible-var-yaml-editor.tsx:222
 #: ../html/src/manager/minion/ansible/variables/boolean-editor.tsx:48
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:168
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:169
 msgid "True"
 msgstr "はい"
 
@@ -5545,7 +6113,7 @@ msgid "Loading playbook contents.."
 msgstr "playbook の内容を読み込んでいます.."
 
 #: ../html/src/manager/minion/ansible/schedule-playbook.tsx:145
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:224
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:242
 #: ../html/src/manager/state/highstate.tsx:121
 msgid "Test mode"
 msgstr "テストモード"
@@ -5648,6 +6216,46 @@ msgstr "文字列の追加"
 #: ../html/src/manager/minion/ansible/variables/string-editor.tsx:36
 msgid "Name and value"
 msgstr "名前と値"
+
+#: ../html/src/manager/minion/audit/rule-result-detail.tsx:310
+#, fuzzy
+#| msgid "The action has been {0}."
+msgid "Remediation has been "
+msgstr "動作は {0} でした。"
+
+#: ../html/src/manager/minion/audit/rule-result-detail.tsx:399
+#, fuzzy
+#| msgid "Loading..."
+msgid "Saving..."
+msgstr "読み込んでいます..."
+
+#: ../html/src/manager/minion/audit/rule-result-detail.tsx:399
+msgid "Save Custom Remediation"
+msgstr ""
+
+#: ../html/src/manager/minion/audit/rule-result-detail.tsx:408
+#, fuzzy
+#| msgid "Delete Notification"
+msgid "Delete Custom Remediation"
+msgstr "通知の削除"
+
+#: ../html/src/manager/minion/audit/rule-result-detail.tsx:461
+msgid "Original"
+msgstr ""
+
+#: ../html/src/manager/minion/audit/rule-result-detail.tsx:472
+#, fuzzy
+#| msgid "Custom value"
+msgid "Custom"
+msgstr "カスタム値"
+
+#: ../html/src/manager/minion/audit/rule-result-detail.tsx:495
+msgid "Apply Remediation"
+msgstr ""
+
+#: ../html/src/manager/minion/audit/schedule-scap-scan.tsx:60
+msgid "OpenSCAP is not available on this system. Please install the package ''{package}'' to enable SCAP scanning."
+msgstr ""
 
 #: ../html/src/manager/minion/coco/coco-settings.tsx:66
 msgid "Settings"
@@ -6321,121 +6929,137 @@ msgstr "PEM形式のCAファイル"
 msgid "In PEM format"
 msgstr "PEM形式"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:96
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:97
 msgid "Execution time"
 msgstr "実行時間"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:162
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:163
 msgid "State:"
 msgstr "状態:"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:163
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:164
 #: ../html/src/manager/recurring/recurring-actions-list.tsx:149
 msgid "Active"
 msgstr "有効"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:163
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:164
 msgid "Inactive"
 msgstr "無効"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:167
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:168
 msgid "Test"
 msgstr "テスト"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:172
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:173
 msgid "Action type"
 msgstr "動作タイプ"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:176
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:177
 msgid "Target type"
 msgstr "ターゲットタイプ"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:180
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:181
 msgid "Target name"
 msgstr "ターゲット名"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:184
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:185
 msgid "Created by"
 msgstr "作成者"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:189
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:190
 msgid "Created at"
 msgstr "作成日時"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:195
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:196
 msgid "Quartz format string"
 msgstr "クォーツ書式文字列"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:207
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:208
 #: ../html/src/manager/recurring/recurring-playbook-picker.tsx:101
 msgid "Playbook details"
 msgstr "playbookの詳細"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:212
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:213
 msgid "Playbook path"
 msgstr "playbookパス"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:216
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:217
 msgid "Inventory path"
 msgstr "インベントリパス"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:220
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:221
 msgid "Flush fact cache"
 msgstr "ファクトキャッシュをフラッシュする"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:221
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:222
 #: ../html/src/manager/recurring/recurring-playbook-picker.tsx:120
 msgid "true"
 msgstr "true"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:221
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:222
 #: ../html/src/manager/recurring/recurring-playbook-picker.tsx:120
 msgid "false"
 msgstr "false"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:265
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:266
 #: ../html/src/manager/recurring/recurring-actions-list.tsx:235
 msgid "Delete Recurring Action Schedule"
 msgstr "定期的なアクションのスケジュールの削除"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:266
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:267
 msgid "Are you sure you want to delete this schedule?"
 msgstr "このスケジュールを削除してよろしいですか？"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:274
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:275
 msgid "State configuration for {name}"
 msgstr "{name}の状態設定"
 
-#: ../html/src/manager/recurring/recurring-actions-details.tsx:281
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:282
 msgid "Order"
 msgstr "順序"
 
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:80
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:310
+#, fuzzy
+#| msgid "State Summary for {name}"
+msgid "SCAP Policy for {name}"
+msgstr "{name}の状態概要"
+
+#: ../html/src/manager/recurring/recurring-actions-details.tsx:332
+#, fuzzy
+#| msgid "Description"
+msgid "No description"
+msgstr "説明"
+
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:81
 #: ../html/src/manager/recurring/recurring-actions-list.tsx:84
 msgid "Schedule successfully updated."
 msgstr "スケジュールが正常に更新されました。"
 
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:80
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:81
 msgid "Schedule successfully created."
 msgstr "スケジュールが正常に作成されました。"
 
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:91
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:92
 msgid "Action scheduled on selected minions"
 msgstr "特定のminionに対してスケジュールされたアクション"
 
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:250
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:268
 msgid "Schedule Recurring Action"
 msgstr "定期的なアクションをスケジュールする"
 
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:259
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:277
 #: ../html/src/manager/recurring/recurring-actions-list.tsx:193
 #: ../html/src/manager/recurring/search/recurring-actions-search-utils.tsx:35
 msgid "Action Type"
 msgstr "動作タイプ"
 
-#: ../html/src/manager/recurring/recurring-actions-edit.tsx:282
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:300
 msgid "Configure states to execute"
 msgstr "実行する状態を設定する"
+
+#: ../html/src/manager/recurring/recurring-actions-edit.tsx:314
+msgid "SCAP Policies"
+msgstr ""
 
 #: ../html/src/manager/recurring/recurring-actions-list.tsx:105
 msgid "Create Recurring Action"
@@ -6477,11 +7101,11 @@ msgstr "minion"
 msgid "Group"
 msgstr "グループ"
 
-#: ../html/src/manager/recurring/recurring-actions.tsx:133
+#: ../html/src/manager/recurring/recurring-actions.tsx:134
 msgid "Error when deleting the action. Check if Taskomatic is running"
 msgstr "動作の削除時にエラーが発生しました。 Taskomatic が動作しているかご確認ください"
 
-#: ../html/src/manager/recurring/recurring-actions.tsx:148
+#: ../html/src/manager/recurring/recurring-actions.tsx:149
 msgid "The below times are displayed in the server time zone {timeZone}. The scheduled time will be the server time."
 msgstr "サーバのタイムゾーン{timeZone}には、以下の時間が表示されます。スケジュールされた時間はサーバ時間になります。"
 
@@ -6659,23 +7283,23 @@ msgstr "名前または指紋で検索"
 msgid "Fingerprint"
 msgstr "フィンガープリント"
 
-#: ../html/src/manager/shared/menu/menu.tsx:224
+#: ../html/src/manager/shared/menu/menu.tsx:235
 msgid "Clear Menu"
 msgstr "メニューの消去"
 
-#: ../html/src/manager/shared/menu/menu.tsx:227
+#: ../html/src/manager/shared/menu/menu.tsx:238
 msgid "Filter menu"
 msgstr "フィルタメニュー"
 
-#: ../html/src/manager/shared/menu/menu.tsx:262
+#: ../html/src/manager/shared/menu/menu.tsx:273
 msgid "Uyuni"
 msgstr "Uyuni"
 
-#: ../html/src/manager/shared/menu/menu.tsx:264
+#: ../html/src/manager/shared/menu/menu.tsx:275
 msgid "Uyuni homepage"
 msgstr "Uyuni ホームページ"
 
-#: ../html/src/manager/shared/menu/menu.tsx:277
+#: ../html/src/manager/shared/menu/menu.tsx:288
 msgid "SUSE Multi-Linux Manager homepage"
 msgstr "SUSE Multi-Linux Manager ホームページ"
 
@@ -6730,10 +7354,6 @@ msgstr "highstateの適用が <link>スケジュールされました</link>。"
 #: ../html/src/manager/state/highstate.tsx:129
 msgid "Apply Highstate"
 msgstr "highstate の適用"
-
-#: ../html/src/manager/state/highstate.tsx:142
-msgid "Create Recurring"
-msgstr "繰り返し作成"
 
 #: ../html/src/manager/storybook/storybook.tsx:49
 msgid "Development debugging page"
@@ -7779,9 +8399,6 @@ msgstr "HTTP エラーコード "
 #~ msgid "Maximum Memory (MiB)"
 #~ msgstr "最大メモリ (MiB)"
 
-#~ msgid "A positive integer is required"
-#~ msgstr "正の整数を指定する必要があります"
-
 #~ msgid "Virtual CPU Count"
 #~ msgstr "仮想 CPU 数"
 
@@ -7817,9 +8434,6 @@ msgstr "HTTP エラーコード "
 
 #~ msgid "Disconnected"
 #~ msgstr "切断済み"
-
-#~ msgid "Failed to connect"
-#~ msgstr "接続に失敗しました"
 
 #~ msgid "Toggle full size"
 #~ msgstr "フルサイズの切り替え"
@@ -8048,9 +8662,6 @@ msgstr "HTTP エラーコード "
 
 #~ msgid "hostnames (comma-separated)"
 #~ msgstr "ホスト名 (カンマ区切り)"
-
-#~ msgid "Has to be a comma-separated list of host names"
-#~ msgstr "カンマ区切りのホスト名リストでなければなりません"
 
 #~ msgid "SRV records"
 #~ msgstr "SRV レコード"
@@ -8417,9 +9028,6 @@ msgstr "HTTP エラーコード "
 #~ msgid "Select a Target Type"
 #~ msgstr "ターゲットタイプの選択"
 
-#~ msgid "The action has been {0}."
-#~ msgstr "動作は {0} でした。"
-
 #~ msgid "Page"
 #~ msgstr "ページ"
 
@@ -8461,9 +9069,6 @@ msgstr "HTTP エラーコード "
 
 #~ msgid "shortly"
 #~ msgstr "しばらくすると現われるはずです"
-
-#~ msgid "scheduled."
-#~ msgstr "スケジュールしました。"
 
 #~ msgid "Loading.."
 #~ msgstr "読み込んでいます.."
@@ -8617,6 +9222,3 @@ msgstr "HTTP エラーコード "
 
 #~ msgid "Session expired, please reload the page to run command on systems."
 #~ msgstr "セッションの有効期限が切れました。システムでコマンドを実行するには、ページを再読み込みしてください。"
-
-#~ msgid "Select an image store"
-#~ msgstr "イメージストアの選択"
