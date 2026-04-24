@@ -1,4 +1,4 @@
-# Copyright 2015-2025 SUSE LLC
+# Copyright 2015-2026 SUSE LLC
 # Licensed under the terms of the MIT license.
 
 ### This file contains all step definitions concerning Salt and bootstrapping
@@ -85,8 +85,12 @@ end
 
 When(/^I clean up the git_pillar environment on the Salt master$/) do
   file = 'salt_git_pillar_setup.sh'
+  source = "#{File.dirname(__FILE__)}/../upload_files/#{file}"
+  dest = "/tmp/#{file}"
+  success = file_inject(get_target('server'), source, dest)
+  raise ScriptError, 'File injection failed' unless success
 
-  # Execute "salt_git_pillar_setup.sh setup" on the server
+  # Execute "salt_git_pillar_setup.sh clean" on the server
   get_target('server').run("sh /tmp/#{file} clean", check_errors: true, verbose: true)
 end
 
