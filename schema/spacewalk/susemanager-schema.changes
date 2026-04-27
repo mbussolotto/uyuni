@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon Apr 27 10:42:27 CEST 2026 - michael.calmer@suse.com
+
+- version 5.2.6-0
+  * Added columns for content and tailoring file ids (bsc#1262721)
+
+-------------------------------------------------------------------
 Fri Apr 17 11:04:42 CEST 2026 - michael.calmer@suse.com
 
 - version 5.2.5-0
