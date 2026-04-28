@@ -1840,14 +1840,16 @@ end
 Then(/^I check that the health check tool exposes the expected metrics on "([^"]*)"$/) do |host|
   node = get_target(host)
   expected_keys = %w[java_config config apache postgresql hw memory disk salt_configuration salt_keys salt_jobs misc]
-  output, _code = node.run("curl -s localhost:9000/metrics.json | python3 -c 'import sys, json; print(list(json.load(sys.stdin).keys()))'", check_errors: true, verbose: true)
-  missing_keys = expected_keys.reject { |key| output.include?(key) }
+  output, _code = node.run("curl -s localhost:9000/metrics.json | python3 -c 'import sys, json; [print(k) for k in json.load(sys.stdin).keys()]'", check_errors: true, verbose: true)
+  actual_keys = output.strip.split("\n")
+  missing_keys = expected_keys - actual_keys
   raise "Health check metrics missing expected keys: #{missing_keys.join(', ')}" unless missing_keys.empty?
 end
 
 Then(/^I check that the health check Grafana dashboard is accessible on "([^"]*)"$/) do |host|
   node = get_target(host)
-  http_code, _code = node.run("curl -s -o /dev/null -w '%{http_code}' localhost:3000", check_errors: true)
+  http_code, code = node.run("curl -s -o /dev/null -w '%{http_code}' localhost:3000", check_errors: false)
+  raise "Grafana dashboard not accessible: curl failed with exit code #{code}" unless code.zero?
   raise "Grafana dashboard not accessible: expected HTTP 200, got #{http_code.strip}" unless http_code.strip == '200'
 end
 
