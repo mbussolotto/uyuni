@@ -705,7 +705,7 @@ end
 
 Then(/^I should not see "([^"]*)" hostname$/) do |host|
   system_name = get_system_name(host)
-  raise ScriptError, "Hostname #{system_name} is present" if check_text?(system_name)
+  raise ScriptError, "Hostname #{system_name} is present" unless has_no_text?(system_name)
 end
 
 #
@@ -781,7 +781,7 @@ end
 
 Then(/^I should not see a "([^"]*)" text in element "([^"]*)"$/) do |text, element|
   within(:xpath, "//div[@id=\"#{element}\" or @class=\"#{element}\"]") do
-    raise ScriptError, "Text '#{text}' found in #{element}" if check_text?(text)
+    raise ScriptError, "Text '#{text}' found in #{element}" unless has_no_text?(text)
   end
 end
 

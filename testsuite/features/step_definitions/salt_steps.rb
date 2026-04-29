@@ -1,4 +1,4 @@
-# Copyright 2015-2025 SUSE LLC
+# Copyright 2015-2026 SUSE LLC
 # Licensed under the terms of the MIT license.
 
 ### This file contains all step definitions concerning Salt and bootstrapping

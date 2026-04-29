@@ -1,4 +1,4 @@
-# Copyright (c) 2010-2024 SUSE LLC.
+# Copyright (c) 2010-2026 SUSE LLC.
 # Licensed under the terms of the MIT license.
 
 ### This file contains all step definitions concerning general product funtionality
