@@ -68,7 +68,7 @@ Feature: Bootstrapping with reactivation key
   Scenario: Cleanup: delete SLES minion after reactivation tests
     When I delete "sle_minion" system using the api
     Then "sle_minion" should not be registered
-    And I perform a full salt minion cleanup on "sle_minion"
+    When I perform a full salt minion cleanup on "sle_minion"
 
   Scenario: Cleanup: bootstrap a SLES minion after reactivation tests
     And I follow the left menu "Systems > Bootstrapping"
@@ -81,6 +81,6 @@ Feature: Bootstrapping with reactivation key
     And I select the hostname of "proxy" from "proxies" if present
     And I click on "Bootstrap"
     And I wait until I see "Bootstrap process initiated." text
-    And I follow the left menu "Systems > System List > All"
+    When I follow the left menu "Systems > System List > All"
     And I wait until I see the name of "sle_minion", refreshing the page
     And I wait until onboarding is completed for "sle_minion"
