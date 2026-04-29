@@ -1837,7 +1837,7 @@ Then(/^I check that the health check tool exposes metrics on "([^"]*)"$/) do |ho
   node.run("curl -s localhost:9000/metrics.json | python3 -c 'import sys, json; print(json.load(sys.stdin).keys())'", check_errors: true, verbose: true)
 end
 
-When(/^I check that the health check tool exposes the expected metrics on "([^"]*)"$/) do |host|
+Then(/^the health check tool should expose the expected metrics on "([^"]*)"$/) do |host|
   node = get_target(host)
   expected_keys = %w[java_config config apache postgresql hw memory disk salt_configuration salt_keys salt_jobs misc]
   output, _code = node.run("curl -s localhost:9000/metrics.json | python3 -c 'import sys, json; [print(k) for k in json.load(sys.stdin).keys()]'", check_errors: true, verbose: true)
@@ -1846,14 +1846,14 @@ When(/^I check that the health check tool exposes the expected metrics on "([^"]
   raise "Health check metrics missing expected keys: #{missing_keys.join(', ')}" unless missing_keys.empty?
 end
 
-When(/^I check that the health check Grafana dashboard is accessible on "([^"]*)"$/) do |host|
+Then(/^the health check Grafana dashboard should be accessible on "([^"]*)"$/) do |host|
   node = get_target(host)
   http_code, code = node.run("curl -s -o /dev/null -w '%{http_code}' localhost:3000", check_errors: false)
   raise "Grafana dashboard not accessible: curl failed with exit code #{code}" unless code.zero?
   raise "Grafana dashboard not accessible: expected HTTP 200, got #{http_code.strip}" unless http_code.strip == '200'
 end
 
-When(/^I check that the health check tool (is|is not) running on "([^"]*)"$/) do |action, host|
+Then(/^the health check tool (should be|should not be) running on "([^"]*)"$/) do |action, host|
   node = get_target(host)
   node.run("test $(podman ps | grep health-check | wc -l) == #{action == 'is' ? '4' : '0'}", check_errors: true, verbose: true)
 end

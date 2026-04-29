@@ -13,7 +13,7 @@ Feature: Health Check tool based on a supportconfig
 
   Scenario: Execute Health Check tool with server supportconfig
     When I start the health check tool with the extracted supportconfig on "localhost"
-    Then I check that the health check tool is running on "localhost"
+    Then the health check tool should be running on "localhost"
 
   Scenario: Health Check containers are healthy and running
     When I wait until port "9000" is listening on "localhost" host
@@ -22,12 +22,12 @@ Feature: Health Check tool based on a supportconfig
     And I wait until port "3000" is listening on "localhost" host
 
   Scenario: Health Check containers are exposing expected metrics
-    When I check that the health check tool exposes the expected metrics on "localhost"
+    Then the health check tool should expose the expected metrics on "localhost"
 
   Scenario: Health Check Grafana dashboard is accessible
-    When I check that the health check Grafana dashboard is accessible on "localhost"
+    Then the health check Grafana dashboard should be accessible on "localhost"
 
   Scenario: I can stop the Health Check tool
     When I stop the health check tool on "localhost"
-    Then I check that the health check tool is not running on "localhost"
+    Then the health check tool should not be running on "localhost"
     When I remove test supportconfig on "localhost"
