@@ -66,16 +66,11 @@ Feature: Bootstrapping with reactivation key
     And I wait until event "Apply states [certs, channels, packages, services.salt-minion] scheduled" is completed
 
   Scenario: Cleanup: delete SLES minion after reactivation tests
-    Given I am on the Systems overview page of this "sle_minion"
-    When I follow "Delete System"
-    Then I should see a "Confirm System Profile Deletion" text
-    When I click on "Delete Profile"
-    And I wait until I see "has been deleted" text
-    And I wait until Salt client is inactive on "sle_minion"
+    When I delete "sle_minion" system using the api
+    And I perform a full salt minion cleanup on "sle_minion"
     Then "sle_minion" should not be registered
 
   Scenario: Cleanup: bootstrap a SLES minion after reactivation tests
-    When I perform a full salt minion cleanup on "sle_minion"
     And I follow the left menu "Systems > Bootstrapping"
     Then I should see a "Bootstrap Minions" text
     When I enter the hostname of "sle_minion" as "hostname"
