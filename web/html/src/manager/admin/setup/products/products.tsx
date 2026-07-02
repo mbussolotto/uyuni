@@ -21,6 +21,8 @@ import { DEPRECATED_unsafeEquals } from "utils/legacy";
 import Network from "utils/network";
 
 import { SetupHeader } from "../setup-header";
+import { getProductSelectionState } from "./product-check/product-selection.utils";
+import { ProductCheck } from "./product-check/ProductCheck";
 import { searchCriteriaInExtension } from "./products.utils";
 import { SCCDialog } from "./products-scc-dialog";
 
@@ -662,8 +664,10 @@ class CheckListItemState {
  * A component to generate a list item which contains
  * all information for a single product
  */
-class CheckListItem extends Component<CheckListItemProps, CheckListItemState> {
-  state = new CheckListItemState();
+export class CheckListItem extends React.Component<CheckListItemProps> {
+  state = {
+    withRecommended: true,
+  };
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.isSelected(nextProps.item, nextProps.bypassProps.selectedItems)) {
@@ -829,12 +833,11 @@ class CheckListItem extends Component<CheckListItemProps, CheckListItemState> {
     let selectorContent: ReactNode = null;
     if (this.props.bypassProps.isSelectable && currentItem.status === _PRODUCT_STATUS.available) {
       selectorContent = (
-        <input
-          type="checkbox"
+        <ProductCheck
           id={"checkbox-for-" + currentItem.identifier}
           value={currentItem.identifier}
           onChange={this.handleSelectedItem}
-          checked={this.isSelected(currentItem, this.props.bypassProps.selectedItems)}
+          selectionState={getProductSelectionState(currentItem, this.props.bypassProps.selectedItems)}
           disabled={this.props.bypassProps.readOnlyMode || this.props.childrenDisabled}
           title={
             this.props.childrenDisabled
@@ -845,11 +848,10 @@ class CheckListItem extends Component<CheckListItemProps, CheckListItemState> {
       );
     } else if (this.isInstalled()) {
       selectorContent = (
-        <input
-          type="checkbox"
+        <ProductCheck
           id={"checkbox-for-" + currentItem.identifier}
           value={currentItem.identifier}
-          checked={true}
+          selectionState="checked"
           disabled={true}
           title={t("This product is mirrored.")}
         />
