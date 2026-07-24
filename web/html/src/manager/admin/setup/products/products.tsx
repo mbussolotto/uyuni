@@ -664,10 +664,8 @@ class CheckListItemState {
  * A component to generate a list item which contains
  * all information for a single product
  */
-export class CheckListItem extends React.Component<CheckListItemProps> {
-  state = {
-    withRecommended: true,
-  };
+export class CheckListItem extends Component<CheckListItemProps, CheckListItemState> {
+  state = new CheckListItemState();
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.isSelected(nextProps.item, nextProps.bypassProps.selectedItems)) {
