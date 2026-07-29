@@ -60,6 +60,7 @@ package-lock.json @SUSE/multi-linux-manager-frontend
 
 # QE
 testsuite/ @SUSE/multi-linux-manager-qe
+.github/ISSUE_TEMPLATE/qe-*.md @SUSE/multi-linux-manager-qe
 .rubocop.yml @SUSE/multi-linux-manager-qe
 
 # mgr-libmod
