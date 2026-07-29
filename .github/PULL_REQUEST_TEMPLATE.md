@@ -1,13 +1,25 @@
+<!--
+SPDX-FileCopyrightText: 2026 SUSE LLC
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+  ## IMPORTANT 📌
+
+ONLY the following changes are accepted in the `Manager-4.3` branch:
+- Bugfixes for L3 that were specifically reported for 4.3
+- Security fixes that we must release for 4.3
+
+ONLY the following changes are accepted in the `Manager-5.1` branch:
+- Bugfixes for L3 that do not require big refactors (if they come as backport from 5.2)
+- Bugfixes for special priorities that do not require big refactors (if they come as backport from 5.2)
+- Security fixes that we must release for 5.1
+
+In case of doubts, please reach out to @rjmateus or @admd before proceeding with the merge.
+
 ## What does this PR change?
 
 **add description**
-
-## Codespace
-<!-- Button to create CodeSpace -->
-
-Check if you already have a running container clicking on [![Running CodeSpace](https://badgen.net/badge/Running/CodeSpace/green)](https://github.com/codespaces)
-
-[![Create CodeSpace](https://img.shields.io/badge/Create-CodeSpace-blue.svg)](https://codespaces.new/uyuni-project/uyuni)  [![About billing for Github Codespaces](https://badgen.net/badge/CodeSpace/Price)](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces) [![CodeSpace Billing Summary](https://badgen.net/badge/CodeSpace/Billing%20Summary)](https://github.com/settings/billing/summary) [![CodeSpace Limit](https://badgen.net/badge/CodeSpace/Spending%20Limit)](https://github.com/settings/billing/spending_limit)
 
 ## GUI diff
 
@@ -40,7 +52,7 @@ After:
 ## Links
 
 Issue(s): #
-Port(s): # **add downstream PR(s), if any**
+Port(s): # **add upstream PR(s), if any**
 
 - [ ] **DONE**
 
@@ -60,7 +72,9 @@ If you need to re-run a test, please mark the related checkbox, it will be unche
 
 - [ ] Re-run test "changelog_test"
 - [ ] Re-run test "backend_unittests_pgsql"
+- [ ] Re-run test "java_lint_checkstyle"
 - [ ] Re-run test "java_pgsql_tests"
+- [ ] Re-run test "ruby_rubocop"
 - [ ] Re-run test "schema_migration_test_pgsql"
 - [ ] Re-run test "susemanager_unittests"
 - [ ] Re-run test "frontend_checks"
