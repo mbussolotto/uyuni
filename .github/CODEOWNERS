@@ -33,101 +33,86 @@
 # Uyuni Code Owners
 
 # Release Engineering
-rel-eng/ @uyuni-project/release-engineering
-tito.props @uyuni-project/release-engineering
-web/conf/rhn_web.conf @uyuni-project/release-engineering
+.github/ISSUE_TEMPLATE/releng-*.md @SUSE/multi-linux-manager-releng
+rel-eng/ @SUSE/multi-linux-manager-releng
+tito.props @SUSE/multi-linux-manager-releng
+web/conf/rhn_web.conf @SUSE/multi-linux-manager-releng
 
 # Cobbler
-java/conf/cobbler/snippets/ @uyuni-project/python
+java/conf/cobbler/snippets/ @SUSE/multi-linux-manager-python
 
 # Python
-*.py @uyuni-project/python
+*.py @SUSE/multi-linux-manager-python
 # This file only holds data, no Python code
 mgr_bootstrap_data.py
 
 # Workflows reviewers
-.github/workflows @uyuni-project/workflows-reviewers
 
 # Frontend
-web/html/ @uyuni-project/frontend
-web/setup.sh @uyuni-project/frontend
-branding/ @uyuni-project/frontend
-*.jsp @uyuni-project/frontend
-*.jspf @uyuni-project/frontend
-.github/workflows/frontend-build.yml @uyuni-project/frontend
-.github/workflows/frontend-dependency-audit.yml @uyuni-project/frontend
-.github/workflows/frontend-lint-fix-pr.yml @uyuni-project/frontend
-.github/workflows/frontend-lint.yml @uyuni-project/frontend
-.github/workflows/frontend-typescript-compilation.yml @uyuni-project/frontend
-.github/workflows/frontend-unit-tests.yml @uyuni-project/frontend
-.npmrc @uyuni-project/frontend
-package.json @uyuni-project/frontend
-package-lock.json @uyuni-project/frontend
+web/html/ @SUSE/multi-linux-manager-frontend
+web/setup.sh @SUSE/multi-linux-manager-frontend
+branding/ @SUSE/multi-linux-manager-frontend
+*.jsp @SUSE/multi-linux-manager-frontend
+*.jspf @SUSE/multi-linux-manager-frontend
+.npmrc @SUSE/multi-linux-manager-frontend
+package.json @SUSE/multi-linux-manager-frontend
+package-lock.json @SUSE/multi-linux-manager-frontend
 
 # QE
-testsuite/ @uyuni-project/qe
-.github/scripts/test_covering_pr.js @uyuni-project/qe
-.github/workflows/rubocop.yml @uyuni-project/qe
-.github/workflows/acceptance_tests_base.yml @uyuni-project/qe
-.github/workflows/acceptance_tests_feedback.yml @uyuni-project/qe
-.github/workflows/acceptance_tests_parallel.yml @uyuni-project/qe
-.github/workflows/acceptance_tests_sequential.yml @uyuni-project/qe
-.github/workflows/acceptance_tests_scheduler.yml @uyuni-project/qe
-.github/workflows/acceptance_tests_coordinator.yml @uyuni-project/qe
-.github/workflows/recommended_tests.yml @uyuni-project/qe
-.github/workflows/build_containers.yml@uyuni-project/qe
-.github/workflows/test-covering-pr.yml @uyuni-project/qe
-.rubocop.yml @uyuni-project/qe
+testsuite/ @SUSE/multi-linux-manager-qe
+.rubocop.yml @SUSE/multi-linux-manager-qe
+.github/ISSUE_TEMPLATE/qe-*.md @SUSE/multi-linux-manager-qe
+.github/scripts/test_covering_pr.js @SUSE/multi-linux-manager-qe
 
 # mgr-libmod
 susemanager-utils/mgr-libmod/ @cbbayburt
 
 # Generic fallback for Java, apart from changelog files
-java/ @uyuni-project/java
+java/ @SUSE/multi-linux-manager-java
 java/*.changes*
 
 # Individual Java packages
 
 # XMLRPC API
-java/core/src/main/java/com/redhat/rhn/frontend/xmlrpc/ @uyuni-project/naica
+java/core/src/main/java/com/redhat/rhn/frontend/xmlrpc/ @SUSE/multi-linux-manager-naica
 
 # HTTP API
-java/core/src/main/java/com/suse/manager/api/ @uyuni-project/naica
+java/core/src/main/java/com/suse/manager/api/ @SUSE/multi-linux-manager-naica
 
 # Content Lifecycle Management
-java/core/src/main/java/redhat/rhn/manager/contentmgmt/ @uyuni-project/naica
-java/core/src/main/java/com/suse/manager/webui/controllers/contentmanagement/ @uyuni-project/naica
-java/core/src/main/java/com/redhat/rhn/domain/contentmgmt/ @uyuni-project/naica
+java/core/src/main/java/redhat/rhn/manager/contentmgmt/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/suse/manager/webui/controllers/contentmanagement/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/redhat/rhn/domain/contentmgmt/ @SUSE/multi-linux-manager-naica
 
 # Maintenance Windows
-java/core/src/main/java/com/suse/manager/model/maintenance/ @uyuni-project/naica
-java/core/src/main/java/com/suse/manager/webui/controllers/maintenance/ @uyuni-project/naica
-java/core/src/main/java/com/suse/manager/maintenance/ @uyuni-project/naica
-java/core/src/main/java/com/suse/manager/webui/utils/gson/MaintenanceWindowDataJson.java @uyuni-project/naica
+java/core/src/main/java/com/suse/manager/model/maintenance/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/suse/manager/webui/controllers/maintenance/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/suse/manager/maintenance/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/suse/manager/webui/utils/gson/MaintenanceWindowDataJson.java @SUSE/multi-linux-manager-naica
 
 # Minion Bootstrapping
-java/core/src/main/java/com/suse/manager/webui/controllers/bootstrap/ @uyuni-project/naica
-java/core/src/main/java/com/suse/manager/webui/utils/gson/BootstrapHostsJson.java @uyuni-project/naica
-java/core/src/main/java/com/suse/manager/webui/utils/gson/BootstrapParameters.java @uyuni-project/naica
+java/core/src/main/java/com/suse/manager/webui/controllers/bootstrap/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/suse/manager/webui/utils/gson/BootstrapHostsJson.java @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/suse/manager/webui/utils/gson/BootstrapParameters.java @SUSE/multi-linux-manager-naica
 
 # Notification Messages
-java/core/src/main/java/com/redhat/rhn/domain/notification/ @uyuni-project/naica
-java/core/src/main/java/com/suse/manager/webui/controllers/NotificationMessageController.java @uyuni-project/naica
-java/core/src/main/java/com/suse/manager/webui/utils/gson/NotificationMessageJson.java @uyuni-project/naica
+java/core/src/main/java/com/redhat/rhn/domain/notification/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/suse/manager/webui/controllers/NotificationMessageController.java @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/suse/manager/webui/utils/gson/NotificationMessageJson.java @SUSE/multi-linux-manager-naica
 
 # Websockets
-java/core/src/main/java/com/suse/manager/webui/websocket/ @uyuni-project/naica
+java/core/src/main/java/com/suse/manager/webui/websocket/ @SUSE/multi-linux-manager-naica
 
 # RBAC
-java/core/src/main/java/com/redhat/rhn/manager/access/ @uyuni-project/naica
-java/core/src/main/java/com/redhat/rhn/domain/access/ @uyuni-project/naica
-java/core/src/main/java/com/redhat/rhn/frontend/xmlrpc/access/ @uyuni-project/naica
-java/core/src/main/java/com/redhat/rhn/frontend/servlets/AuthorizationFilter.java @uyuni-project/naica
-schema/spacewalk/common/data/accessGroup.sql @uyuni-project/naica
-schema/spacewalk/common/data/accessGroupNamespace.sql @uyuni-project/naica
-schema/spacewalk/common/data/endpoint.sql @uyuni-project/naica
-schema/spacewalk/common/data/endpointNamespace.sql @uyuni-project/naica
-schema/spacewalk/common/data/namespace.sql @uyuni-project/naica
+java/core/src/main/java/com/redhat/rhn/manager/access/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/redhat/rhn/domain/access/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/redhat/rhn/frontend/xmlrpc/access/ @SUSE/multi-linux-manager-naica
+java/core/src/main/java/com/redhat/rhn/frontend/servlets/AuthorizationFilter.java @SUSE/multi-linux-manager-naica
+schema/spacewalk/common/data/accessGroup.sql @SUSE/multi-linux-manager-naica
+schema/spacewalk/common/data/accessGroupNamespace.sql @SUSE/multi-linux-manager-naica
+schema/spacewalk/common/data/endpoint.sql @SUSE/multi-linux-manager-naica
+schema/spacewalk/common/data/endpointNamespace.sql @SUSE/multi-linux-manager-naica
+schema/spacewalk/common/data/namespace.sql @SUSE/multi-linux-manager-naica
 
 # Ignore translations, in the CODEOWNERS the last matching wins
 **/*.po
