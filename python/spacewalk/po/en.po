@@ -20,12 +20,12 @@ msgstr ""
 #: ../server/apacheAuth.py:72
 #, python-format
 msgid "incomplete proxy authentication token: %s"
-msgstr "unvollständiges Proxy-Authentifizierungstoken: %s"
+msgstr "unvollstÃ¤ndiges Proxy-Authentifizierungstoken: %s"
 
 #: ../server/apacheAuth.py:103
 #, python-format
 msgid "Sent proxy signature %s does not match ours %s."
-msgstr "Gesendete Proxy-Signatur %s stimmt nicht mit unserer %s überein."
+msgstr "Gesendete Proxy-Signatur %s stimmt nicht mit unserer %s Ã¼berein."
 
 #: ../server/apacheAuth.py:142
 msgid "declined proxy authentication"
@@ -72,11 +72,11 @@ msgstr ""
 #, fuzzy, python-format
 #| msgid "SUSE Manager Proxy service not enabled for server profile: \"%s\""
 msgid "SUSE Multi-Linux Manager Proxy service not enabled for server profile: \"%s\""
-msgstr "Der SUSE Manager Proxy-Dienst ist für das Serverprofil nicht aktiviert: \"%s\""
+msgstr "Der SUSE Manager Proxy-Dienst ist fÃ¼r das Serverprofil nicht aktiviert: \"%s\""
 
 #: ../server/handlers/xmlrpc/proxy.py:94
 msgid "Invalid session key"
-msgstr "Ungültiger Sitzungsschlüssel"
+msgstr "UngÃ¼ltiger SitzungsschlÃ¼ssel"
 
 #: ../server/handlers/xmlrpc/proxy.py:102
 msgid "This server ID no longer exists"
@@ -1032,7 +1032,7 @@ msgstr ""
 
 #, python-format
 #~ msgid "Server \"%s\" is not enabled for ISS."
-#~ msgstr "Server \"%s\" ist nicht für ISS aktiviert."
+#~ msgstr "Server \"%s\" ist nicht fÃ¼r ISS aktiviert."
 
 #, python-brace-format
 #~ msgid "Your system was not found in the {PRODUCT_NAME} database"
@@ -1048,11 +1048,11 @@ msgstr ""
 
 #, python-format
 #~ msgid "Invalid action value type %s (%s)"
-#~ msgstr "Ungültiger Aktionswerttyp %s (%s)"
+#~ msgstr "UngÃ¼ltiger Aktionswerttyp %s (%s)"
 
 #, python-format
 #~ msgid "Action %s does not belong to server %s"
-#~ msgstr "Aktion %s gehört nicht zu Server %s"
+#~ msgstr "Aktion %s gehÃ¶rt nicht zu Server %s"
 
 #~ msgid "Required data missing"
 #~ msgstr "Erforderliche Daten fehlen"
@@ -1061,13 +1061,13 @@ msgstr ""
 #~ msgstr "Erforderliche Mitglieder fehlen"
 
 #~ msgid "Attempt to register a system to an invalid username"
-#~ msgstr "Versuch, ein System auf einen ungültigen Benutzernamen zu registrieren"
+#~ msgstr "Versuch, ein System auf einen ungÃ¼ltigen Benutzernamen zu registrieren"
 
 #~ msgid "Invalid system release version requested"
 #~ msgstr "Invalid system release version requested"
 
 #~ msgid "Unable to find a valid network interface, both ipaddr and ip6addr not found."
-#~ msgstr "Es konnte keine gültige Netzwerkschnittstelle gefunden werden, sowohl ipaddr als auch ip6addr wurden nicht gefunden."
+#~ msgstr "Es konnte keine gÃ¼ltige Netzwerkschnittstelle gefunden werden, sowohl ipaddr als auch ip6addr wurden nicht gefunden."
 
 #, python-brace-format
 #~ msgid "{PRODUCT_NAME} Welcome Message"
@@ -1289,18 +1289,18 @@ msgstr ""
 #~ " on this site."
 
 #~ msgid "Expected a dictionary as a product argument"
-#~ msgstr "Erwartet ein Wörterbuch als Produktargument"
+#~ msgstr "Erwartet ein WÃ¶rterbuch als Produktargument"
 
 #, python-format
 #~ msgid "Invalid value '%s' for %s (%s)"
-#~ msgstr "Ungültiger Wert '%s' für %s (%s)"
+#~ msgstr "UngÃ¼ltiger Wert '%s' fÃ¼r %s (%s)"
 
 #~ msgid "Invalid system_id/action_id pair."
-#~ msgstr "Ungültiges system_id/action_id-Paar."
+#~ msgstr "UngÃ¼ltiges system_id/action_id-Paar."
 
 #, python-format
 #~ msgid "Invalid value %s (%s)"
-#~ msgstr "Ungültiger Wert %s (%s)"
+#~ msgstr "UngÃ¼ltiger Wert %s (%s)"
 
 #, fuzzy
 #~ msgid "Invalid crash name"
