@@ -61,6 +61,9 @@ A few of the tasks are to be done by the new joiner and will be marked as such w
   - [ ] Tell the **joiner to create a PR to add his/her SSH public key to the [galaxy/infrastructure repository](https://gitlab.suse.de/galaxy/infrastructure/-/blob/master/srv/pillar/team-ssh-pubkeys.sls)**
   - [ ] Tell the **joiner to create a PR to add him/herself the [finglonger config](https://gitlab.suse.de/galaxy/infrastructure/-/blob/master/srv/salt/bugguy-finglonger/galaxy.edn)**
 - [ ] Invite the joiner to SCC organization [SUSE Multi-Linux Manager Team Playground](https://scc.suse.com/organizations/432530/users) for SCC mirror credentials
+- [ ] Weblate (If the user will be doing translations, mostly if member of Orion)
+  - [ ] Invite the joiner to [project](https://l10n.opensuse.org/access/uyuni/) using the relevant `@suse.com` address, as part of the `Administrator` team.
+  - [ ] Make sure the joiner accepted the invitation
 - [ ] Add the joiner to the relevant IBS/OBS groups:
   - [ ] Add to https://build.suse.de/groups/monitoring (monitoring & releng)
   - [ ] Add to https://build.suse.de/groups/salt-maintainers (Ion & releng)

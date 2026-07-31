@@ -72,6 +72,7 @@ Team Lead to handle the following tasks:
   - [ ] AWS
   - [ ] Azure
   - [ ] Google Cloud
+- [ ] Weblate: Remove the leaver the [project](https://l10n.opensuse.org/access/uyuni/)
 - [ ] Remove the leaver from the relevant IBS/OBS groups:
   - [ ] https://build.suse.de/groups/monitoring
   - [ ] https://build.suse.de/groups/salt-maintainers
